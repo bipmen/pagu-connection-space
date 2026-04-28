@@ -62,19 +62,24 @@
   --accent-foreground: oklch(0.2 0.02 270);
   --gold: oklch(0.88 0.11 90); /* #F6D884 */
   --gold-foreground: oklch(0.2 0.05 290);
+  --acid: oklch(0.86 0.20 130); /* acid green */
+  --cyber: oklch(0.72 0.18 320); /* hot pink */
+  --accent-text: oklch(0.36 0.21 295); /* purple in light mode */
   --destructive: oklch(0.6 0.22 25);
   --destructive-foreground: oklch(0.98 0 0);
   --border: oklch(0.85 0.02 270);
   --input: oklch(0.9 0.02 270);
   --ring: oklch(0.36 0.21 295);
 
-  --gradient-hero: radial-gradient(ellipse at top left, oklch(0.36 0.21 295 / 0.6), transparent 60%),
-    radial-gradient(ellipse at bottom right, oklch(0.88 0.11 90 / 0.35), transparent 65%),
+  --gradient-hero: radial-gradient(ellipse 80% 60% at 15% 10%, oklch(0.36 0.21 295 / 0.45), transparent 60%),
+    radial-gradient(ellipse 70% 60% at 90% 20%, oklch(0.72 0.18 320 / 0.35), transparent 60%),
+    radial-gradient(ellipse 90% 60% at 50% 100%, oklch(0.86 0.20 130 / 0.25), transparent 60%),
     linear-gradient(180deg, var(--background), var(--background));
   --gradient-gold: linear-gradient(135deg, oklch(0.92 0.13 95), oklch(0.82 0.12 80));
   --gradient-purple: linear-gradient(135deg, oklch(0.42 0.22 295), oklch(0.28 0.18 295));
+  --gradient-acid: linear-gradient(135deg, oklch(0.86 0.20 130), oklch(0.72 0.18 320), oklch(0.55 0.22 295));
   --shadow-soft: 0 1px 2px oklch(0 0 0 / 0.04), 0 8px 30px oklch(0.36 0.21 295 / 0.08);
-  --shadow-glow: 0 0 60px oklch(0.36 0.21 295 / 0.35);
+  --shadow-glow: 0 0 60px oklch(0.55 0.22 295 / 0.35), 0 0 120px oklch(0.72 0.18 320 / 0.2);
 }
 
 .dark {
