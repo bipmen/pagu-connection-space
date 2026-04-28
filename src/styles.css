@@ -136,8 +136,9 @@
 
   h1, h2, h3, h4, .font-display {
     font-family: var(--font-display);
-    font-weight: 500;
-    letter-spacing: -0.02em;
+    font-weight: 400;
+    letter-spacing: -0.015em;
+    line-height: 1.05;
   }
 }
 
@@ -150,6 +151,9 @@
 @utility bg-gradient-purple {
   background: var(--gradient-purple);
 }
+@utility bg-gradient-acid {
+  background: var(--gradient-acid);
+}
 @utility shadow-soft {
   box-shadow: var(--shadow-soft);
 }
@@ -158,6 +162,15 @@
 }
 @utility text-balance {
   text-wrap: balance;
+}
+@utility text-accent-contrast {
+  color: var(--accent-text);
+}
+@utility text-gradient-acid {
+  background: var(--gradient-acid);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 @keyframes float-slow {
