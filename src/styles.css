@@ -32,6 +32,9 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-gold: var(--gold);
   --color-gold-foreground: var(--gold-foreground);
+  --color-accent-text: var(--accent-text);
+  --color-acid: var(--acid);
+  --color-cyber: var(--cyber);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
