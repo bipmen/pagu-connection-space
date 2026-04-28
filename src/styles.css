@@ -100,6 +100,7 @@
   --accent-foreground: oklch(0.95 0.02 90);
   --gold: oklch(0.88 0.11 90);
   --gold-foreground: oklch(0.18 0.02 270);
+  --gold-bright: oklch(0.88 0.11 90);
   --acid: oklch(0.88 0.22 130);
   --cyber: oklch(0.75 0.20 320);
   --accent-text: oklch(0.88 0.11 90); /* gold in dark mode */
