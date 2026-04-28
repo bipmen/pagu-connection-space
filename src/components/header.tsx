@@ -21,7 +21,6 @@ export function Header() {
         <div className="mx-auto max-w-7xl px-5 lg:px-8 h-16 lg:h-20 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5">
             <img src={logo} alt="Pagu" className="h-9 w-auto rounded" width={36} height={44} />
-            <span className="font-display text-xl tracking-tight">Pagu</span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-8">
