@@ -5,9 +5,8 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-display: "Instrument Serif", "Times New Roman", serif;
-  --font-sans: "Geist", system-ui, -apple-system, sans-serif;
-  --font-mono: "Geist Mono", ui-monospace, monospace;
+  --font-display: "Fraunces", Georgia, serif;
+  --font-sans: "Inter", system-ui, sans-serif;
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -32,9 +31,6 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-gold: var(--gold);
   --color-gold-foreground: var(--gold-foreground);
-  --color-accent-text: var(--accent-text);
-  --color-acid: var(--acid);
-  --color-cyber: var(--cyber);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
@@ -60,27 +56,21 @@
   --muted-foreground: oklch(0.45 0.02 270);
   --accent: oklch(0.88 0.04 270);
   --accent-foreground: oklch(0.2 0.02 270);
-  --gold: oklch(0.36 0.21 295); /* light mode: purple stand-in for readability */
-  --gold-foreground: oklch(0.97 0.02 90);
-  --gold-bright: oklch(0.88 0.11 90); /* actual #F6D884 for surfaces only */
-  --acid: oklch(0.86 0.20 130); /* acid green */
-  --cyber: oklch(0.72 0.18 320); /* hot pink */
-  --accent-text: oklch(0.36 0.21 295); /* purple in light mode */
+  --gold: oklch(0.88 0.11 90); /* #F6D884 */
+  --gold-foreground: oklch(0.2 0.05 290);
   --destructive: oklch(0.6 0.22 25);
   --destructive-foreground: oklch(0.98 0 0);
   --border: oklch(0.85 0.02 270);
   --input: oklch(0.9 0.02 270);
   --ring: oklch(0.36 0.21 295);
 
-  --gradient-hero: radial-gradient(ellipse 80% 60% at 15% 10%, oklch(0.36 0.21 295 / 0.45), transparent 60%),
-    radial-gradient(ellipse 70% 60% at 90% 20%, oklch(0.72 0.18 320 / 0.35), transparent 60%),
-    radial-gradient(ellipse 90% 60% at 50% 100%, oklch(0.86 0.20 130 / 0.25), transparent 60%),
+  --gradient-hero: radial-gradient(ellipse at top left, oklch(0.36 0.21 295 / 0.6), transparent 60%),
+    radial-gradient(ellipse at bottom right, oklch(0.88 0.11 90 / 0.35), transparent 65%),
     linear-gradient(180deg, var(--background), var(--background));
   --gradient-gold: linear-gradient(135deg, oklch(0.92 0.13 95), oklch(0.82 0.12 80));
   --gradient-purple: linear-gradient(135deg, oklch(0.42 0.22 295), oklch(0.28 0.18 295));
-  --gradient-acid: linear-gradient(135deg, oklch(0.86 0.20 130), oklch(0.72 0.18 320), oklch(0.55 0.22 295));
   --shadow-soft: 0 1px 2px oklch(0 0 0 / 0.04), 0 8px 30px oklch(0.36 0.21 295 / 0.08);
-  --shadow-glow: 0 0 60px oklch(0.55 0.22 295 / 0.35), 0 0 120px oklch(0.72 0.18 320 / 0.2);
+  --shadow-glow: 0 0 60px oklch(0.36 0.21 295 / 0.35);
 }
 
 .dark {
@@ -100,23 +90,17 @@
   --accent-foreground: oklch(0.95 0.02 90);
   --gold: oklch(0.88 0.11 90);
   --gold-foreground: oklch(0.18 0.02 270);
-  --gold-bright: oklch(0.88 0.11 90);
-  --acid: oklch(0.88 0.22 130);
-  --cyber: oklch(0.75 0.20 320);
-  --accent-text: oklch(0.88 0.11 90); /* gold in dark mode */
   --destructive: oklch(0.65 0.22 25);
   --destructive-foreground: oklch(0.98 0 0);
   --border: oklch(0.3 0.02 280 / 0.6);
   --input: oklch(0.3 0.02 280 / 0.5);
   --ring: oklch(0.65 0.2 295);
 
-  --gradient-hero: radial-gradient(ellipse 70% 50% at 15% 10%, oklch(0.55 0.22 295 / 0.55), transparent 60%),
-    radial-gradient(ellipse 60% 50% at 90% 25%, oklch(0.75 0.20 320 / 0.35), transparent 60%),
-    radial-gradient(ellipse 90% 50% at 50% 100%, oklch(0.88 0.22 130 / 0.18), transparent 60%),
+  --gradient-hero: radial-gradient(ellipse at 20% 10%, oklch(0.4 0.22 295 / 0.55), transparent 55%),
+    radial-gradient(ellipse at 90% 90%, oklch(0.7 0.14 90 / 0.18), transparent 60%),
     linear-gradient(180deg, var(--background), oklch(0.13 0.015 270));
-  --gradient-acid: linear-gradient(135deg, oklch(0.88 0.22 130), oklch(0.75 0.20 320), oklch(0.55 0.22 295));
   --shadow-soft: 0 1px 2px oklch(0 0 0 / 0.4), 0 12px 40px oklch(0.36 0.21 295 / 0.25);
-  --shadow-glow: 0 0 80px oklch(0.55 0.22 295 / 0.45), 0 0 160px oklch(0.75 0.20 320 / 0.25);
+  --shadow-glow: 0 0 80px oklch(0.55 0.22 295 / 0.45);
 }
 
 @layer base {
@@ -138,9 +122,8 @@
 
   h1, h2, h3, h4, .font-display {
     font-family: var(--font-display);
-    font-weight: 400;
-    letter-spacing: -0.015em;
-    line-height: 1.05;
+    font-weight: 500;
+    letter-spacing: -0.02em;
   }
 }
 
@@ -153,9 +136,6 @@
 @utility bg-gradient-purple {
   background: var(--gradient-purple);
 }
-@utility bg-gradient-acid {
-  background: var(--gradient-acid);
-}
 @utility shadow-soft {
   box-shadow: var(--shadow-soft);
 }
@@ -164,15 +144,6 @@
 }
 @utility text-balance {
   text-wrap: balance;
-}
-@utility text-accent-contrast {
-  color: var(--accent-text);
-}
-@utility text-gradient-acid {
-  background: var(--gradient-acid);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
 }
 
 @keyframes float-slow {
