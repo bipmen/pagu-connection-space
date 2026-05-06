@@ -1,34 +1,115 @@
-# Login Page UX Improvements
+# Login Verification Flow + Logo Refresh
 
-Update `src/routes/login.tsx` to clarify the email login flow and explain 2FA in human language.
+Two related changes: implement the full passwordless login flow (email/phone → 5-digit code → profile) and clean up the brand mark in header & footer.
 
-## Changes
+---
 
-1. **Dynamic input label** — Track the active tab (`email` | `phone`) in component state. Label reads "Email" when Email tab is active, "Phone" when Phone tab is active. Input `type` and placeholder switch accordingly.
+## Part 1 — Login Flow
 
-2. **Reworded helper text** — Replace:
-   > "We'll send you a 2FA code to sign in. No passwords required."
-   
-   with:
-   > "We'll send you a one-time verification code to sign in — no password needed."
+### State machine (single page, two steps)
 
-3. **Tooltip on "one-time verification code"** — Wrap that phrase in a trigger element (underlined, dotted, gold accent) that opens a small bubble on hover (desktop) AND tap (mobile).
-   
-   Content: *"2FA (two-factor authentication) is an extra security step. We send a code to your email so only you can access your account."*
+Keep everything inside `src/routes/login.tsx`. Use a local `step` state:
+- `"request"` → email/phone form
+- `"verify"` → 5-digit code form
 
-## Technical Approach
+No URL change between steps (avoids exposing intermediate state). On successful verify → `useNavigate({ to: "/profile" })`.
 
-- Use the existing **`Popover`** primitive (`src/components/ui/popover.tsx`) instead of `Tooltip`. Radix Popover handles both click/tap and works reliably on touch devices; Radix Tooltip is hover-focused and inconsistent on mobile. Tap-outside-to-close is built in.
-- Trigger: an inline `<button type="button">` styled as underlined text so it's keyboard-focusable and accessible.
-- Add `onMouseEnter` / `onMouseLeave` handlers on the trigger to also open on hover for desktop parity, while Popover's click behavior covers mobile tap.
-- Style the `PopoverContent` with `max-w-xs`, smaller text, and rely on existing `bg-popover` / `shadow-md` tokens (already dark-mode aware). Add a subtle gold border to match brand.
-- Convert the tab buttons to controlled state (`useState<"email" | "phone">`), apply active styling conditionally rather than hard-coded.
+### Mock auth store — `src/lib/auth-mock.ts` (new)
 
-## Files Touched
+Module-scoped (in-memory) helpers, easy to swap for a backend later:
 
-- `src/routes/login.tsx` — only file modified. Add `useState` import and `Popover` imports from existing UI primitives. No new dependencies.
+```ts
+type Pending = { method: "email" | "phone"; identifier: string; code: string; expiresAt: number };
+let pending: Pending | null = null;
+const TTL_MS = 5 * 60 * 1000;        // 5 min expiry
+const RESEND_COOLDOWN_MS = 30 * 1000; // 30s
 
-## Out of Scope
+export function issueCode(method, identifier): { ok: true } | { ok: false; retryInMs: number }
+export function verifyCode(code: string): "ok" | "invalid" | "expired"
+export function getPending(): { method, identifier } | null
+export function clearPending(): void
+```
 
-- No backend/auth wiring changes.
-- No changes to the register page (can mirror this pattern in a follow-up if desired).
+- Code is generated with `crypto.getRandomValues` → 5-digit string.
+- **Never** rendered to the DOM. Logged to `console.info` only in dev (so the user can test). Comment marks it as a mock seam.
+- Cooldown tracked via `lastIssuedAt`; `issueCode` returns `retryInMs` if still cooling down.
+
+### Request step UI (Email / Phone tabs)
+
+Reuse the existing tab + Popover (2FA tooltip) layout. Validation with **zod**:
+
+- Email: `z.string().trim().email()` → "Please enter a valid email address."
+- Phone: `z.string().trim().regex(/^\+?[1-9]\d{6,14}$/)` (E.164-ish) → "Please enter a valid phone number."
+
+Inline error appears under the input in destructive color; input border switches to `border-destructive` while invalid. Submit calls `issueCode`, then transitions to `verify` step.
+
+### Verify step UI
+
+- Headline: "Enter your verification code"
+- Description: "We sent a 5-digit code to your {email|phone}. It may take a few minutes to arrive." (Shows the masked identifier, e.g. `j••••@gmail.com` or `+49 ••• ••• 1234`.)
+- Input: existing `InputOTP` primitive (`src/components/ui/input-otp.tsx`) with 5 slots — looks great, accessible, paste-friendly.
+- Primary: **Verify Code** (disabled until 5 digits entered).
+- Secondary: **Send a new code** — disabled with countdown text "Send a new code in 23s" while cooldown is active. On success shows toast/inline note: "A new code has been sent. It may take a few minutes to arrive."
+- Tertiary link: **Try a different email or phone number** → returns to `request` step and clears state.
+- Error state (invalid/expired): "The login details are not valid or the code has expired. Please try again." plus a **Try again** button that just clears the input (cooldown rules still apply for resend).
+
+Use `sonner` (already in the project) for the resend confirmation toast.
+
+### Profile placeholder — `src/routes/profile.tsx` (new)
+
+```tsx
+export const Route = createFileRoute("/profile")({
+  head: () => ({ meta: [
+    { title: "Your Profile — Pagu" },
+    { name: "description", content: "Your Pagu community space." },
+  ]}),
+  component: ProfilePage,
+});
+```
+
+Centered card with Header/Footer wrapper:
+- Headline: "Welcome to your Pagu profile"
+- Subtext: "Your community space is being prepared."
+- Subtle gold divider, no further features.
+
+`routeTree.gen.ts` is auto-regenerated — do not touch.
+
+---
+
+## Part 2 — Logo Refresh (Header + Footer)
+
+### `src/components/header.tsx`
+- Remove the `<span>Pagu</span>` next to the logo.
+- Increase image size: `h-10 w-auto` on mobile, `lg:h-12` on desktop (current is `h-9`). Bump header height tracking with it: `h-16 lg:h-20` stays fine.
+- Keep the wrapping `<Link to="/">` so the logo is still the home anchor. Add `aria-label="Pagu — home"` since the visible text is gone.
+
+### `src/components/footer.tsx`
+- Remove the `<span>Pagu</span>` next to the logo.
+- Increase image size from `h-10` to `h-14` (slightly larger, still balanced with the tagline below).
+- Add `aria-label="Pagu — home"` on the link.
+
+No CSS-token changes; existing dark/light contrast on `pagu-logo.webp` already works in both themes.
+
+---
+
+## Files
+
+**New**
+- `src/lib/auth-mock.ts`
+- `src/routes/profile.tsx`
+
+**Edited**
+- `src/routes/login.tsx` — full two-step flow, validation, masked identifier, OTP input, resend cooldown, error states.
+- `src/components/header.tsx` — drop wordmark, enlarge logo, aria-label.
+- `src/components/footer.tsx` — drop wordmark, enlarge logo, aria-label.
+
+**Untouched**
+- `src/routeTree.gen.ts` (auto-regenerates).
+- Design tokens in `src/styles.css` already cover the requested palette.
+
+---
+
+## Out of scope
+- Real email/SMS delivery (clearly marked seam in `auth-mock.ts`).
+- Auth session persistence / route guards on `/profile` — placeholder is publicly reachable for now.
+- Register page parity (can mirror the same pattern in a follow-up).
