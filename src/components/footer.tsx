@@ -7,9 +7,8 @@ export function Footer() {
     <footer className="border-t border-border/60 mt-24 pb-32 md:pb-12">
       <div className="mx-auto max-w-7xl px-5 lg:px-8 py-12 grid gap-10 md:grid-cols-3">
         <div className="space-y-3">
-          <Link to="/" className="flex items-center gap-2.5">
-            <img src={logo} alt="Pagu" className="h-10 w-auto rounded" width={40} height={48} />
-            <span className="font-display text-2xl">Pagu</span>
+          <Link to="/" aria-label="Pagu — home" className="inline-flex items-center">
+            <img src={logo} alt="Pagu" className="h-14 w-auto rounded" width={56} height={67} />
           </Link>
           <p className="text-sm text-muted-foreground max-w-xs">
             A FLINTA*-led collective in Cologne creating intentional spaces for connection.
