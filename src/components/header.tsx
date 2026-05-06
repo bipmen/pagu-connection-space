@@ -19,9 +19,14 @@ export function Header() {
     <>
       <header className="sticky top-0 z-50 backdrop-blur-xl bg-background/70 border-b border-border/50">
         <div className="mx-auto max-w-7xl px-5 lg:px-8 h-16 lg:h-20 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2.5">
-            <img src={logo} alt="Pagu" className="h-9 w-auto rounded" width={36} height={44} />
-            <span className="font-display text-xl tracking-tight">Pagu</span>
+          <Link to="/" aria-label="Pagu — home" className="flex items-center">
+            <img
+              src={logo}
+              alt="Pagu"
+              className="h-11 lg:h-14 w-auto rounded"
+              width={56}
+              height={56}
+            />
           </Link>
 
           <nav className="hidden md:flex items-center gap-8">
