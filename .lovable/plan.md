@@ -1,115 +1,64 @@
-# Login Verification Flow + Logo Refresh
+# Register page UX + 2FA code flow
 
-Two related changes: implement the full passwordless login flow (email/phone → 5-digit code → profile) and clean up the brand mark in header & footer.
+Bring `src/routes/register.tsx` in line with the passwordless flow already implemented on `/login`, and reuse the same verification step.
 
----
+## 1. Refactor: extract shared verify step
 
-## Part 1 — Login Flow
+Move the existing `VerifyStep` component out of `src/routes/login.tsx` into a new shared file:
 
-### State machine (single page, two steps)
+- New file: `src/components/auth/verify-step.tsx`
+- Export `VerifyStep` (same props/behavior as today).
+- Update `src/routes/login.tsx` to import it from the new location (no behavior change).
 
-Keep everything inside `src/routes/login.tsx`. Use a local `step` state:
-- `"request"` → email/phone form
-- `"verify"` → 5-digit code form
+This lets both Login and Register render the identical verification UI.
 
-No URL change between steps (avoids exposing intermediate state). On successful verify → `useNavigate({ to: "/profile" })`.
+## 2. Register page: request step
 
-### Mock auth store — `src/lib/auth-mock.ts` (new)
+Rewrite `src/routes/register.tsx` so the "request" view contains:
 
-Module-scoped (in-memory) helpers, easy to swap for a backend later:
+- **Name** — required, non-empty, max 100 chars (zod).
+- **Method tabs** — same Email / Phone pill selector as Login (`Mail` / `Phone` icons, `bg-muted` rounded-full container).
+- **Identifier input** — label switches between "Email" and "Phone number"; same validators as Login:
+  - Email: `z.string().trim().email()` → "Please enter a valid email address."
+  - Phone: `/^\+?[1-9]\d{6,14}$/` → "Please enter a valid phone number."
+- **Referral email** — required, validated as email.
+  - Empty → "Please enter a referral email."
+  - Invalid → "Please enter a valid referral email."
+- **Remove** the existing "2FA method" field entirely (method is implied by the tab).
+- Keep the existing FLINTA* approval reassurance card.
 
-```ts
-type Pending = { method: "email" | "phone"; identifier: string; code: string; expiresAt: number };
-let pending: Pending | null = null;
-const TTL_MS = 5 * 60 * 1000;        // 5 min expiry
-const RESEND_COOLDOWN_MS = 30 * 1000; // 30s
+## 3. Primary CTA with tooltip
 
-export function issueCode(method, identifier): { ok: true } | { ok: false; retryInMs: number }
-export function verifyCode(code: string): "ok" | "invalid" | "expired"
-export function getPending(): { method, identifier } | null
-export function clearPending(): void
-```
+Replace "Send request" with **"Request access code"**.
 
-- Code is generated with `crypto.getRandomValues` → 5-digit string.
-- **Never** rendered to the DOM. Logged to `console.info` only in dev (so the user can test). Comment marks it as a mock seam.
-- Cooldown tracked via `lastIssuedAt`; `issueCode` returns `retryInMs` if still cooling down.
+- Wrap the button with Radix `Tooltip` (already in `src/components/ui/tooltip.tsx`).
+- Trigger: hover on desktop, tap on mobile (Radix Tooltip opens on focus, which covers tap on touch devices; we'll also wire `onClick` to toggle controlled `open` state for reliable mobile behavior).
+- Tooltip copy:
+  > "To keep Pagu safe, registration and login use 2FA — a two-factor authentication method. We'll send a one-time code to your email or phone so only you can continue."
+- Style: small rounded bubble, soft shadow, gold-tinted border to match the login popover (`border-gold/30 shadow-md`), max width ~64, positioned `side="top"` so it never overlaps inputs.
+- Wrap the page in `TooltipProvider` (or rely on the one already in `__root.tsx` if present — will verify and add locally if not).
 
-### Request step UI (Email / Phone tabs)
+## 4. Submit behavior
 
-Reuse the existing tab + Popover (2FA tooltip) layout. Validation with **zod**:
+On click:
+1. Validate Name, Identifier (per selected method), and Referral email.
+2. Show inline errors per field if invalid; do not advance.
+3. Call `issueCode(method, identifier)` from `src/lib/auth-mock.ts` (already exists, generates a 5-digit code, logs it in dev, enforces 30s cooldown).
+4. Switch local state to the verify step (same two-step pattern as Login — no URL change, so refreshing doesn't lose the pending code in the in-memory mock).
+5. Render the shared `<VerifyStep />` with the chosen method and identifier.
+6. On successful verify → `navigate({ to: "/profile" })`. On failure → "The login details are not valid or the code has expired. Please try again." (already wired inside `VerifyStep`).
+7. "Send a new code" and "Try a different email or phone number" controls come for free from the shared component; "Back" returns to the register form (we'll pass an `onBack` that resets to the request step).
 
-- Email: `z.string().trim().email()` → "Please enter a valid email address."
-- Phone: `z.string().trim().regex(/^\+?[1-9]\d{6,14}$/)` (E.164-ish) → "Please enter a valid phone number."
+Note: Name and Referral are not persisted by the mock auth (no backend yet); they're validated client-side and held in component state. A real backend hookup is out of scope for this task.
 
-Inline error appears under the input in destructive color; input border switches to `border-destructive` while invalid. Submit calls `issueCode`, then transitions to `verify` step.
+## 5. Visual identity
 
-### Verify step UI
-
-- Headline: "Enter your verification code"
-- Description: "We sent a 5-digit code to your {email|phone}. It may take a few minutes to arrive." (Shows the masked identifier, e.g. `j••••@gmail.com` or `+49 ••• ••• 1234`.)
-- Input: existing `InputOTP` primitive (`src/components/ui/input-otp.tsx`) with 5 slots — looks great, accessible, paste-friendly.
-- Primary: **Verify Code** (disabled until 5 digits entered).
-- Secondary: **Send a new code** — disabled with countdown text "Send a new code in 23s" while cooldown is active. On success shows toast/inline note: "A new code has been sent. It may take a few minutes to arrive."
-- Tertiary link: **Try a different email or phone number** → returns to `request` step and clears state.
-- Error state (invalid/expired): "The login details are not valid or the code has expired. Please try again." plus a **Try again** button that just clears the input (cooldown rules still apply for resend).
-
-Use `sonner` (already in the project) for the resend confirmation toast.
-
-### Profile placeholder — `src/routes/profile.tsx` (new)
-
-```tsx
-export const Route = createFileRoute("/profile")({
-  head: () => ({ meta: [
-    { title: "Your Profile — Pagu" },
-    { name: "description", content: "Your Pagu community space." },
-  ]}),
-  component: ProfilePage,
-});
-```
-
-Centered card with Header/Footer wrapper:
-- Headline: "Welcome to your Pagu profile"
-- Subtext: "Your community space is being prepared."
-- Subtle gold divider, no further features.
-
-`routeTree.gen.ts` is auto-regenerated — do not touch.
-
----
-
-## Part 2 — Logo Refresh (Header + Footer)
-
-### `src/components/header.tsx`
-- Remove the `<span>Pagu</span>` next to the logo.
-- Increase image size: `h-10 w-auto` on mobile, `lg:h-12` on desktop (current is `h-9`). Bump header height tracking with it: `h-16 lg:h-20` stays fine.
-- Keep the wrapping `<Link to="/">` so the logo is still the home anchor. Add `aria-label="Pagu — home"` since the visible text is gone.
-
-### `src/components/footer.tsx`
-- Remove the `<span>Pagu</span>` next to the logo.
-- Increase image size from `h-10` to `h-14` (slightly larger, still balanced with the tagline below).
-- Add `aria-label="Pagu — home"` on the link.
-
-No CSS-token changes; existing dark/light contrast on `pagu-logo.webp` already works in both themes.
-
----
+Reuse existing tokens — no new colors. Cards keep `bg-card border border-border/60 rounded-2xl p-6 shadow-soft`, gold accents via `text-gold`, mobile-first single-column layout (already the case at `max-w-md`).
 
 ## Files
 
-**New**
-- `src/lib/auth-mock.ts`
-- `src/routes/profile.tsx`
+- **New**: `src/components/auth/verify-step.tsx` — extracted shared component.
+- **Edit**: `src/routes/login.tsx` — import `VerifyStep` from new location; remove local copy.
+- **Edit**: `src/routes/register.tsx` — full rewrite per above.
 
-**Edited**
-- `src/routes/login.tsx` — full two-step flow, validation, masked identifier, OTP input, resend cooldown, error states.
-- `src/components/header.tsx` — drop wordmark, enlarge logo, aria-label.
-- `src/components/footer.tsx` — drop wordmark, enlarge logo, aria-label.
-
-**Untouched**
-- `src/routeTree.gen.ts` (auto-regenerates).
-- Design tokens in `src/styles.css` already cover the requested palette.
-
----
-
-## Out of scope
-- Real email/SMS delivery (clearly marked seam in `auth-mock.ts`).
-- Auth session persistence / route guards on `/profile` — placeholder is publicly reachable for now.
-- Register page parity (can mirror the same pattern in a follow-up).
+No new dependencies; no route additions (verification stays inline on `/register` and `/login`, redirecting to existing `/profile` on success).
