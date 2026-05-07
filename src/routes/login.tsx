@@ -6,21 +6,16 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from "@/components/ui/input-otp";
-import { Mail, Phone, ArrowLeft } from "lucide-react";
+import { Mail, Phone } from "lucide-react";
 import {
   issueCode,
   verifyCode,
   getCooldownRemaining,
   clearPending,
-  maskIdentifier,
   RESEND_COOLDOWN_MS,
   type AuthMethod,
 } from "@/lib/auth-mock";
+import { VerifyStep } from "@/components/auth/verify-step";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
