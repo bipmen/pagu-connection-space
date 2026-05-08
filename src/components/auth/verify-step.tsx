@@ -5,6 +5,7 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { ArrowLeft } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { maskIdentifier, type AuthMethod } from "@/lib/auth-mock";
 
 export function VerifyStep(props: {
