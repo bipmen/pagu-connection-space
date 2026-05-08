@@ -107,6 +107,13 @@ export function VerifyStep(props: {
           </button>
         </div>
       </form>
+
+      <div className="mt-6 text-center text-xs text-muted-foreground">
+        Having trouble accessing your account?{" "}
+        <Link to="/support-login" className="text-gold hover:underline">
+          Report a problem
+        </Link>
+      </div>
     </>
   );
 }
