@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SupportThankYouRouteImport } from './routes/support-thank-you'
 import { Route as SupportLoginRouteImport } from './routes/support-login'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ProfileRouteImport } from './routes/profile'
@@ -18,6 +19,11 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 
+const SupportThankYouRoute = SupportThankYouRouteImport.update({
+  id: '/support-thank-you',
+  path: '/support-thank-you',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SupportLoginRoute = SupportLoginRouteImport.update({
   id: '/support-login',
   path: '/support-login',
@@ -68,6 +74,7 @@ export interface FileRoutesByFullPath {
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/support-login': typeof SupportLoginRoute
+  '/support-thank-you': typeof SupportThankYouRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -78,6 +85,7 @@ export interface FileRoutesByTo {
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/support-login': typeof SupportLoginRoute
+  '/support-thank-you': typeof SupportThankYouRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -89,6 +97,7 @@ export interface FileRoutesById {
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/support-login': typeof SupportLoginRoute
+  '/support-thank-you': typeof SupportThankYouRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -101,6 +110,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/register'
     | '/support-login'
+    | '/support-thank-you'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -111,6 +121,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/register'
     | '/support-login'
+    | '/support-thank-you'
   id:
     | '__root__'
     | '/'
@@ -121,6 +132,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/register'
     | '/support-login'
+    | '/support-thank-you'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -132,10 +144,18 @@ export interface RootRouteChildren {
   ProfileRoute: typeof ProfileRoute
   RegisterRoute: typeof RegisterRoute
   SupportLoginRoute: typeof SupportLoginRoute
+  SupportThankYouRoute: typeof SupportThankYouRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/support-thank-you': {
+      id: '/support-thank-you'
+      path: '/support-thank-you'
+      fullPath: '/support-thank-you'
+      preLoaderRoute: typeof SupportThankYouRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/support-login': {
       id: '/support-login'
       path: '/support-login'
@@ -204,6 +224,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProfileRoute: ProfileRoute,
   RegisterRoute: RegisterRoute,
   SupportLoginRoute: SupportLoginRoute,
+  SupportThankYouRoute: SupportThankYouRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
