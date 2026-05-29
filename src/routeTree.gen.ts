@@ -18,6 +18,9 @@ import { Route as EventsRouteImport } from './routes/events'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CommunityEventsIndexRouteImport } from './routes/community-events.index'
+import { Route as CommunityEventsNewRouteImport } from './routes/community-events.new'
+import { Route as CommunityEventsIdRouteImport } from './routes/community-events.$id'
 
 const SupportThankYouRoute = SupportThankYouRouteImport.update({
   id: '/support-thank-you',
@@ -64,6 +67,21 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CommunityEventsIndexRoute = CommunityEventsIndexRouteImport.update({
+  id: '/community-events/',
+  path: '/community-events/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CommunityEventsNewRoute = CommunityEventsNewRouteImport.update({
+  id: '/community-events/new',
+  path: '/community-events/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CommunityEventsIdRoute = CommunityEventsIdRouteImport.update({
+  id: '/community-events/$id',
+  path: '/community-events/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -75,6 +93,9 @@ export interface FileRoutesByFullPath {
   '/register': typeof RegisterRoute
   '/support-login': typeof SupportLoginRoute
   '/support-thank-you': typeof SupportThankYouRoute
+  '/community-events/$id': typeof CommunityEventsIdRoute
+  '/community-events/new': typeof CommunityEventsNewRoute
+  '/community-events/': typeof CommunityEventsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -86,6 +107,9 @@ export interface FileRoutesByTo {
   '/register': typeof RegisterRoute
   '/support-login': typeof SupportLoginRoute
   '/support-thank-you': typeof SupportThankYouRoute
+  '/community-events/$id': typeof CommunityEventsIdRoute
+  '/community-events/new': typeof CommunityEventsNewRoute
+  '/community-events': typeof CommunityEventsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -98,6 +122,9 @@ export interface FileRoutesById {
   '/register': typeof RegisterRoute
   '/support-login': typeof SupportLoginRoute
   '/support-thank-you': typeof SupportThankYouRoute
+  '/community-events/$id': typeof CommunityEventsIdRoute
+  '/community-events/new': typeof CommunityEventsNewRoute
+  '/community-events/': typeof CommunityEventsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -111,6 +138,9 @@ export interface FileRouteTypes {
     | '/register'
     | '/support-login'
     | '/support-thank-you'
+    | '/community-events/$id'
+    | '/community-events/new'
+    | '/community-events/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -122,6 +152,9 @@ export interface FileRouteTypes {
     | '/register'
     | '/support-login'
     | '/support-thank-you'
+    | '/community-events/$id'
+    | '/community-events/new'
+    | '/community-events'
   id:
     | '__root__'
     | '/'
@@ -133,6 +166,9 @@ export interface FileRouteTypes {
     | '/register'
     | '/support-login'
     | '/support-thank-you'
+    | '/community-events/$id'
+    | '/community-events/new'
+    | '/community-events/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -145,6 +181,9 @@ export interface RootRouteChildren {
   RegisterRoute: typeof RegisterRoute
   SupportLoginRoute: typeof SupportLoginRoute
   SupportThankYouRoute: typeof SupportThankYouRoute
+  CommunityEventsIdRoute: typeof CommunityEventsIdRoute
+  CommunityEventsNewRoute: typeof CommunityEventsNewRoute
+  CommunityEventsIndexRoute: typeof CommunityEventsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -212,6 +251,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/community-events/': {
+      id: '/community-events/'
+      path: '/community-events'
+      fullPath: '/community-events/'
+      preLoaderRoute: typeof CommunityEventsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/community-events/new': {
+      id: '/community-events/new'
+      path: '/community-events/new'
+      fullPath: '/community-events/new'
+      preLoaderRoute: typeof CommunityEventsNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/community-events/$id': {
+      id: '/community-events/$id'
+      path: '/community-events/$id'
+      fullPath: '/community-events/$id'
+      preLoaderRoute: typeof CommunityEventsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -225,6 +285,9 @@ const rootRouteChildren: RootRouteChildren = {
   RegisterRoute: RegisterRoute,
   SupportLoginRoute: SupportLoginRoute,
   SupportThankYouRoute: SupportThankYouRoute,
+  CommunityEventsIdRoute: CommunityEventsIdRoute,
+  CommunityEventsNewRoute: CommunityEventsNewRoute,
+  CommunityEventsIndexRoute: CommunityEventsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

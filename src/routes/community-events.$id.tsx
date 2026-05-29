@@ -24,6 +24,7 @@ import {
   getEvent,
   getUserApplication,
   useEventsStore,
+  type CommunityEvent,
 } from "@/lib/events-mock";
 
 export const Route = createFileRoute("/community-events/$id")({
@@ -163,7 +164,7 @@ function ApplyForm({
   event,
   user,
 }: {
-  event: ReturnType<typeof getEvent> & object;
+  event: CommunityEvent;
   user: { id: string; name: string };
 }) {
   const [answers, setAnswers] = useState<string[]>(
