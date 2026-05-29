@@ -15,6 +15,7 @@ import {
   RESEND_COOLDOWN_MS,
   type AuthMethod,
 } from "@/lib/auth-mock";
+import { signIn } from "@/lib/session-mock";
 import { VerifyStep } from "@/components/auth/verify-step";
 
 export const Route = createFileRoute("/login")({
@@ -93,7 +94,8 @@ function LoginPage() {
     if (code.length !== 5) return;
     const result = verifyCode(code);
     if (result === "ok") {
-      navigate({ to: "/profile" });
+      signIn({ method: activeMethod, identifier: activeIdentifier });
+      navigate({ to: "/community-events" });
       return;
     }
     setVerifyError(
