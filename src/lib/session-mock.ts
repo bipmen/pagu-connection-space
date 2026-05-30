@@ -11,6 +11,11 @@ export type SessionUser = {
   city: string;
   bio: string;
   interests: string[];
+  birthday?: string; // ISO yyyy-mm-dd
+  gender?: string;
+  orientation?: string;
+  lookingFor?: string[];
+  experience?: string[];
   attended_events_count: number;
   organizer_unlocked: boolean;
   createdAt: number;
