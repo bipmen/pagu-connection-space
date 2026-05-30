@@ -636,3 +636,79 @@ Best fit for this project:
 3. Use Clerk, Neon, Drizzle, and Resend directly.
 4. Optionally use Lovable later for visual/UI experiments only, then manually port the useful ideas.
 5. Avoid Base44 for this project unless we decide to restart as a Base44-hosted no-code app.
+
+---
+
+## Changelog — Frontend Prototype Updates (Phase 1 + RHRN)
+
+These changes were made on the Lovable prototype branch to validate UX flows ahead of the Next.js + Clerk + Neon migration. All state is mocked via `localStorage`; no real backend exists yet.
+
+### Phase 1 — Community Events (Discover + Create + Apply)
+
+New mocks:
+
+- `src/lib/events-mock.ts` — Event entity, list/get/create/apply, attendance tracking.
+- `src/lib/session-mock.ts` — Mock authenticated user with profile, attended-events, and RHRN session state in `localStorage`.
+
+New routes:
+
+- `src/routes/community-events.index.tsx` — Discover events.
+- `src/routes/community-events.new.tsx` — Create event.
+- `src/routes/community-events.$id.tsx` — Event detail + Apply flow.
+
+Gating implemented in the prototype:
+
+- Must be logged in (mock auth).
+- Apply / Create require an authenticated approved member.
+- Attendance to ≥1 event is recorded and used as the eligibility gate for RHRN.
+
+### Fake Login (prototype only)
+
+- `src/lib/auth-mock.ts` — Adds a one-click fake login that seeds a logged-in approved user so reviewers can access Phase 1 and RHRN without going through the verification flow. To be removed when Clerk is wired in.
+
+### Right Here Right Now (RHRN) — foundation
+
+Scope: spontaneous, local, FLINTA-only community connection. Not dating, not swipe, not social feed.
+
+Access gates (all must pass):
+
+1. Logged in.
+2. Approved community member.
+3. Profile completed (`city` + `bio` required).
+4. Community guidelines accepted.
+5. Attended ≥1 community event.
+
+New mocks:
+
+- `src/lib/rhrn-mock.ts` — Eligibility check, "available now" session with expiry, nearby-people discovery, connection requests, lightweight chat threads.
+
+New components:
+
+- `src/components/rhrn/invisible-button.tsx` — "Go invisible" / availability toggle.
+
+New routes:
+
+- `src/routes/rhrn.index.tsx` — Discovery + availability toggle (with countdown).
+- `src/routes/rhrn.$id.tsx` — Other person's RHRN profile + send request.
+- `src/routes/rhrn.requests.tsx` — Incoming/outgoing requests.
+- `src/routes/rhrn.chats.tsx` — Chat list.
+- `src/routes/rhrn.chat.$id.tsx` — 1:1 chat thread.
+
+### Complete Profile gateway
+
+- `src/routes/profile.tsx` rewritten as the real profile editor (name, city, bio, interests). Drives the RHRN eligibility check via `getEligibility` and redirects users with incomplete profiles into this route.
+
+### Fixes
+
+- `src/routes/rhrn.index.tsx` — Hardened hook ordering and null-guarded the mock session so the page no longer crashes before `localStorage` hydration.
+
+### Backend implications (for the Next.js + Clerk + Neon migration)
+
+When porting these prototype flows to the real stack, the following must move server-side:
+
+- Event entity, attendance records, and the "attended ≥1 event" check (Neon + Drizzle).
+- RHRN availability session with server-enforced expiry (no client-side countdown as source of truth).
+- Connection requests and chat threads with proper authorization (only participants can read/write).
+- Eligibility gate must be enforced in the API layer, not only in the UI.
+- Guidelines acceptance must be persisted per-user with a version stamp.
+- Remove `auth-mock.ts`, `session-mock.ts`, `events-mock.ts`, `rhrn-mock.ts` once Clerk + Neon endpoints replace them.
