@@ -32,7 +32,7 @@ import {
   type ReportReason,
 } from "@/lib/rhrn-mock";
 import { GoInvisibleFab } from "@/components/rhrn/invisible-button";
-import { toast } from "@/components/ui/sonner";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/rhrn/$id")({
   head: () => ({ meta: [{ title: "Member — Pagu" }, { name: "robots", content: "noindex" }] }),

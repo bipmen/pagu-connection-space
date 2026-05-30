@@ -33,7 +33,7 @@ function ChatRoom() {
   function send() {
     const v = text.trim();
     if (!v) return;
-    sendMessage(id, user.id, v);
+    sendMessage(id, user!.id, v);
     setText("");
   }
 
