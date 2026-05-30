@@ -187,6 +187,59 @@ function LocalEventsPage() {
           </ul>
         )}
       </Section>
+
+      <Dialog open={!!detailEvent} onOpenChange={(o) => !o && closeDetail()}>
+        <DialogContent className="max-w-lg">
+          {detailEvent ? (
+            (() => {
+              const venue = detailEvent.safeSpaceId
+                ? spacesById(detailEvent.safeSpaceId)
+                : undefined;
+              return (
+                <>
+                  <DialogHeader>
+                    <div className="flex flex-wrap items-center gap-2 mb-2">
+                      {detailEvent.official ? (
+                        <Badge className="bg-gold text-gold-foreground hover:bg-gold">
+                          ✨ Official Pagu Event
+                        </Badge>
+                      ) : (
+                        <Badge variant="secondary">👥 Community Event</Badge>
+                      )}
+                      <Badge variant="outline" className="rounded-full">
+                        {detailEvent.category}
+                      </Badge>
+                    </div>
+                    <DialogTitle className="font-display text-2xl leading-snug">
+                      {detailEvent.title}
+                    </DialogTitle>
+                    <DialogDescription>
+                      {formatDate(detailEvent.date)} · {detailEvent.time}
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-3 text-sm">
+                    <p className="inline-flex items-center gap-1.5 text-muted-foreground">
+                      <MapPin className="h-3.5 w-3.5" />
+                      {venue
+                        ? `${venue.name} · 🛡️ Hosted at a Pagu Safe Space`
+                        : detailEvent.location}
+                    </p>
+                    <p className="inline-flex items-center gap-1.5 text-muted-foreground">
+                      <Users className="h-3.5 w-3.5" />
+                      {detailEvent.attendees} attending
+                    </p>
+                  </div>
+                  <div className="mt-4 flex justify-end">
+                    <Button variant="hero" onClick={closeDetail}>
+                      Close
+                    </Button>
+                  </div>
+                </>
+              );
+            })()
+          ) : null}
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
