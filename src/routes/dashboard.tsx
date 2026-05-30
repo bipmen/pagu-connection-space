@@ -131,16 +131,16 @@ function DashboardPage() {
         {/* Quick access to logged-in features */}
         <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <FeatureCard
-            to="/discover"
+            to="/community-map"
             icon={<Compass className="h-5 w-5 text-gold" />}
-            title="Discover"
-            body="Map of safe spaces, events, and people open to connect nearby."
+            title="Community Map"
+            body="Activities, Safe Spaces and people open to connect — all in one map."
             cta="Open map"
           />
           <FeatureCard
             to="/rhrn"
             icon={<Sparkles className="h-5 w-5 text-gold" />}
-            title="Right Here Right Now"
+            title="Available Now"
             body={
               rhrnReady
                 ? mySession
@@ -150,6 +150,7 @@ function DashboardPage() {
             }
             cta={mySession ? "See nearby" : "Go live"}
           />
+
           <FeatureCard
             to="/profile"
             icon={<UserRound className="h-5 w-5 text-gold" />}
@@ -317,7 +318,7 @@ function FeatureCard({
   body,
   cta,
 }: {
-  to: "/discover" | "/rhrn" | "/profile";
+  to: "/community-map" | "/rhrn" | "/profile";
   icon: React.ReactNode;
   title: string;
   body: string;
