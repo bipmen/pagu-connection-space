@@ -26,6 +26,7 @@ import {
   useEventsStore,
   type CommunityEvent,
 } from "@/lib/events-mock";
+import { ReportEventDialog } from "@/components/events/ReportEventDialog";
 
 export const Route = createFileRoute("/community-events/$id")({
   head: () => ({
@@ -155,6 +156,13 @@ function EventDetail() {
             <ApplyForm event={event} user={user} />
           )}
         </section>
+
+        {/* Report event — subtle safety action */}
+        {!isOrganizer && (
+          <div className="flex justify-center pt-2">
+            <ReportEventDialog eventId={event.id} userId={user.id} />
+          </div>
+        )}
       </div>
     </Shell>
   );
