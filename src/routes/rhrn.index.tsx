@@ -412,7 +412,7 @@ function formatDistance(m: number): string {
   return `${(m / 1000).toFixed(1)}km away`;
 }
 
-function useCountdown(expiresAt: number): string | null {
+function useCountdown(expiresAt: number | undefined): string | null {
   const [now, setNow] = useState(() => Date.now());
   useEffect(() => {
     const id = setInterval(() => setNow(Date.now()), 1000);
