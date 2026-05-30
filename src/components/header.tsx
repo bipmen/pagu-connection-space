@@ -22,7 +22,6 @@ const publicLinks = [
 const memberLinks = [
   { to: "/dashboard", label: "Dashboard" },
   { to: "/community-map", label: "Community Map" },
-  { to: "/rhrn", label: "Available Now" },
   { to: "/about", label: "About" },
   { to: "/community-events", label: "Events" },
   { to: "/contact", label: "Contact" },
@@ -99,9 +98,6 @@ export function Header() {
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link to="/community-map">Community Map</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link to="/rhrn">Available Now</Link>
                   </DropdownMenuItem>
 
                   <DropdownMenuSeparator />
