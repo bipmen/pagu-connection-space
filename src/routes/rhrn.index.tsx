@@ -281,9 +281,9 @@ function Onboarding() {
 function ActiveView() {
   const user = useCurrentUser();
   const mine = useMySession(user?.id);
+  const others = useAvailable(user?.id);
+  const remaining = useCountdown(mine?.expiresAt);
   if (!user || !mine) return null;
-  const others = useAvailable(user.id);
-  const remaining = useCountdown(mine.expiresAt);
 
   if (!remaining) {
     return (
