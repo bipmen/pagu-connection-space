@@ -2,9 +2,10 @@ import { Link } from "@tanstack/react-router";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Shield, Calendar, Sparkles, MapPin, Clock, Users, ArrowRight } from "lucide-react";
+import { Shield, Calendar, Sparkles, MapPin, Clock, Users, ArrowRight, ChevronLeft } from "lucide-react";
 import { spacesById } from "@/lib/discover-mock";
-import { formatDistance, type CommunityMarker } from "@/lib/community-map-mock";
+import { formatDistance, type CommunityMarker, type SingleMarker, type ClusterMarker } from "@/lib/community-map-mock";
+import { useEffect, useState } from "react";
 
 export function MarkerBottomSheet({
   marker,
@@ -13,10 +14,26 @@ export function MarkerBottomSheet({
   marker: CommunityMarker | null;
   onClose: () => void;
 }) {
+  const [drillDown, setDrillDown] = useState<SingleMarker | null>(null);
+
+  // Reset drill-down whenever the parent marker changes / closes
+  useEffect(() => {
+    setDrillDown(null);
+  }, [marker]);
+
+  const active: CommunityMarker | null = drillDown ?? marker;
+
   return (
     <Sheet open={!!marker} onOpenChange={(o) => !o && onClose()}>
-      <SheetContent side="bottom" className="rounded-t-3xl">
-        {marker && <Body marker={marker} onClose={onClose} />}
+      <SheetContent side="bottom" className="rounded-t-3xl max-h-[85vh] overflow-y-auto">
+        {active && (
+          <Body
+            marker={active}
+            onClose={onClose}
+            onDrill={setDrillDown}
+            onBack={drillDown ? () => setDrillDown(null) : undefined}
+          />
+        )}
       </SheetContent>
     </Sheet>
   );
