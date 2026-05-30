@@ -151,7 +151,7 @@ function DashboardPage() {
         </section>
 
         {/* Quick access to logged-in features */}
-        <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FeatureCard
             to="/community-map"
             icon={<Compass className="h-5 w-5 text-gold" />}
@@ -159,20 +159,6 @@ function DashboardPage() {
             body="Activities, Safe Spaces and people open to connect — all in one map."
             cta="Open map"
           />
-          <FeatureCard
-            to="/rhrn"
-            icon={<Sparkles className="h-5 w-5 text-gold" />}
-            title="Available Now"
-            body={
-              mySession
-                ? "You are currently available. See who's around."
-                : eligibility.guidelinesAccepted
-                ? "Become available and meet community members nearby."
-                : "Review the community guidelines, then go live."
-            }
-            cta={mySession ? "See nearby" : "Open RHRN"}
-          />
-
           <FeatureCard
             to="/profile"
             icon={<UserRound className="h-5 w-5 text-gold" />}
