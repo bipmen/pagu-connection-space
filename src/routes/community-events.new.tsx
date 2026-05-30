@@ -93,7 +93,7 @@ function CreateEventPage() {
           To host an event, attend at least one official Pagu event first. This keeps the community grounded in real, in-person trust.
         </p>
         <Button asChild variant="hero" size="lg" className="w-full">
-          <Link to="/community-events">Discover events</Link>
+          <Link to="/events/community">Discover events</Link>
         </Button>
       </Gate>
     );
@@ -175,7 +175,7 @@ function CreateEventPage() {
       <Header />
       <main className="flex-1 px-5 lg:px-8 py-10 max-w-2xl mx-auto w-full">
         <button
-          onClick={() => navigate({ to: "/community-events" })}
+          onClick={() => navigate({ to: "/events/community" })}
           className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-6"
         >
           <ArrowLeft className="h-4 w-4" /> Back
@@ -428,7 +428,7 @@ function CreateEventPage() {
             <Button
               type="button"
               variant="ghost"
-              onClick={() => (step === 1 ? navigate({ to: "/community-events" }) : setStep((s) => (s - 1) as 1 | 2 | 3 | 4))}
+              onClick={() => (step === 1 ? navigate({ to: "/events/community" }) : setStep((s) => (s - 1) as 1 | 2 | 3 | 4))}
             >
               <ArrowLeft className="h-4 w-4 mr-1" /> Back
             </Button>
