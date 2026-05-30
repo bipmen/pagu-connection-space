@@ -168,35 +168,7 @@ function DashboardPage() {
         </section>
 
         {/* Activity */}
-        <section className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base flex items-center gap-2">
-                <Inbox className="h-4 w-4 text-gold" /> Recent requests
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              {requests.length === 0 ? (
-                <p className="text-sm text-muted-foreground">No connection requests yet.</p>
-              ) : (
-                <>
-                  {requests.slice(0, 3).map((r) => (
-                    <div key={r.id} className="flex items-center justify-between text-sm border-b border-border/40 last:border-0 pb-2 last:pb-0">
-                      <div className="min-w-0">
-                        <p className="font-medium truncate">{r.fromName}</p>
-                        <p className="text-xs text-muted-foreground truncate">{r.icebreaker}</p>
-                      </div>
-                      <StatusPill status={r.status} />
-                    </div>
-                  ))}
-                  <Link to="/rhrn/requests" className="text-xs text-gold inline-flex items-center gap-1 pt-1">
-                    View all <ArrowRight className="h-3 w-3" />
-                  </Link>
-                </>
-              )}
-            </CardContent>
-          </Card>
-
+        <section>
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="text-base flex items-center gap-2">
@@ -231,6 +203,7 @@ function DashboardPage() {
             </CardContent>
           </Card>
         </section>
+
 
         {/* Upcoming events */}
         <section>
