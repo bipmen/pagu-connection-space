@@ -279,10 +279,11 @@ function Onboarding() {
 }
 
 function ActiveView() {
-  const user = useCurrentUser()!;
-  const mine = useMySession(user.id)!;
-  const others = useAvailable(user.id);
-  const remaining = useCountdown(mine.expiresAt);
+  const user = useCurrentUser();
+  const mine = useMySession(user?.id);
+  const others = useAvailable(user?.id);
+  const remaining = useCountdown(mine?.expiresAt);
+  if (!user || !mine) return null;
 
   if (!remaining) {
     return (
@@ -411,13 +412,13 @@ function formatDistance(m: number): string {
   return `${(m / 1000).toFixed(1)}km away`;
 }
 
-function useCountdown(expiresAt: number): string | null {
+function useCountdown(expiresAt: number | undefined): string | null {
   const [now, setNow] = useState(() => Date.now());
   useEffect(() => {
     const id = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(id);
   }, []);
-  const ms = expiresAt - now;
+  const ms = (expiresAt ?? 0) - now;
   if (ms <= 0) return null;
   const mins = Math.floor(ms / 60000);
   const secs = Math.floor((ms % 60000) / 1000);
