@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Search, Shield, Calendar, Sparkles, MapPin, Clock, Users, ChevronDown, ArrowRight } from "lucide-react";
 import { useCurrentUser } from "@/lib/session-mock";
+import { useMySession } from "@/lib/rhrn-mock";
 import { useSafeSpacesStore, listSafeSpaces } from "@/lib/safe-spaces-mock";
 import { DISCOVER_EVENTS, DISCOVER_PEOPLE, spacesById } from "@/lib/discover-mock";
 import {
@@ -47,6 +48,8 @@ export const Route = createFileRoute("/community-map/")({
 function CommunityMapPage() {
   useSafeSpacesStore();
   const user = useCurrentUser();
+  const mySession = useMySession(user?.id);
+  const isAvailable = !!mySession && mySession.expiresAt > Date.now();
 
   const [city, setCity] = useState(DEFAULT_CITY.name);
   const [query, setQuery] = useState("");
@@ -54,10 +57,15 @@ function CommunityMapPage() {
   const [zoom, setZoom] = useState(1);
   const [selected, setSelected] = useState<CommunityMarker | null>(null);
 
+  // If user goes invisible while viewing People, snap back to Community
+  useEffect(() => {
+    if (!isAvailable && filter === "people") setFilter("community");
+  }, [isAvailable, filter]);
+
   const summary = summarizeCity(city);
   const markers = useMemo(
-    () => buildMarkers({ filter, availableNowOnly: false, city, query, zoom }),
-    [filter, city, query, zoom],
+    () => buildMarkers({ filter, availableNowOnly: false, city, query, zoom, hidePeople: !isAvailable }),
+    [filter, city, query, zoom, isAvailable],
   );
 
   if (!user) {
@@ -118,7 +126,7 @@ function CommunityMapPage() {
 
         <MyAvailabilityPanel />
 
-        <CategoryFilters value={filter} onChange={setFilter} />
+        <CategoryFilters value={filter} onChange={setFilter} disabledKeys={isAvailable ? [] : ["people"]} />
 
         {summary.total === 0 ? (
           <EmptyCityState city={city} />

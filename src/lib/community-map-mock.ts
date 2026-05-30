@@ -86,6 +86,7 @@ export type MarkersInput = {
   city: string;
   query: string;
   zoom: number; // 1 = base, >1 = zoomed in
+  hidePeople?: boolean; // when true (user invisible), people are never shown
 };
 
 function matches(text: string, q: string) {
@@ -121,12 +122,12 @@ function clusterPeople(people: DiscoverPerson[], cellSize: number) {
   return out;
 }
 
-export function buildMarkers({ filter, availableNowOnly, city, query, zoom }: MarkersInput): CommunityMarker[] {
+export function buildMarkers({ filter, availableNowOnly, city, query, zoom, hidePeople }: MarkersInput): CommunityMarker[] {
   if (!cityMatch(city, "Cologne")) return [];
 
   const showPlaces = !availableNowOnly && (filter === "community" || filter === "places");
   const showActivities = !availableNowOnly && (filter === "community" || filter === "activities");
-  const showPeople = filter === "community" || filter === "people" || availableNowOnly;
+  const showPeople = !hidePeople && (filter === "community" || filter === "people" || availableNowOnly);
 
   const out: CommunityMarker[] = [];
   if (showPlaces) {
