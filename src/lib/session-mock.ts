@@ -44,6 +44,12 @@ export function getCurrentUser(): SessionUser | null {
   return readStorage();
 }
 
+export function isProfileComplete(
+  user: Pick<SessionUser, "bio" | "city"> | null | undefined,
+): boolean {
+  return !!(user?.bio?.trim() && user.city?.trim());
+}
+
 export function signIn(input: {
   name?: string;
   method: "email" | "phone";

@@ -26,7 +26,6 @@ import {
   ensureSeedChats,
   getEligibility,
   goInvisible,
-  isEligible,
   useChats,
   useIncomingRequests,
   useMySession,
@@ -88,51 +87,31 @@ function PanelBody() {
   if (!user) return null;
   const eligibility = getEligibility(user);
 
-  if (!isEligible(eligibility)) return <EligibilityGate userId={user.id} eligibility={eligibility} />;
+  if (!eligibility.guidelinesAccepted) return <GuidelinesGate userId={user.id} />;
   return mine ? <ActiveView user={user} /> : <Onboarding user={user} />;
 }
 
-function EligibilityGate({
-  userId,
-  eligibility,
-}: {
-  userId: string;
-  eligibility: ReturnType<typeof getEligibility>;
-}) {
-  const [accepted, setAccepted] = useState(eligibility.guidelinesAccepted);
+function GuidelinesGate({ userId }: { userId: string }) {
+  const [accepted, setAccepted] = useState(false);
   return (
     <div className="space-y-3">
       <p className="text-sm text-muted-foreground">
         Consent, respect, and inclusion are expected at all times.
       </p>
       <ul className="space-y-2 text-sm">
-        <Check item="Approved community member" ok={eligibility.approved} />
-        <Check
-          item="Profile completed (bio + city)"
-          ok={eligibility.profileComplete}
-          action={
-            !eligibility.profileComplete && (
-              <Link to="/profile" className="text-gold underline">
-                Complete profile
-              </Link>
-            )
-          }
-        />
         <Check item="Accepted community guidelines" ok={accepted} />
       </ul>
-      {!eligibility.guidelinesAccepted && (
-        <label className="flex items-start gap-3 rounded-lg border border-border/60 p-3 cursor-pointer">
-          <Checkbox checked={accepted} onCheckedChange={(v) => setAccepted(!!v)} className="mt-0.5" />
-          <span className="text-sm text-muted-foreground">
-            I agree to engage with kindness, respect consent, and treat every FLINTA* member with care.
-          </span>
-        </label>
-      )}
+      <label className="flex items-start gap-3 rounded-lg border border-border/60 p-3 cursor-pointer">
+        <Checkbox checked={accepted} onCheckedChange={(v) => setAccepted(!!v)} className="mt-0.5" />
+        <span className="text-sm text-muted-foreground">
+          I agree to engage with kindness, respect consent, and treat every FLINTA* member with care.
+        </span>
+      </label>
       <Button
         variant="hero"
         size="lg"
         className="w-full"
-        disabled={!eligibility.profileComplete || !accepted}
+        disabled={!accepted}
         onClick={() => {
           if (accepted) acceptGuidelines(userId);
         }}

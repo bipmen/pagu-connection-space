@@ -18,11 +18,10 @@ import {
   EyeOff,
   ShieldCheck,
 } from "lucide-react";
-import { useCurrentUser } from "@/lib/session-mock";
+import { isProfileComplete, useCurrentUser } from "@/lib/session-mock";
 import {
   ensureSeedChats,
   getEligibility,
-  isEligible,
   useAvailable,
   useChats,
   useIncomingRequests,
@@ -53,6 +52,12 @@ function DashboardPage() {
     if (user) ensureSeedChats(user.id, user.name);
   }, [user]);
 
+  useEffect(() => {
+    if (user && !isProfileComplete(user)) {
+      navigate({ to: "/profile" });
+    }
+  }, [navigate, user]);
+
   // Soft gate: bounce to login if no user (after hydration tick).
   useEffect(() => {
     const t = setTimeout(() => {
@@ -78,8 +83,25 @@ function DashboardPage() {
     );
   }
 
+  if (!isProfileComplete(user)) {
+    return (
+      <Shell>
+        <Card>
+          <CardContent className="p-8 text-center space-y-4">
+            <h1 className="text-2xl font-semibold">Complete your profile to continue</h1>
+            <p className="text-muted-foreground">
+              You are almost in. Add a few details first, then your dashboard will be ready.
+            </p>
+            <Button asChild variant="hero">
+              <Link to="/profile">Complete profile</Link>
+            </Button>
+          </CardContent>
+        </Card>
+      </Shell>
+    );
+  }
+
   const eligibility = getEligibility(user);
-  const rhrnReady = isEligible(eligibility);
   const pendingRequests = requests.filter((r) => r.status === "pending").length;
   const upcomingEvents = listEvents()
     .filter((e) => e.date >= new Date().toISOString().slice(0, 10))
@@ -142,25 +164,21 @@ function DashboardPage() {
             icon={<Sparkles className="h-5 w-5 text-gold" />}
             title="Available Now"
             body={
-              rhrnReady
-                ? mySession
-                  ? "You are currently available. See who's around."
-                  : "Become available and meet community members nearby."
-                : "Finish your profile to unlock spontaneous connection."
+              mySession
+                ? "You are currently available. See who's around."
+                : eligibility.guidelinesAccepted
+                ? "Become available and meet community members nearby."
+                : "Review the community guidelines, then go live."
             }
-            cta={mySession ? "See nearby" : "Go live"}
+            cta={mySession ? "See nearby" : "Open RHRN"}
           />
 
           <FeatureCard
             to="/profile"
             icon={<UserRound className="h-5 w-5 text-gold" />}
             title="Profile"
-            body={
-              eligibility.profileComplete
-                ? "Edit your bio, city, and interests."
-                : "Add bio + city to unlock RHRN."
-            }
-            cta={eligibility.profileComplete ? "Edit profile" : "Complete profile"}
+            body="Edit your bio, city, and interests."
+            cta="Edit profile"
           />
         </section>
 
