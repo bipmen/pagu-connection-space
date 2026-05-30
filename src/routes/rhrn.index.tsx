@@ -418,7 +418,7 @@ function useCountdown(expiresAt: number | undefined): string | null {
     const id = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(id);
   }, []);
-  const ms = expiresAt - now;
+  const ms = (expiresAt ?? 0) - now;
   if (ms <= 0) return null;
   const mins = Math.floor(ms / 60000);
   const secs = Math.floor((ms % 60000) / 1000);
