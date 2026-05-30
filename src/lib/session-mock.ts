@@ -17,6 +17,7 @@ export type SessionUser = {
 };
 
 const STORAGE_KEY = "pagu.session.v1";
+const PROFILES_KEY = "pagu.profiles.v1"; // registry of known users by identifier
 const listeners = new Set<() => void>();
 
 function readStorage(): SessionUser | null {
@@ -40,6 +41,29 @@ function writeStorage(user: SessionUser | null) {
   listeners.forEach((l) => l());
 }
 
+type ProfileRegistry = Record<string, SessionUser>;
+
+function readProfiles(): ProfileRegistry {
+  if (typeof window === "undefined") return {};
+  try {
+    const raw = window.localStorage.getItem(PROFILES_KEY);
+    return raw ? (JSON.parse(raw) as ProfileRegistry) : {};
+  } catch {
+    return {};
+  }
+}
+
+function writeProfile(user: SessionUser) {
+  if (typeof window === "undefined") return;
+  try {
+    const all = readProfiles();
+    all[user.identifier] = user;
+    window.localStorage.setItem(PROFILES_KEY, JSON.stringify(all));
+  } catch {
+    /* ignore */
+  }
+}
+
 export function getCurrentUser(): SessionUser | null {
   return readStorage();
 }
@@ -56,35 +80,55 @@ export function signIn(input: {
   identifier: string;
 }): SessionUser {
   const existing = readStorage();
-  const user: SessionUser =
-    existing && existing.identifier === input.identifier
-      ? existing
-      : {
-          id: `u_${Math.random().toString(36).slice(2, 10)}`,
-          name: input.name?.trim() || input.identifier.split("@")[0] || "Member",
-          method: input.method,
-          identifier: input.identifier,
-          city: "Cologne",
-          bio: "",
-          interests: [],
-          // Demo: every new user has attended 1 event so organizer is unlocked.
-          // In real backend this comes from actual attendance records.
-          attended_events_count: 1,
-          organizer_unlocked: true,
-          createdAt: Date.now(),
-        };
+  // 1) Same identifier already in session — reuse as-is.
+  if (existing && existing.identifier === input.identifier) {
+    writeProfile(existing);
+    return existing;
+  }
+  // 2) Known returning user — restore their saved profile (bio/city/interests).
+  const known = readProfiles()[input.identifier];
+  if (known) {
+    const restored: SessionUser = {
+      ...known,
+      method: input.method,
+      // Keep stored name unless caller explicitly provides a new one.
+      name: input.name?.trim() || known.name,
+    };
+    writeStorage(restored);
+    writeProfile(restored);
+    return restored;
+  }
+  // 3) Brand-new user.
+  const user: SessionUser = {
+    id: `u_${Math.random().toString(36).slice(2, 10)}`,
+    name: input.name?.trim() || input.identifier.split("@")[0] || "Member",
+    method: input.method,
+    identifier: input.identifier,
+    city: "Cologne",
+    bio: "",
+    interests: [],
+    // Demo: every new user has attended 1 event so organizer is unlocked.
+    attended_events_count: 1,
+    organizer_unlocked: true,
+    createdAt: Date.now(),
+  };
   writeStorage(user);
+  writeProfile(user);
   return user;
 }
 
 export function signOut() {
+  // Clear active session only — keep profile registry so returning users
+  // restore their completed profile on next sign in.
   writeStorage(null);
 }
 
 export function updateCurrentUser(patch: Partial<SessionUser>) {
   const u = readStorage();
   if (!u) return;
-  writeStorage({ ...u, ...patch });
+  const next = { ...u, ...patch };
+  writeStorage(next);
+  writeProfile(next);
 }
 
 export function useCurrentUser(): SessionUser | null {
