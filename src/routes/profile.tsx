@@ -169,7 +169,7 @@ function DashboardPage() {
           <FeatureCard
             to="/community-map"
             icon={<Compass className="h-5 w-5 text-gold" />}
-            title="Community Map"
+            title="Discovery"
             body="Activities, Safe Spaces and people open to connect — all in one map."
             cta="Open map"
           />
@@ -192,7 +192,7 @@ function DashboardPage() {
             </CardHeader>
             <CardContent className="space-y-2">
               {chats.length === 0 ? (
-                <p className="text-sm text-muted-foreground">No conversations yet. Send an icebreaker from the Community Map.</p>
+                <p className="text-sm text-muted-foreground">No conversations yet. Send an icebreaker from Discovery.</p>
               ) : (
                 <>
                   {chats.slice(0, 3).map((c) => {

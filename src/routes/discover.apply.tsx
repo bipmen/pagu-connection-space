@@ -65,7 +65,7 @@ function ApplyPage() {
               <p className="text-xs text-muted-foreground">
                 Safe Space certification is renewed every 12 months. Certification may be revoked if community safety standards are violated.
               </p>
-              <Button asChild variant="hero"><Link to="/community-map">Back to Community Map</Link></Button>
+              <Button asChild variant="hero"><Link to="/community-map">Back to Discovery</Link></Button>
             </CardContent>
           </Card>
         ) : (
