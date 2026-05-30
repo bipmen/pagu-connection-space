@@ -21,6 +21,7 @@ import {
   type AuthMethod,
 } from "@/lib/auth-mock";
 import { isProfileComplete, signIn } from "@/lib/session-mock";
+import { isOnboardingComplete } from "@/lib/onboarding-mock";
 import { VerifyStep } from "@/components/auth/verify-step";
 
 export const Route = createFileRoute("/register")({
