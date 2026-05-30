@@ -28,7 +28,7 @@ const INTEREST_OPTIONS = [
   "Film",
 ] as const;
 
-export const Route = createFileRoute("/profile")({
+export const Route = createFileRoute("/profile-setup")({
   head: () => ({
     meta: [
       { title: "Complete Your Profile — Pagu" },

@@ -28,7 +28,7 @@ import {
 } from "@/lib/rhrn-mock";
 import { listEvents } from "@/lib/events-mock";
 
-export const Route = createFileRoute("/dashboard")({
+export const Route = createFileRoute("/profile")({
   head: () => ({
     meta: [
       { title: "Dashboard — Pagu" },
