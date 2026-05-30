@@ -49,7 +49,7 @@ export function Header() {
     <>
       <header className="sticky top-0 z-50 backdrop-blur-xl bg-background/70 border-b border-border/50">
         <div className="mx-auto max-w-7xl px-5 lg:px-8 h-16 lg:h-20 flex items-center justify-between">
-          <Link to="/" aria-label="Pagu — home" className="flex items-center">
+          <Link to={user ? "/profile" : "/"} aria-label="Pagu — home" className="flex items-center">
             <img
               src={logo}
               alt="Pagu"
