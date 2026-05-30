@@ -69,6 +69,34 @@ function ChatsList() {
               </section>
             )}
 
+            {sent.length > 0 && (
+              <section className="space-y-3">
+                <h2 className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                  <Clock className="h-4 w-4 text-gold" /> Sent · awaiting reply ({sent.length})
+                </h2>
+                <div className="space-y-2">
+                  {sent.map((r) => (
+                    <Card key={r.id} className="border-dashed">
+                      <CardContent className="p-4 space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="font-medium">To Member</span>
+                          <span className="text-[10px] uppercase tracking-wide rounded-full border border-gold/30 bg-gold/10 text-gold px-2 py-0.5">
+                            Pending
+                          </span>
+                        </div>
+                        <p className="text-sm rounded-lg bg-secondary/60 px-3 py-2 italic">"{r.icebreaker}"</p>
+                        <p className="text-xs text-muted-foreground">
+                          Sent {new Date(r.createdAt).toLocaleString()} · they'll see it next time they're available.
+                        </p>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </section>
+            )}
+
+
+
             <section className="space-y-3">
               {pending.length > 0 && (
                 <h2 className="text-sm font-medium text-muted-foreground flex items-center gap-2">
