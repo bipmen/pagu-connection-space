@@ -138,16 +138,27 @@ export function Header() {
         {open && (
           <div className="md:hidden border-t border-border/50 bg-background/95 backdrop-blur-xl">
             <nav className="px-5 py-4 flex flex-col gap-1">
-              {links.map((l) => (
-                <Link
-                  key={l.to}
-                  to={l.to}
-                  onClick={() => setOpen(false)}
-                  className="px-3 py-3 rounded-lg text-foreground hover:bg-accent text-base"
-                >
-                  {l.label}
-                </Link>
-              ))}
+              {links.map((l) =>
+                l.hash ? (
+                  <a
+                    key={`${l.to}#${l.hash}`}
+                    href={`${l.to}#${l.hash}`}
+                    onClick={() => setOpen(false)}
+                    className="px-3 py-3 rounded-lg text-foreground hover:bg-accent text-base"
+                  >
+                    {l.label}
+                  </a>
+                ) : (
+                  <Link
+                    key={l.to}
+                    to={l.to}
+                    onClick={() => setOpen(false)}
+                    className="px-3 py-3 rounded-lg text-foreground hover:bg-accent text-base"
+                  >
+                    {l.label}
+                  </Link>
+                ),
+              )}
               {user ? (
                 <>
                   <button
