@@ -3,9 +3,11 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowLeft, MessageCircle, Inbox } from "lucide-react";
+import { ArrowLeft, MessageCircle, Inbox, Clock } from "lucide-react";
 import { useCurrentUser } from "@/lib/session-mock";
-import { respondToRequest, useChats, useIncomingRequests } from "@/lib/rhrn-mock";
+import { respondToRequest, useChats, useIncomingRequests, useOutgoingRequests } from "@/lib/rhrn-mock";
+import { DISCOVER_PEOPLE } from "@/lib/discover-mock";
+
 
 export const Route = createFileRoute("/rhrn/chats")({
   head: () => ({ meta: [{ title: "Conversations — Pagu" }, { name: "robots", content: "noindex" }] }),
@@ -17,7 +19,10 @@ function ChatsList() {
   const navigate = useNavigate();
   const chats = useChats(user?.id);
   const requests = useIncomingRequests(user?.id);
+  const outgoing = useOutgoingRequests(user?.id);
   const pending = requests.filter((r) => r.status === "pending");
+  const sent = outgoing.filter((r) => r.status === "pending");
+
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -65,6 +70,35 @@ function ChatsList() {
                 </div>
               </section>
             )}
+
+            {sent.length > 0 && (
+              <section className="space-y-3">
+                <h2 className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                  <Clock className="h-4 w-4 text-gold" /> Sent · awaiting reply ({sent.length})
+                </h2>
+                <div className="space-y-2">
+                  {sent.map((r) => (
+                    <Card key={r.id} className="border-dashed">
+                      <CardContent className="p-4 space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="font-medium">To {DISCOVER_PEOPLE.find((p) => p.userId === r.toUserId)?.name || "Member"}</span>
+
+                          <span className="text-[10px] uppercase tracking-wide rounded-full border border-gold/30 bg-gold/10 text-gold px-2 py-0.5">
+                            Pending
+                          </span>
+                        </div>
+                        <p className="text-sm rounded-lg bg-secondary/60 px-3 py-2 italic">"{r.icebreaker}"</p>
+                        <p className="text-xs text-muted-foreground">
+                          Sent {new Date(r.createdAt).toLocaleString()} · they'll see it next time they're available.
+                        </p>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </section>
+            )}
+
+
 
             <section className="space-y-3">
               {pending.length > 0 && (

@@ -320,14 +320,28 @@ export function ensureSeedChats(currentUserId: string, currentUserName: string) 
     status: "accepted",
     createdAt: now - 1000 * 60 * 50,
   };
+  // Seed a pending outgoing request (icebreaker sent, awaiting approval).
+  const outgoingPartner = DISCOVER_PEOPLE.find((p) => p.userId === "p3") || DISCOVER_PEOPLE.find((p) => p.userId !== partner.userId);
+  const outgoingReq: ConnectionRequest | null = outgoingPartner
+    ? {
+        id: `req_seed_out_${Math.random().toString(36).slice(2, 8)}`,
+        fromUserId: currentUserId,
+        fromName: currentUserName,
+        toUserId: outgoingPartner.userId,
+        icebreaker: "Hi! Would love to chat about local art spots ✨",
+        status: "pending",
+        createdAt: now - 1000 * 60 * 12,
+      }
+    : null;
   write({
     ...s,
     chats: [...s.chats, chat],
     messages: [...s.messages, ...messages],
-    requests: [...s.requests, req],
+    requests: [...s.requests, req, ...(outgoingReq ? [outgoingReq] : [])],
   });
   window.localStorage.setItem(flagKey, "1");
 }
+
 
 
 
@@ -447,6 +461,13 @@ export function useIncomingRequests(userId: string | undefined) {
   if (!userId) return [];
   return listIncomingRequests(userId);
 }
+
+export function useOutgoingRequests(userId: string | undefined) {
+  useStoreSync();
+  if (!userId) return [];
+  return listOutgoingRequests(userId);
+}
+
 
 export function useChats(userId: string | undefined) {
   useStoreSync();
