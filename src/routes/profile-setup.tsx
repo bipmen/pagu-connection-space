@@ -453,12 +453,13 @@ function ProfilePage() {
                 <Heart className="h-5 w-5 text-gold" /> Interests
               </CardTitle>
               <CardDescription>
-                Pick what you are into. This helps others find common ground.
+                Pick what you are into, or choose "Prefer not to choose interests
+                right now" to keep this private.
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="flex flex-wrap gap-2">
-                {INTEREST_OPTIONS.map((interest) => {
+                {[...INTEREST_OPTIONS, INTERESTS_OPT_OUT].map((interest) => {
                   const active = interests.has(interest);
                   return (
                     <button
