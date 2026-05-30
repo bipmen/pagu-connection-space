@@ -216,21 +216,120 @@ export function goInvisible(userId: string) {
   write({ ...s, sessions: s.sessions.filter((x) => x.userId !== userId) });
 }
 
+const INTENTION_LABEL_TO_ID: Record<string, IntentionId> = {
+  coffee: "coffee",
+  culture: "culture",
+  walk: "walk",
+  "concert buddy": "concert",
+  conversation: "conversation",
+  "new friends": "friends",
+  "open to dating": "dating",
+  "study partner": "study",
+  other: "other",
+};
+
+function discoverPersonToSession(p: DiscoverPerson): AvailabilitySession {
+  const now = Date.now();
+  return {
+    userId: p.userId,
+    name: p.name,
+    bio: p.bio,
+    interests: p.interests,
+    languages: p.languages,
+    city: "Cologne",
+    memberSince: p.memberSince,
+    organizer: p.organizer,
+    intentions: p.intentions
+      .map((i) => INTENTION_LABEL_TO_ID[i.label.toLowerCase()])
+      .filter(Boolean) as IntentionId[],
+    radiusMeters: 5000,
+    distanceFromMe: p.distanceMeters,
+    startedAt: now - 5 * 60_000,
+    expiresAt: now + 25 * 60_000,
+  };
+}
+
 export function listAvailable(currentUserId: string): AvailabilitySession[] {
   const s = read();
   const now = Date.now();
   const blockedByMe = new Set(s.blocks.filter((b) => b.byUserId === currentUserId).map((b) => b.targetUserId));
   const blockedMe = new Set(s.blocks.filter((b) => b.targetUserId === currentUserId).map((b) => b.byUserId));
-  return s.sessions
-    .filter((x) => x.expiresAt > now)
+  const stored = s.sessions.filter((x) => x.expiresAt > now);
+  const storedIds = new Set(stored.map((x) => x.userId));
+  const fromDiscover = DISCOVER_PEOPLE
+    .filter((p) => !storedIds.has(p.userId))
+    .map(discoverPersonToSession);
+  return [...stored, ...fromDiscover]
     .filter((x) => x.userId !== currentUserId)
     .filter((x) => !blockedByMe.has(x.userId) && !blockedMe.has(x.userId))
     .sort((a, b) => a.distanceFromMe - b.distanceFromMe);
 }
 
 export function getSessionByUserId(userId: string): AvailabilitySession | null {
-  return read().sessions.find((x) => x.userId === userId) ?? null;
+  const stored = read().sessions.find((x) => x.userId === userId);
+  if (stored) return stored;
+  const p = DISCOVER_PEOPLE.find((d) => d.userId === userId);
+  return p ? discoverPersonToSession(p) : null;
 }
+
+// ---------- Demo seeding ----------
+
+// Seeds one mock conversation so a new user immediately sees what RHRN chat
+// looks like. Idempotent — only seeds once per current user.
+export function ensureSeedChats(currentUserId: string, currentUserName: string) {
+  if (typeof window === "undefined") return;
+  const flagKey = `pagu.rhrn.seeded.${currentUserId}`;
+  if (window.localStorage.getItem(flagKey)) return;
+
+  const s = read();
+  const partner = DISCOVER_PEOPLE.find((p) => p.userId === "p2"); // Yuki
+  if (!partner) return;
+  const chatId = [currentUserId, partner.userId].sort().join(":");
+  if (s.chats.find((c) => c.id === chatId)) {
+    window.localStorage.setItem(flagKey, "1");
+    return;
+  }
+  const now = Date.now();
+  const chat: Chat = {
+    id: chatId,
+    participantIds: [currentUserId, partner.userId].sort() as [string, string],
+    participantNames: { [currentUserId]: currentUserName, [partner.userId]: partner.name },
+    createdAt: now - 1000 * 60 * 45,
+  };
+  const mkMsg = (from: string, text: string, minsAgo: number): ChatMessage => ({
+    id: `m_seed_${Math.random().toString(36).slice(2, 10)}`,
+    chatId,
+    fromUserId: from,
+    text,
+    createdAt: now - minsAgo * 60_000,
+  });
+  const messages: ChatMessage[] = [
+    mkMsg(partner.userId, "Hey! Want to grab a coffee?", 42),
+    mkMsg(currentUserId, "Yes! I'm free in about an hour ☕", 38),
+    mkMsg(partner.userId, "Perfect. Café Riese, near the museum?", 35),
+    mkMsg(currentUserId, "Love that spot. See you there 🌸", 33),
+    mkMsg(partner.userId, "Looking forward to it!", 30),
+  ];
+  // Also create an accepted incoming request so the Requests inbox has context.
+  const req: ConnectionRequest = {
+    id: `req_seed_${Math.random().toString(36).slice(2, 8)}`,
+    fromUserId: partner.userId,
+    fromName: partner.name,
+    toUserId: currentUserId,
+    icebreaker: "Want to grab a coffee?",
+    status: "accepted",
+    createdAt: now - 1000 * 60 * 50,
+  };
+  write({
+    ...s,
+    chats: [...s.chats, chat],
+    messages: [...s.messages, ...messages],
+    requests: [...s.requests, req],
+  });
+  window.localStorage.setItem(flagKey, "1");
+}
+
+
 
 // ---------- Requests ----------
 
