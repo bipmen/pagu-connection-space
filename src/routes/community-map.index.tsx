@@ -27,7 +27,6 @@ import {
 } from "@/lib/community-map-mock";
 import { CitySummaryCard } from "@/components/community-map/CitySummaryCard";
 import { CategoryFilters } from "@/components/community-map/CategoryFilters";
-import { AvailableNowToggle } from "@/components/community-map/AvailableNowToggle";
 import { EmptyCityState } from "@/components/community-map/EmptyCityState";
 import { CommunityMap } from "@/components/community-map/CommunityMap";
 import { MarkerBottomSheet } from "@/components/community-map/MarkerBottomSheet";
@@ -52,14 +51,13 @@ function CommunityMapPage() {
   const [city, setCity] = useState(DEFAULT_CITY.name);
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<CommunityFilter>("community");
-  const [availableNowOnly, setAvailableNowOnly] = useState(false);
   const [zoom, setZoom] = useState(1);
   const [selected, setSelected] = useState<CommunityMarker | null>(null);
 
   const summary = summarizeCity(city);
   const markers = useMemo(
-    () => buildMarkers({ filter, availableNowOnly, city, query, zoom }),
-    [filter, availableNowOnly, city, query, zoom],
+    () => buildMarkers({ filter, availableNowOnly: false, city, query, zoom }),
+    [filter, city, query, zoom],
   );
 
   if (!user) {
@@ -121,7 +119,6 @@ function CommunityMapPage() {
         <MyAvailabilityPanel />
 
         <CategoryFilters value={filter} onChange={setFilter} />
-        <AvailableNowToggle value={availableNowOnly} onChange={setAvailableNowOnly} />
 
         {summary.total === 0 ? (
           <EmptyCityState city={city} />
@@ -136,7 +133,7 @@ function CommunityMapPage() {
               cityLabel={city}
             />
 
-            <ResultsList filter={filter} availableNowOnly={availableNowOnly} query={query} />
+            <ResultsList filter={filter} query={query} />
           </>
         )}
       </main>
@@ -152,19 +149,17 @@ function CommunityMapPage() {
 
 function ResultsList({
   filter,
-  availableNowOnly,
   query,
 }: {
   filter: CommunityFilter;
-  availableNowOnly: boolean;
   query: string;
 }) {
   const navigate = useNavigate();
   const matches = (s: string) => !query.trim() || s.toLowerCase().includes(query.trim().toLowerCase());
 
-  const showPlaces = !availableNowOnly && (filter === "community" || filter === "places");
-  const showActivities = !availableNowOnly && (filter === "community" || filter === "activities");
-  const showPeople = filter === "community" || filter === "people" || availableNowOnly;
+  const showPlaces = filter === "community" || filter === "places";
+  const showActivities = filter === "community" || filter === "activities";
+  const showPeople = filter === "community" || filter === "people";
 
   const spaces = listSafeSpaces().filter((s) => matches(s.name) || matches(s.category));
   const events = DISCOVER_EVENTS.filter((e) => matches(e.title) || matches(e.location));
