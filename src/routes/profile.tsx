@@ -158,7 +158,14 @@ function DashboardPage() {
 
 
         {/* Quick access to logged-in features */}
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <FeatureCard
+            to="/events"
+            icon={<Calendar className="h-5 w-5 text-gold" />}
+            title="Events"
+            body="Discover, create and join community activities."
+            cta="Open Events"
+          />
           <FeatureCard
             to="/community-map"
             icon={<Compass className="h-5 w-5 text-gold" />}
@@ -302,7 +309,7 @@ function FeatureCard({
   body,
   cta,
 }: {
-  to: "/community-map" | "/profile-setup";
+  to: "/community-map" | "/profile-setup" | "/events";
   icon: React.ReactNode;
   title: string;
   body: string;

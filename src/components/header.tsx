@@ -13,18 +13,20 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-const publicLinks = [
-  { to: "/about", label: "About" },
-  { to: "/events", label: "Sync Up!" },
-  { to: "/contact", label: "Contact" },
-] as const;
+type NavLink = { to: string; label: string; hash?: string };
 
-const memberLinks = [
+const publicLinks: NavLink[] = [
+  { to: "/about", label: "About" },
+  { to: "/contact", label: "Contact" },
+  { to: "/", hash: "events", label: "Sync Up!" },
+];
+
+const memberLinks: NavLink[] = [
   { to: "/profile", label: "Profile" },
   { to: "/community-map", label: "Community Map" },
-  { to: "/events", label: "Sync Up!" },
+  { to: "/events", label: "Events" },
   { to: "/about", label: "About" },
-] as const;
+];
 
 
 
@@ -56,16 +58,26 @@ export function Header() {
           </Link>
 
           <nav className="hidden md:flex items-center gap-8">
-            {links.map((l) => (
-              <Link
-                key={l.to}
-                to={l.to}
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                activeProps={{ className: "text-foreground" }}
-              >
-                {l.label}
-              </Link>
-            ))}
+            {links.map((l) =>
+              l.hash ? (
+                <a
+                  key={`${l.to}#${l.hash}`}
+                  href={`${l.to}#${l.hash}`}
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  {l.label}
+                </a>
+              ) : (
+                <Link
+                  key={l.to}
+                  to={l.to as never}
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  activeProps={{ className: "text-foreground" }}
+                >
+                  {l.label}
+                </Link>
+              ),
+            )}
           </nav>
 
           <div className="flex items-center gap-2">
@@ -126,16 +138,27 @@ export function Header() {
         {open && (
           <div className="md:hidden border-t border-border/50 bg-background/95 backdrop-blur-xl">
             <nav className="px-5 py-4 flex flex-col gap-1">
-              {links.map((l) => (
-                <Link
-                  key={l.to}
-                  to={l.to}
-                  onClick={() => setOpen(false)}
-                  className="px-3 py-3 rounded-lg text-foreground hover:bg-accent text-base"
-                >
-                  {l.label}
-                </Link>
-              ))}
+              {links.map((l) =>
+                l.hash ? (
+                  <a
+                    key={`${l.to}#${l.hash}`}
+                    href={`${l.to}#${l.hash}`}
+                    onClick={() => setOpen(false)}
+                    className="px-3 py-3 rounded-lg text-foreground hover:bg-accent text-base"
+                  >
+                    {l.label}
+                  </a>
+                ) : (
+                  <Link
+                    key={l.to}
+                    to={l.to as never}
+                    onClick={() => setOpen(false)}
+                    className="px-3 py-3 rounded-lg text-foreground hover:bg-accent text-base"
+                  >
+                    {l.label}
+                  </Link>
+                ),
+              )}
               {user ? (
                 <>
                   <button
