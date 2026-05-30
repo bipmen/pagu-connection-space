@@ -120,18 +120,12 @@ function DashboardPage() {
         </section>
 
         {/* Status grid */}
-        <section className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <section className="grid grid-cols-2 md:grid-cols-3 gap-3">
           <StatusTile
             icon={mySession ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
             label="RHRN"
             value={mySession ? "Available" : "Invisible"}
             tone={mySession ? "live" : "muted"}
-          />
-          <StatusTile
-            icon={<Inbox className="h-4 w-4" />}
-            label="Requests"
-            value={`${pendingRequests} pending`}
-            tone={pendingRequests > 0 ? "accent" : "muted"}
           />
           <StatusTile
             icon={<MessageCircle className="h-4 w-4" />}
