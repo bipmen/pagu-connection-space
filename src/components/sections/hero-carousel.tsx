@@ -1,16 +1,37 @@
-import { useState, type MouseEvent } from "react";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { useEffect, useRef, useState, type MouseEvent } from "react";
+import { ArrowLeft, ArrowRight, ShieldCheck } from "lucide-react";
 import portrait from "@/assets/pagu-portrait.jpg";
 
-const SLIDES = [SlideOne, SlideTwo] as const;
+const SLIDES = [SlideOne, SlideTwo, SlideThree] as const;
+const AUTOPLAY_MS = 5000;
 
 export function HeroCarousel() {
   const [slide, setSlide] = useState(0);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const go = (e: MouseEvent<HTMLButtonElement>, next: number) => {
+  const clearTimer = () => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
+  };
+
+  useEffect(() => {
+    clearTimer();
+    timerRef.current = setTimeout(() => {
+      setSlide((s) => (s + 1) % SLIDES.length);
+    }, AUTOPLAY_MS);
+    return clearTimer;
+  }, [slide]);
+
+  const goTo = (next: number) => {
+    const normalized = (next + SLIDES.length) % SLIDES.length;
+    setSlide(normalized);
+  };
+
+  const handleClick = (e: MouseEvent<HTMLButtonElement>, next: number) => {
     e.preventDefault();
-    if (next < 0 || next >= SLIDES.length) return;
-    setSlide(next);
+    goTo(next);
   };
 
   return (
@@ -41,30 +62,34 @@ export function HeroCarousel() {
         <div className="mt-8 flex items-center justify-between">
           <button
             type="button"
-            onClick={(e) => go(e, slide - 1)}
-            disabled={slide === 0}
+            onClick={(e) => handleClick(e, slide - 1)}
             aria-label="Previous slide"
-            className="h-12 w-12 rounded-full border border-border/60 bg-background/40 backdrop-blur flex items-center justify-center disabled:opacity-30 hover:bg-gold/10 hover:border-gold/40 transition"
+            className="h-12 w-12 rounded-full border border-border/60 bg-background/40 backdrop-blur flex items-center justify-center hover:bg-gold/10 hover:border-gold/40 transition"
           >
             <ArrowLeft className="h-4 w-4" />
           </button>
-          <div className="flex gap-2">
+          <div
+            className="flex gap-2"
+            role="tablist"
+            aria-label={`Slide ${slide + 1} of ${SLIDES.length}`}
+          >
             {SLIDES.map((_, i) => (
               <button
                 key={i}
                 type="button"
-                onClick={(e) => go(e, i)}
-                aria-label={`Go to slide ${i + 1}`}
+                role="tab"
+                aria-selected={slide === i}
+                onClick={(e) => handleClick(e, i)}
+                aria-label={`Go to slide ${i + 1} of ${SLIDES.length}`}
                 className={`h-1.5 rounded-full transition-all ${slide === i ? "w-8 bg-gold" : "w-2 bg-muted-foreground/30"}`}
               />
             ))}
           </div>
           <button
             type="button"
-            onClick={(e) => go(e, slide + 1)}
-            disabled={slide === SLIDES.length - 1}
+            onClick={(e) => handleClick(e, slide + 1)}
             aria-label="Next slide"
-            className="h-12 w-12 rounded-full border border-border/60 bg-background/40 backdrop-blur flex items-center justify-center disabled:opacity-30 hover:bg-gold/10 hover:border-gold/40 transition"
+            className="h-12 w-12 rounded-full border border-border/60 bg-background/40 backdrop-blur flex items-center justify-center hover:bg-gold/10 hover:border-gold/40 transition"
           >
             <ArrowRight className="h-4 w-4" />
           </button>
@@ -104,6 +129,22 @@ function SlideTwo() {
         <div className="absolute -inset-3 bg-gradient-gold rounded-2xl blur-2xl opacity-30" />
         <img src={portrait} alt="Patrícia Galvão (Pagu)" className="relative rounded-2xl w-[200px] h-auto shadow-soft" loading="lazy" width={520} height={693} />
       </div>
+    </div>
+  );
+}
+
+function SlideThree() {
+  return (
+    <div className="max-w-3xl">
+      <p className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.25em] text-gold mb-4">
+        <ShieldCheck className="h-3.5 w-3.5" /> Safety & care
+      </p>
+      <h1 className="font-display text-4xl md:text-6xl leading-[1.05] text-balance mb-5">
+        Safer connection starts with <em className="text-gold not-italic">shared care.</em>
+      </h1>
+      <p className="text-base md:text-lg text-foreground/85 leading-relaxed max-w-xl">
+        Pagu is built around consent, respect, and community guidelines that help FLINTA* people connect with more trust.
+      </p>
     </div>
   );
 }
