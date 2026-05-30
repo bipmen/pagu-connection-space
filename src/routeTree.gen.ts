@@ -18,6 +18,7 @@ import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LegalRouteImport } from './routes/legal'
 import { Route as EventsRouteImport } from './routes/events'
+import { Route as DesignLabRouteImport } from './routes/design-lab'
 import { Route as ChoosePlanRouteImport } from './routes/choose-plan'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RhrnIndexRouteImport } from './routes/rhrn.index'
@@ -81,6 +82,11 @@ const LegalRoute = LegalRouteImport.update({
 const EventsRoute = EventsRouteImport.update({
   id: '/events',
   path: '/events',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DesignLabRoute = DesignLabRouteImport.update({
+  id: '/design-lab',
+  path: '/design-lab',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ChoosePlanRoute = ChoosePlanRouteImport.update({
@@ -182,6 +188,7 @@ const DiscoverSafeSpaceIdRoute = DiscoverSafeSpaceIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/choose-plan': typeof ChoosePlanRoute
+  '/design-lab': typeof DesignLabRoute
   '/events': typeof EventsRouteWithChildren
   '/legal': typeof LegalRoute
   '/login': typeof LoginRoute
@@ -212,6 +219,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/choose-plan': typeof ChoosePlanRoute
+  '/design-lab': typeof DesignLabRoute
   '/legal': typeof LegalRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
@@ -242,6 +250,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/choose-plan': typeof ChoosePlanRoute
+  '/design-lab': typeof DesignLabRoute
   '/events': typeof EventsRouteWithChildren
   '/legal': typeof LegalRoute
   '/login': typeof LoginRoute
@@ -274,6 +283,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/choose-plan'
+    | '/design-lab'
     | '/events'
     | '/legal'
     | '/login'
@@ -304,6 +314,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/choose-plan'
+    | '/design-lab'
     | '/legal'
     | '/login'
     | '/onboarding'
@@ -333,6 +344,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/choose-plan'
+    | '/design-lab'
     | '/events'
     | '/legal'
     | '/login'
@@ -364,6 +376,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ChoosePlanRoute: typeof ChoosePlanRoute
+  DesignLabRoute: typeof DesignLabRoute
   EventsRoute: typeof EventsRouteWithChildren
   LegalRoute: typeof LegalRoute
   LoginRoute: typeof LoginRoute
@@ -452,6 +465,13 @@ declare module '@tanstack/react-router' {
       path: '/events'
       fullPath: '/events'
       preLoaderRoute: typeof EventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/design-lab': {
+      id: '/design-lab'
+      path: '/design-lab'
+      fullPath: '/design-lab'
+      preLoaderRoute: typeof DesignLabRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/choose-plan': {
@@ -608,6 +628,7 @@ const EventsRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ChoosePlanRoute: ChoosePlanRoute,
+  DesignLabRoute: DesignLabRoute,
   EventsRoute: EventsRouteWithChildren,
   LegalRoute: LegalRoute,
   LoginRoute: LoginRoute,
