@@ -48,6 +48,8 @@ export const Route = createFileRoute("/community-map/")({
 function CommunityMapPage() {
   useSafeSpacesStore();
   const user = useCurrentUser();
+  const mySession = useMySession(user?.id);
+  const isAvailable = !!mySession && mySession.expiresAt > Date.now();
 
   const [city, setCity] = useState(DEFAULT_CITY.name);
   const [query, setQuery] = useState("");
@@ -55,10 +57,15 @@ function CommunityMapPage() {
   const [zoom, setZoom] = useState(1);
   const [selected, setSelected] = useState<CommunityMarker | null>(null);
 
+  // If user goes invisible while viewing People, snap back to Community
+  if (!isAvailable && filter === "people") {
+    setFilter("community");
+  }
+
   const summary = summarizeCity(city);
   const markers = useMemo(
-    () => buildMarkers({ filter, availableNowOnly: false, city, query, zoom }),
-    [filter, city, query, zoom],
+    () => buildMarkers({ filter, availableNowOnly: false, city, query, zoom, hidePeople: !isAvailable }),
+    [filter, city, query, zoom, isAvailable],
   );
 
   if (!user) {
