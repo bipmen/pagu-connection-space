@@ -82,6 +82,7 @@ const LOOKING_FOR_OPTIONS = [
   "Queer people",
   "People with shared interests",
   "Prefer to decide later",
+  "Prefer not to answer",
 ] as const;
 
 const EXPERIENCE_OPTIONS = [
@@ -92,7 +93,10 @@ const EXPERIENCE_OPTIONS = [
   "Creative collaborations",
   "Open to everything",
   "Still figuring it out",
+  "Prefer not to answer",
 ] as const;
+
+const INTERESTS_OPT_OUT = "Prefer not to choose interests right now";
 
 export const Route = createFileRoute("/profile-setup")({
   head: () => ({
