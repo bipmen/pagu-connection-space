@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Search, Shield, Calendar, Sparkles, MapPin, Clock, Users, ChevronDown, ArrowRight } from "lucide-react";
 import { useCurrentUser } from "@/lib/session-mock";
+import { useMySession } from "@/lib/rhrn-mock";
 import { useSafeSpacesStore, listSafeSpaces } from "@/lib/safe-spaces-mock";
 import { DISCOVER_EVENTS, DISCOVER_PEOPLE, spacesById } from "@/lib/discover-mock";
 import {
