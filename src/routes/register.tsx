@@ -127,7 +127,7 @@ function RegisterPage() {
     const result = verifyCode(code);
     if (result === "ok") {
       signIn({ name, method: activeMethod, identifier: activeIdentifier });
-      navigate({ to: "/community-events" });
+      navigate({ to: "/dashboard" });
       return;
     }
     setVerifyError(
