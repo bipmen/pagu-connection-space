@@ -1,7 +1,14 @@
 import { useMemo, useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import {
   Select,
   SelectContent,
@@ -16,6 +23,7 @@ import {
   Handshake,
   Star,
   ArrowRight,
+  Users,
 } from "lucide-react";
 import {
   LOCAL_EVENT_BADGE_LABEL,
@@ -27,8 +35,15 @@ import {
   type LocalEvent,
   type LocalEventBadge,
 } from "@/lib/local-events-mock";
+import { getDiscoverEvent } from "@/lib/discover-mock";
+import { spacesById } from "@/lib/discover-mock";
+
+type LocalSearch = { event?: string };
 
 export const Route = createFileRoute("/events/local")({
+  validateSearch: (search: Record<string, unknown>): LocalSearch => ({
+    event: typeof search.event === "string" ? search.event : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Local Events — Pagu" },
@@ -41,6 +56,7 @@ export const Route = createFileRoute("/events/local")({
   }),
   component: LocalEventsPage,
 });
+
 
 function LocalEventsPage() {
   const [city, setCity] = useState<string>("all");
