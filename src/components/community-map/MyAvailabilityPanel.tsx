@@ -17,7 +17,7 @@ import {
   ChevronDown,
   ChevronUp,
 } from "lucide-react";
-import { useCurrentUser } from "@/lib/session-mock";
+import { useCurrentUser, type SessionUser } from "@/lib/session-mock";
 import {
   INTENTIONS,
   RADIUS_OPTIONS,
@@ -89,7 +89,7 @@ function PanelBody() {
   const eligibility = getEligibility(user);
 
   if (!isEligible(eligibility)) return <EligibilityGate userId={user.id} eligibility={eligibility} />;
-  return mine ? <ActiveView /> : <Onboarding />;
+  return mine ? <ActiveView user={user} /> : <Onboarding user={user} />;
 }
 
 function EligibilityGate({
@@ -155,11 +155,10 @@ function Check({ item, ok, action }: { item: string; ok: boolean; action?: React
   );
 }
 
-function Onboarding() {
+function Onboarding({ user }: { user: SessionUser }) {
   const [step, setStep] = useState<"intro" | "configure">("intro");
   const [radius, setRadius] = useState<number>(1000);
   const [intentions, setIntentions] = useState<IntentionId[]>([]);
-  const user = useCurrentUser()!;
 
   if (step === "intro") {
     return (
@@ -253,8 +252,7 @@ function Onboarding() {
   );
 }
 
-function ActiveView() {
-  const user = useCurrentUser()!;
+function ActiveView({ user }: { user: SessionUser }) {
   const mine = useMySession(user.id);
   const remaining = useCountdown(mine?.expiresAt);
   if (!mine) return null;
