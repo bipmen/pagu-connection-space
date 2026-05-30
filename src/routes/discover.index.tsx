@@ -39,6 +39,20 @@ function DiscoverPage() {
   });
   const [selected, setSelected] = useState<MapMarker | null>(null);
 
+  const spaces = listSafeSpaces();
+  const matchesQ = (s: string) => !q.trim() || s.toLowerCase().includes(q.trim().toLowerCase());
+  const shownSpaces = filters.spaces ? spaces.filter((s) => matchesQ(s.name) || matchesQ(s.category)) : [];
+  const shownEvents = filters.events ? DISCOVER_EVENTS.filter((e) => matchesQ(e.title) || matchesQ(e.location)) : [];
+  const shownPeople = filters.people ? DISCOVER_PEOPLE.filter((p) => matchesQ(p.name) || matchesQ(p.bio)) : [];
+
+  const markers: MapMarker[] = useMemo(() => {
+    return [
+      ...shownSpaces.map<MapMarker>((s) => ({ id: `space:${s.id}`, kind: "space", label: s.name, x: s.mapX, y: s.mapY })),
+      ...shownEvents.map<MapMarker>((e) => ({ id: `event:${e.id}`, kind: "event", label: e.title, x: e.mapX, y: e.mapY })),
+      ...shownPeople.map<MapMarker>((p) => ({ id: `person:${p.userId}`, kind: "person", label: p.name, x: p.mapX, y: p.mapY })),
+    ];
+  }, [shownSpaces, shownEvents, shownPeople]);
+
   if (!user) {
     return (
       <div className="min-h-screen bg-background flex flex-col">
@@ -54,22 +68,6 @@ function DiscoverPage() {
       </div>
     );
   }
-
-  const spaces = listSafeSpaces();
-
-  const matchesQ = (s: string) => !q.trim() || s.toLowerCase().includes(q.trim().toLowerCase());
-
-  const shownSpaces = filters.spaces ? spaces.filter((s) => matchesQ(s.name) || matchesQ(s.category)) : [];
-  const shownEvents = filters.events ? DISCOVER_EVENTS.filter((e) => matchesQ(e.title) || matchesQ(e.location)) : [];
-  const shownPeople = filters.people ? DISCOVER_PEOPLE.filter((p) => matchesQ(p.name) || matchesQ(p.bio)) : [];
-
-  const markers: MapMarker[] = useMemo(() => {
-    return [
-      ...shownSpaces.map<MapMarker>((s) => ({ id: `space:${s.id}`, kind: "space", label: s.name, x: s.mapX, y: s.mapY })),
-      ...shownEvents.map<MapMarker>((e) => ({ id: `event:${e.id}`, kind: "event", label: e.title, x: e.mapX, y: e.mapY })),
-      ...shownPeople.map<MapMarker>((p) => ({ id: `person:${p.userId}`, kind: "person", label: p.name, x: p.mapX, y: p.mapY })),
-    ];
-  }, [shownSpaces, shownEvents, shownPeople]);
 
   function toggleFilter(k: FilterKey) {
     setFilters((f) => ({ ...f, [k]: !f[k] }));
