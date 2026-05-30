@@ -76,6 +76,65 @@ Must not own:
 - page styling
 - broad page structure changes unrelated to backend integration
 
+Recommended internal split if two people share Codex B:
+
+#### Codex B1: Auth, Membership, and Backend Foundations
+
+Suggested branch: `codex/backend-auth-membership`
+
+Owns:
+
+- `.env.example`
+- Clerk setup
+- `middleware.ts`
+- Neon / Drizzle base setup
+- membership schema and migrations
+- auth and membership endpoints
+- approval email flow
+- registration expiry logic
+- shared backend foundation files such as DB client, env loader, and schema barrel files
+
+Primary deliverable:
+
+- real auth/session/membership backbone that other backend and frontend work can build on
+
+Must not own:
+
+- contact/support endpoint internals
+- profile page UI
+- broad frontend state wiring
+
+#### Codex B2: Profile, Support, Contact, and Delivery
+
+Suggested branch: `codex/backend-profile-support-contact`
+
+Owns:
+
+- profile route handlers
+- support route handlers
+- contact route handlers
+- support/contact persistence if stored in phase 1
+- support/contact email delivery
+- server-side validation for profile/support/contact
+- backend response shapes for profile/support/contact flows
+
+Primary deliverable:
+
+- real non-auth backend flows for profile, support, and contact using the shared B1 backend foundation
+
+Must not own:
+
+- Clerk bootstrap
+- middleware strategy
+- membership approval logic
+- framework migration files
+
+Coordination rule:
+
+- B1 publishes the base backend structure first.
+- B2 builds on top of that structure instead of inventing parallel infrastructure.
+- If shared DB/schema bootstrap files need changes after B1 lands them, coordinate rather than editing blindly.
+
 ### Codex C: Frontend Integration
 
 Suggested branch: `codex/frontend-api-integration`
@@ -162,6 +221,40 @@ Rule:
 7. Add rate limiting and spam protection strategy for support/contact.
 8. Add `middleware.ts` protection strategy for authenticated/protected routes if needed with Clerk.
 9. Model and implement 24-hour approval expiry logic for registration requests.
+
+### Codex B Parallel Execution Plan
+
+If two people are working the Codex B scope at the same time, use this order:
+
+1. B1 lands backend foundations:
+   - `.env.example`
+   - Clerk
+   - DB connection
+   - Drizzle scaffold
+   - membership schema
+   - membership endpoints
+   - approval email path
+2. B2 starts once B1 has published:
+   - shared backend folder/file layout
+   - schema placement conventions
+   - request/response contract shape for `GET /api/membership/me`
+   - any shared validation or auth helper conventions
+3. B2 then lands:
+   - `GET /api/profile`
+   - `PATCH /api/profile`
+   - `POST /api/support/login-help`
+   - `POST /api/contact`
+4. Codex C should wait for the final contract text from the owning B stream before wiring each page.
+
+Suggested schema ownership split:
+
+- B1:
+  - `User`
+  - `RegistrationRequest`
+- B2:
+  - `SupportRequest`
+  - `ContactMessage`
+- If profile data needs extra user fields, B2 should request or coordinate those additions with B1 if they live in the user/auth schema area.
 
 ### Codex C
 
