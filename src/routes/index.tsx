@@ -7,6 +7,7 @@ import { TestimonialsSection } from "@/components/sections/testimonials-section"
 import { ContactSection } from "@/components/sections/contact-section";
 import { EventsSection } from "@/components/sections/events-section";
 import { MailingSection } from "@/components/sections/mailing-section";
+import { WhyJoinSection } from "@/components/sections/why-join-section";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -27,6 +28,7 @@ function Index() {
       <main className="flex-1">
         <HeroCarousel />
         <AboutSection />
+        <WhyJoinSection />
         <TestimonialsSection />
         <ContactSection />
         <EventsSection />
