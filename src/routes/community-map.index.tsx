@@ -126,7 +126,7 @@ function CommunityMapPage() {
 
         <MyAvailabilityPanel />
 
-        <CategoryFilters value={filter} onChange={setFilter} />
+        <CategoryFilters value={filter} onChange={setFilter} disabledKeys={isAvailable ? [] : ["people"]} />
 
         {summary.total === 0 ? (
           <EmptyCityState city={city} />
