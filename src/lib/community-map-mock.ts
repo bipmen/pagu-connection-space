@@ -86,6 +86,7 @@ export type MarkersInput = {
   city: string;
   query: string;
   zoom: number; // 1 = base, >1 = zoomed in
+  hidePeople?: boolean; // when true (user invisible), people are never shown
 };
 
 function matches(text: string, q: string) {
