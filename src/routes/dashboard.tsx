@@ -153,16 +153,16 @@ function DashboardPage() {
         {/* Quick access to logged-in features */}
         <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <FeatureCard
-            to="/discover"
+            to="/community-map"
             icon={<Compass className="h-5 w-5 text-gold" />}
-            title="Discover"
-            body="Map of safe spaces, events, and people open to connect nearby."
+            title="Community Map"
+            body="Activities, Safe Spaces and people open to connect — all in one map."
             cta="Open map"
           />
           <FeatureCard
             to="/rhrn"
             icon={<Sparkles className="h-5 w-5 text-gold" />}
-            title="Right Here Right Now"
+            title="Available Now"
             body={
               mySession
                 ? "You are currently available. See who's around."
@@ -172,6 +172,7 @@ function DashboardPage() {
             }
             cta={mySession ? "See nearby" : "Open RHRN"}
           />
+
           <FeatureCard
             to="/profile"
             icon={<UserRound className="h-5 w-5 text-gold" />}
@@ -219,7 +220,7 @@ function DashboardPage() {
             </CardHeader>
             <CardContent className="space-y-2">
               {chats.length === 0 ? (
-                <p className="text-sm text-muted-foreground">No conversations yet. Send an icebreaker on Discover or RHRN.</p>
+                <p className="text-sm text-muted-foreground">No conversations yet. Send an icebreaker from the Community Map.</p>
               ) : (
                 <>
                   {chats.slice(0, 3).map((c) => {
@@ -335,7 +336,7 @@ function FeatureCard({
   body,
   cta,
 }: {
-  to: "/discover" | "/rhrn" | "/profile";
+  to: "/community-map" | "/rhrn" | "/profile";
   icon: React.ReactNode;
   title: string;
   body: string;

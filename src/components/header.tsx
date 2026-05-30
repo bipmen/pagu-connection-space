@@ -21,12 +21,12 @@ const publicLinks = [
 
 const memberLinks = [
   { to: "/dashboard", label: "Dashboard" },
-  { to: "/discover", label: "Discover" },
-  { to: "/rhrn", label: "Right Here Right Now" },
+  { to: "/community-map", label: "Community Map" },
   { to: "/about", label: "About" },
   { to: "/community-events", label: "Events" },
   { to: "/contact", label: "Contact" },
 ] as const;
+
 
 
 export function Header() {
@@ -97,8 +97,9 @@ export function Header() {
                     <Link to="/profile">Profile</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link to="/rhrn">Right Here Right Now</Link>
+                    <Link to="/community-map">Community Map</Link>
                   </DropdownMenuItem>
+
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout}>
                     <LogOut className="h-4 w-4 mr-2" /> Log out
