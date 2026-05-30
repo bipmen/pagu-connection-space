@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useCurrentUser, updateCurrentUser } from "@/lib/session-mock";
-import { getEligibility, isEligible } from "@lib/rhrn-mock";
+import { getEligibility, isEligible } from "@/lib/rhrn-mock";
 import { Sparkles, CheckCircle2, ArrowRight, User, MapPin, PenLine, Heart } from "lucide-react";
 
 const INTEREST_OPTIONS = [
