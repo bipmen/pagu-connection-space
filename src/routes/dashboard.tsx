@@ -10,7 +10,7 @@ import {
   Sparkles,
   Calendar,
   MessageCircle,
-  Inbox,
+  
   UserRound,
   MapPin,
   ArrowRight,
@@ -23,7 +23,7 @@ import {
   ensureSeedChats,
   useAvailable,
   useChats,
-  useIncomingRequests,
+  
   useMySession,
 } from "@/lib/rhrn-mock";
 import { listEvents } from "@/lib/events-mock";
@@ -44,7 +44,6 @@ function DashboardPage() {
   const navigate = useNavigate();
   const mySession = useMySession(user?.id);
   const nearby = useAvailable(user?.id);
-  const requests = useIncomingRequests(user?.id);
   const chats = useChats(user?.id);
 
   useEffect(() => {
@@ -101,7 +100,6 @@ function DashboardPage() {
   }
 
   
-  const pendingRequests = requests.filter((r) => r.status === "pending").length;
   const upcomingEvents = listEvents()
     .filter((e) => e.date >= new Date().toISOString().slice(0, 10))
     .slice(0, 3);
@@ -122,18 +120,12 @@ function DashboardPage() {
         </section>
 
         {/* Status grid */}
-        <section className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <section className="grid grid-cols-2 md:grid-cols-3 gap-3">
           <StatusTile
             icon={mySession ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
             label="RHRN"
             value={mySession ? "Available" : "Invisible"}
             tone={mySession ? "live" : "muted"}
-          />
-          <StatusTile
-            icon={<Inbox className="h-4 w-4" />}
-            label="Requests"
-            value={`${pendingRequests} pending`}
-            tone={pendingRequests > 0 ? "accent" : "muted"}
           />
           <StatusTile
             icon={<MessageCircle className="h-4 w-4" />}
