@@ -9,8 +9,16 @@ export const LOCAL_EVENT_BADGE_LABEL: Record<LocalEventBadge, string> = {
   "local-highlight": "Local Highlight",
 };
 
+export type LocalEventCtaType = "tickets" | "spot";
+
+export const LOCAL_EVENT_CTA_LABEL: Record<LocalEventCtaType, string> = {
+  tickets: "Get Tickets",
+  spot: "Book a Spot",
+};
+
 export type LocalEvent = {
   id: string;
+  slug: string;
   title: string;
   description: string;
   category: string;
@@ -20,7 +28,10 @@ export type LocalEvent = {
   venue: string;
   organizer: string;
   badge: LocalEventBadge;
-  cta: { label: string; href: string };
+  ctaType: LocalEventCtaType;
+  attendees: number;
+  eventType: string;
+  hostedAtSafeSpace?: boolean;
   featured?: boolean;
   postedDaysAgo?: number;
 };
