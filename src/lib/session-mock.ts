@@ -3,6 +3,8 @@
 
 import { useEffect, useState } from "react";
 
+export type Plan = "free" | "basic" | "premium";
+
 export type SessionUser = {
   id: string;
   name: string;
@@ -19,6 +21,7 @@ export type SessionUser = {
   attended_events_count: number;
   organizer_unlocked: boolean;
   createdAt: number;
+  selectedPlan?: Plan;
 };
 
 const STORAGE_KEY = "pagu.session.v1";

@@ -227,8 +227,8 @@ function ProfilePage() {
                 </p>
               </div>
               <Button asChild variant="hero" className="w-full">
-                <Link to="/profile">
-                  Go to your profile <ArrowRight className="h-4 w-4" />
+                <Link to="/choose-plan">
+                  Choose your plan <ArrowRight className="h-4 w-4" />
                 </Link>
               </Button>
             </CardContent>
