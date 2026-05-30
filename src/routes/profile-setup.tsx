@@ -501,7 +501,9 @@ function ProfilePage() {
 
           {saved && !profileComplete && (
             <p className="text-sm text-center text-muted-foreground">
-              Saved. Add your city and bio to continue.
+              Saved. {totalFields - completedCount} field
+              {totalFields - completedCount === 1 ? "" : "s"} still to go to
+              complete your profile.
             </p>
           )}
         </div>
