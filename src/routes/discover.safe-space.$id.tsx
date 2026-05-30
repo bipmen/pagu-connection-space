@@ -62,6 +62,46 @@ function SafeSpaceProfile() {
           </CardContent>
         </Card>
 
+        {/* Certification flow */}
+        <Card>
+          <CardContent className="p-6 space-y-4">
+            <div className="flex items-center gap-2">
+              <ShieldCheck className="h-5 w-5 text-gold" />
+              <h2 className="font-display text-xl">Certification</h2>
+            </div>
+            <ol className="grid grid-cols-5 gap-1 sm:gap-2">
+              {CERTIFICATION_STAGES.map((stage, i) => {
+                // Mock: this space is at stage 4 (Certified)
+                const reached = i <= 3;
+                return (
+                  <li key={stage} className="flex flex-col items-center text-center gap-1">
+                    <div
+                      className={cn(
+                        "h-7 w-7 rounded-full flex items-center justify-center text-[11px] font-medium border-2",
+                        reached
+                          ? "bg-gold text-gold-foreground border-gold"
+                          : "bg-background text-muted-foreground border-border",
+                      )}
+                    >
+                      {i + 1}
+                    </div>
+                    <p className={cn("text-[10px] sm:text-xs leading-tight", reached ? "text-foreground" : "text-muted-foreground")}>
+                      {stage}
+                    </p>
+                  </li>
+                );
+              })}
+            </ol>
+            <p className="text-xs text-muted-foreground">
+              Certification valid for <strong className="text-foreground">{CERTIFICATION_VALID_MONTHS} months</strong>. May be revoked due to:
+              {" "}
+              {REVOCATION_REASONS.join(", ").toLowerCase()}.
+            </p>
+          </CardContent>
+        </Card>
+
+
+
         {/* Reviews */}
         <section className="space-y-3">
           <h2 className="font-display text-xl">Community reviews</h2>
