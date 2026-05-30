@@ -26,6 +26,16 @@ export function Footer() {
         </div>
 
         <div>
+          <h4 className="text-xs uppercase tracking-widest text-muted-foreground mb-4">Trust</h4>
+          <ul className="space-y-2 text-sm">
+            <li><Link to="/legal" hash="commitment" className="hover:text-gold transition-colors">Legal & Trust</Link></li>
+            <li><Link to="/legal" hash="privacy" className="hover:text-gold transition-colors">Privacy Policy</Link></li>
+            <li><Link to="/legal" hash="guidelines" className="hover:text-gold transition-colors">Community Guidelines</Link></li>
+            <li><Link to="/legal" hash="cookies" className="hover:text-gold transition-colors">Cookie Policy</Link></li>
+          </ul>
+        </div>
+
+        <div>
           <h4 className="text-xs uppercase tracking-widest text-muted-foreground mb-4">Follow</h4>
           <a
             href="https://instagram.com"
