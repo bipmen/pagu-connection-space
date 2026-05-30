@@ -31,6 +31,8 @@ import { AvailableNowToggle } from "@/components/community-map/AvailableNowToggl
 import { EmptyCityState } from "@/components/community-map/EmptyCityState";
 import { CommunityMap } from "@/components/community-map/CommunityMap";
 import { MarkerBottomSheet } from "@/components/community-map/MarkerBottomSheet";
+import { MyAvailabilityPanel } from "@/components/community-map/MyAvailabilityPanel";
+import { GoInvisibleFab } from "@/components/rhrn/invisible-button";
 
 export const Route = createFileRoute("/community-map/")({
   head: () => ({
@@ -116,6 +118,8 @@ function CommunityMapPage() {
 
         <CitySummaryCard city={city} summary={summary} />
 
+        <MyAvailabilityPanel />
+
         <CategoryFilters value={filter} onChange={setFilter} />
         <AvailableNowToggle value={availableNowOnly} onChange={setAvailableNowOnly} />
 
@@ -138,6 +142,8 @@ function CommunityMapPage() {
       </main>
 
       <MarkerBottomSheet marker={selected} onClose={() => setSelected(null)} />
+
+      <GoInvisibleFab />
 
       <Footer />
     </div>
