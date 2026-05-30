@@ -309,7 +309,7 @@ function FeatureCard({
   body,
   cta,
 }: {
-  to: "/community-map" | "/profile-setup";
+  to: "/community-map" | "/profile-setup" | "/events";
   icon: React.ReactNode;
   title: string;
   body: string;
