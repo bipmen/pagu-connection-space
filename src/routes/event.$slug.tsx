@@ -78,7 +78,7 @@ function NotFound() {
 }
 
 function EventDetailPage() {
-  const { event } = Route.useLoaderData();
+  const { event } = Route.useLoaderData() as { event: LocalEvent };
   const ctaLabel = LOCAL_EVENT_CTA_LABEL[event.ctaType];
 
   return (
