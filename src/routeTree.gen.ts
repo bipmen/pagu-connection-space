@@ -18,6 +18,7 @@ import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LegalRouteImport } from './routes/legal'
 import { Route as EventsRouteImport } from './routes/events'
+import { Route as ChoosePlanRouteImport } from './routes/choose-plan'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RhrnIndexRouteImport } from './routes/rhrn.index'
 import { Route as EventsIndexRouteImport } from './routes/events.index'
@@ -79,6 +80,11 @@ const LegalRoute = LegalRouteImport.update({
 const EventsRoute = EventsRouteImport.update({
   id: '/events',
   path: '/events',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ChoosePlanRoute = ChoosePlanRouteImport.update({
+  id: '/choose-plan',
+  path: '/choose-plan',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -169,6 +175,7 @@ const DiscoverSafeSpaceIdRoute = DiscoverSafeSpaceIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/choose-plan': typeof ChoosePlanRoute
   '/events': typeof EventsRouteWithChildren
   '/legal': typeof LegalRoute
   '/login': typeof LoginRoute
@@ -197,6 +204,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/choose-plan': typeof ChoosePlanRoute
   '/legal': typeof LegalRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
@@ -225,6 +233,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/choose-plan': typeof ChoosePlanRoute
   '/events': typeof EventsRouteWithChildren
   '/legal': typeof LegalRoute
   '/login': typeof LoginRoute
@@ -255,6 +264,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/choose-plan'
     | '/events'
     | '/legal'
     | '/login'
@@ -283,6 +293,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/choose-plan'
     | '/legal'
     | '/login'
     | '/onboarding'
@@ -310,6 +321,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/choose-plan'
     | '/events'
     | '/legal'
     | '/login'
@@ -339,6 +351,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ChoosePlanRoute: typeof ChoosePlanRoute
   EventsRoute: typeof EventsRouteWithChildren
   LegalRoute: typeof LegalRoute
   LoginRoute: typeof LoginRoute
@@ -426,6 +439,13 @@ declare module '@tanstack/react-router' {
       path: '/events'
       fullPath: '/events'
       preLoaderRoute: typeof EventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/choose-plan': {
+      id: '/choose-plan'
+      path: '/choose-plan'
+      fullPath: '/choose-plan'
+      preLoaderRoute: typeof ChoosePlanRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -567,6 +587,7 @@ const EventsRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ChoosePlanRoute: ChoosePlanRoute,
   EventsRoute: EventsRouteWithChildren,
   LegalRoute: LegalRoute,
   LoginRoute: LoginRoute,
