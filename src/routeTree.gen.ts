@@ -14,6 +14,7 @@ import { Route as SupportLoginRouteImport } from './routes/support-login'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ProfileSetupRouteImport } from './routes/profile-setup'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LegalRouteImport } from './routes/legal'
 import { Route as EventsRouteImport } from './routes/events'
@@ -58,6 +59,11 @@ const ProfileSetupRoute = ProfileSetupRouteImport.update({
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -166,6 +172,7 @@ export interface FileRoutesByFullPath {
   '/events': typeof EventsRouteWithChildren
   '/legal': typeof LegalRoute
   '/login': typeof LoginRoute
+  '/onboarding': typeof OnboardingRoute
   '/profile': typeof ProfileRoute
   '/profile-setup': typeof ProfileSetupRoute
   '/register': typeof RegisterRoute
@@ -192,6 +199,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/legal': typeof LegalRoute
   '/login': typeof LoginRoute
+  '/onboarding': typeof OnboardingRoute
   '/profile': typeof ProfileRoute
   '/profile-setup': typeof ProfileSetupRoute
   '/register': typeof RegisterRoute
@@ -220,6 +228,7 @@ export interface FileRoutesById {
   '/events': typeof EventsRouteWithChildren
   '/legal': typeof LegalRoute
   '/login': typeof LoginRoute
+  '/onboarding': typeof OnboardingRoute
   '/profile': typeof ProfileRoute
   '/profile-setup': typeof ProfileSetupRoute
   '/register': typeof RegisterRoute
@@ -249,6 +258,7 @@ export interface FileRouteTypes {
     | '/events'
     | '/legal'
     | '/login'
+    | '/onboarding'
     | '/profile'
     | '/profile-setup'
     | '/register'
@@ -275,6 +285,7 @@ export interface FileRouteTypes {
     | '/'
     | '/legal'
     | '/login'
+    | '/onboarding'
     | '/profile'
     | '/profile-setup'
     | '/register'
@@ -302,6 +313,7 @@ export interface FileRouteTypes {
     | '/events'
     | '/legal'
     | '/login'
+    | '/onboarding'
     | '/profile'
     | '/profile-setup'
     | '/register'
@@ -330,6 +342,7 @@ export interface RootRouteChildren {
   EventsRoute: typeof EventsRouteWithChildren
   LegalRoute: typeof LegalRoute
   LoginRoute: typeof LoginRoute
+  OnboardingRoute: typeof OnboardingRoute
   ProfileRoute: typeof ProfileRoute
   ProfileSetupRoute: typeof ProfileSetupRoute
   RegisterRoute: typeof RegisterRoute
@@ -385,6 +398,13 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -550,6 +570,7 @@ const rootRouteChildren: RootRouteChildren = {
   EventsRoute: EventsRouteWithChildren,
   LegalRoute: LegalRoute,
   LoginRoute: LoginRoute,
+  OnboardingRoute: OnboardingRoute,
   ProfileRoute: ProfileRoute,
   ProfileSetupRoute: ProfileSetupRoute,
   RegisterRoute: RegisterRoute,

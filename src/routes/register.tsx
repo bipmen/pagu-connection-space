@@ -21,6 +21,7 @@ import {
   type AuthMethod,
 } from "@/lib/auth-mock";
 import { isProfileComplete, signIn } from "@/lib/session-mock";
+import { isOnboardingComplete } from "@/lib/onboarding-mock";
 import { VerifyStep } from "@/components/auth/verify-step";
 
 export const Route = createFileRoute("/register")({
@@ -127,7 +128,13 @@ function RegisterPage() {
     const result = verifyCode(code);
     if (result === "ok") {
       const user = signIn({ name, method: activeMethod, identifier: activeIdentifier });
-      navigate({ to: isProfileComplete(user) ? "/profile" : "/profile-setup" });
+      if (isProfileComplete(user)) {
+        navigate({ to: "/profile" });
+      } else if (isOnboardingComplete(user.identifier)) {
+        navigate({ to: "/profile-setup" });
+      } else {
+        navigate({ to: "/onboarding" });
+      }
       return;
     }
     setVerifyError(
