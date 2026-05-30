@@ -126,19 +126,29 @@ function markerLabel(m: CommunityMarker) {
   if (m.kind === "place") return m.data.name;
   if (m.kind === "activity") return m.data.title;
   if (m.kind === "person") return m.data.name;
-  return `${m.count} people nearby`;
+  const noun = m.itemKind === "person" ? "people" : m.itemKind === "activity" ? "events" : "places";
+  return `${m.count} ${noun} nearby`;
 }
 
 function MarkerVisual({ marker, selected }: { marker: CommunityMarker; selected: boolean }) {
   if (marker.kind === "cluster") {
+    const tone =
+      marker.itemKind === "person"
+        ? "bg-emerald-500/90 border-emerald-300"
+        : marker.itemKind === "activity"
+          ? "bg-primary/90 border-primary/60"
+          : "bg-gold/90 border-gold/60";
+    const emoji = marker.itemKind === "person" ? "🌈" : marker.itemKind === "activity" ? "📅" : "🛡️";
+    const noun = marker.itemKind === "person" ? "nearby" : marker.itemKind === "activity" ? "events" : "places";
     return (
       <div
         className={cn(
-          "flex items-center justify-center h-10 min-w-10 px-2 rounded-full shadow-lg border-2 bg-emerald-500/90 text-white border-emerald-300 font-medium text-xs",
+          "flex items-center justify-center h-10 min-w-10 px-2 rounded-full shadow-lg border-2 text-white font-medium text-xs",
+          tone,
           selected && "scale-110 ring-4 ring-background",
         )}
       >
-        🌈 {marker.count} nearby
+        {emoji} {marker.count} {noun}
       </div>
     );
   }
