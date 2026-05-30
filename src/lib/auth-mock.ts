@@ -61,7 +61,14 @@ export function issueCode(method: AuthMethod, identifier: string): IssueResult {
 
 export type VerifyResult = "ok" | "invalid" | "expired" | "none";
 
+// Dev master code — lets you bypass real code delivery while testing.
+const DEV_MASTER_CODE = "12345";
+
 export function verifyCode(code: string): VerifyResult {
+  if (code === DEV_MASTER_CODE) {
+    pending = null;
+    return "ok";
+  }
   if (!pending) return "none";
   if (Date.now() > pending.expiresAt) return "expired";
   if (code !== pending.code) return "invalid";
