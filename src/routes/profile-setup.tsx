@@ -82,6 +82,7 @@ const LOOKING_FOR_OPTIONS = [
   "Queer people",
   "People with shared interests",
   "Prefer to decide later",
+  "Prefer not to answer",
 ] as const;
 
 const EXPERIENCE_OPTIONS = [
@@ -92,7 +93,10 @@ const EXPERIENCE_OPTIONS = [
   "Creative collaborations",
   "Open to everything",
   "Still figuring it out",
+  "Prefer not to answer",
 ] as const;
+
+const INTERESTS_OPT_OUT = "Prefer not to choose interests right now";
 
 export const Route = createFileRoute("/profile-setup")({
   head: () => ({
@@ -151,7 +155,21 @@ function ProfilePage() {
     [interests],
   );
 
-  const profileComplete = !!(bio.trim().length > 0 && city.trim().length > 0);
+  const fieldChecks = [
+    { key: "Name", done: name.trim().length > 0 },
+    { key: "City", done: city.trim().length > 0 },
+    { key: "Bio", done: bio.trim().length > 0 },
+    { key: "Birthday", done: birthday.trim().length > 0 },
+    { key: "Gender", done: gender.trim().length > 0 },
+    { key: "Sexual orientation", done: orientation.trim().length > 0 },
+    { key: "Who to meet", done: lookingFor.size > 0 },
+    { key: "Hoping to find", done: experience.size > 0 },
+    { key: "Interests", done: interests.size > 0 },
+  ];
+  const completedCount = fieldChecks.filter((f) => f.done).length;
+  const totalFields = fieldChecks.length;
+  const profileComplete = completedCount === totalFields;
+  const progressPct = Math.round((completedCount / totalFields) * 100);
 
   function handleSave() {
     if (!user) return;
@@ -254,31 +272,24 @@ function ProfilePage() {
                   )}
                 </span>
                 <span className="text-xs text-muted-foreground">
-                  {profileComplete
-                    ? "2/2"
-                    : `${(bio.trim() ? 1 : 0) + (city.trim() ? 1 : 0)}/2`}{" "}
-                  required
+                  {completedCount} of {totalFields} complete
                 </span>
               </div>
               <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">
                 <div
                   className="h-full rounded-full bg-gold transition-all duration-500"
-                  style={{
-                    width: profileComplete
-                      ? "100%"
-                      : city.trim() || bio.trim()
-                        ? "50%"
-                        : "0%",
-                  }}
+                  style={{ width: `${progressPct}%` }}
                 />
               </div>
-              <div className="flex gap-3 text-xs text-muted-foreground">
-                <span className={`flex items-center gap-1 ${city.trim() ? "text-gold" : ""}`}>
-                  <CheckCircle2 className="h-3 w-3" /> City
-                </span>
-                <span className={`flex items-center gap-1 ${bio.trim() ? "text-gold" : ""}`}>
-                  <CheckCircle2 className="h-3 w-3" /> Bio
-                </span>
+              <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted-foreground">
+                {fieldChecks.map((f) => (
+                  <span
+                    key={f.key}
+                    className={`flex items-center gap-1 ${f.done ? "text-gold" : ""}`}
+                  >
+                    <CheckCircle2 className="h-3 w-3" /> {f.key}
+                  </span>
+                ))}
               </div>
             </CardContent>
           </Card>
@@ -359,7 +370,8 @@ function ProfilePage() {
                 <Sparkles className="h-5 w-5 text-gold" /> Identity
               </CardTitle>
               <CardDescription>
-                Share what feels right. Every field is optional.
+                Share what feels right. Each field has a "Prefer not to say"
+                option if you would rather keep it private.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-5">
@@ -441,12 +453,13 @@ function ProfilePage() {
                 <Heart className="h-5 w-5 text-gold" /> Interests
               </CardTitle>
               <CardDescription>
-                Pick what you are into. This helps others find common ground.
+                Pick what you are into, or choose "Prefer not to choose interests
+                right now" to keep this private.
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="flex flex-wrap gap-2">
-                {INTEREST_OPTIONS.map((interest) => {
+                {[...INTEREST_OPTIONS, INTERESTS_OPT_OUT].map((interest) => {
                   const active = interests.has(interest);
                   return (
                     <button
@@ -488,7 +501,9 @@ function ProfilePage() {
 
           {saved && !profileComplete && (
             <p className="text-sm text-center text-muted-foreground">
-              Saved. Add your city and bio to continue.
+              Saved. {totalFields - completedCount} field
+              {totalFields - completedCount === 1 ? "" : "s"} still to go to
+              complete your profile.
             </p>
           )}
         </div>
