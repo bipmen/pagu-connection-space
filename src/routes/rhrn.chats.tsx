@@ -81,7 +81,8 @@ function ChatsList() {
                     <Card key={r.id} className="border-dashed">
                       <CardContent className="p-4 space-y-2">
                         <div className="flex items-center justify-between">
-                          <span className="font-medium">To Member</span>
+                          <span className="font-medium">To {DISCOVER_PEOPLE.find((p) => p.userId === r.toUserId)?.name || "Member"}</span>
+
                           <span className="text-[10px] uppercase tracking-wide rounded-full border border-gold/30 bg-gold/10 text-gold px-2 py-0.5">
                             Pending
                           </span>
