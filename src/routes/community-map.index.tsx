@@ -205,7 +205,7 @@ function ResultsList({
           {events.map((e) => {
             const venue = e.safeSpaceId ? spacesById(e.safeSpaceId) : undefined;
             return (
-              <Card key={e.id} className="hover:shadow-soft transition-shadow cursor-pointer" onClick={() => navigate({ to: "/community-events/$id", params: { id: e.id } })}>
+              <Card key={e.id} className="hover:shadow-soft transition-shadow cursor-pointer" onClick={() => navigate({ to: "/events/local", search: { event: e.id } })}>
                 <CardContent className="p-4 flex gap-4">
                   <div className="h-10 w-10 rounded-full bg-primary/15 text-primary flex items-center justify-center shrink-0">
                     <Calendar className="h-5 w-5" />
