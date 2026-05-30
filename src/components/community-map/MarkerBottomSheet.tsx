@@ -117,7 +117,7 @@ function Body({
           </p>
         </div>
         <Button asChild className="mt-5 w-full" variant="hero">
-          <Link to="/community-events/$id" params={{ id: e.id }} onClick={onClose}>
+          <Link to="/events/local" search={{ event: e.id }} onClick={onClose}>
             View Details <ArrowRight className="h-4 w-4" />
           </Link>
         </Button>
