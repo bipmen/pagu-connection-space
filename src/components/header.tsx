@@ -19,6 +19,7 @@ const publicLinks: NavLink[] = [
   { to: "/", hash: "about", label: "About" },
   { to: "/", hash: "contact", label: "Contact" },
   { to: "/", hash: "events", label: "Sync Up!" },
+  { to: "/legal", label: "Legal & Trust" },
 ];
 
 const memberLinks: NavLink[] = [
@@ -26,6 +27,7 @@ const memberLinks: NavLink[] = [
   { to: "/community-map", label: "Discovery" },
   { to: "/events", label: "Events" },
   { to: "/", hash: "about", label: "About" },
+  { to: "/legal", label: "Legal & Trust" },
 ];
 
 
@@ -106,6 +108,9 @@ export function Header() {
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link to="/community-map">Discovery</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/legal">Legal & Trust</Link>
                   </DropdownMenuItem>
 
                   <DropdownMenuSeparator />
