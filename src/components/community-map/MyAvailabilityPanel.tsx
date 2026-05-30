@@ -83,8 +83,9 @@ export function MyAvailabilityPanel() {
 }
 
 function PanelBody() {
-  const user = useCurrentUser()!;
-  const mine = useMySession(user.id);
+  const user = useCurrentUser();
+  const mine = useMySession(user?.id);
+  if (!user) return null;
   const eligibility = getEligibility(user);
 
   if (!isEligible(eligibility)) return <EligibilityGate userId={user.id} eligibility={eligibility} />;
