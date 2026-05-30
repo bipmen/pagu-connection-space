@@ -31,7 +31,7 @@ import { listEvents } from "@/lib/events-mock";
 export const Route = createFileRoute("/profile")({
   head: () => ({
     meta: [
-      { title: "Dashboard — Pagu" },
+      { title: "Profile — Pagu" },
       { name: "description", content: "Your Pagu hub: profile, discovery, and community activity in one place." },
       { name: "robots", content: "noindex" },
     ],
@@ -52,7 +52,7 @@ function DashboardPage() {
 
   useEffect(() => {
     if (user && !isProfileComplete(user)) {
-      navigate({ to: "/profile" });
+      navigate({ to: "/profile-setup" });
     }
   }, [navigate, user]);
 
@@ -71,7 +71,7 @@ function DashboardPage() {
       <Shell>
         <Card>
           <CardContent className="p-8 text-center space-y-4">
-            <h1 className="text-2xl font-semibold">Sign in to view your dashboard</h1>
+            <h1 className="text-2xl font-semibold">Sign in to view your profile</h1>
             <Button asChild variant="hero">
               <Link to="/login">Sign in</Link>
             </Button>
@@ -88,10 +88,10 @@ function DashboardPage() {
           <CardContent className="p-8 text-center space-y-4">
             <h1 className="text-2xl font-semibold">Complete your profile to continue</h1>
             <p className="text-muted-foreground">
-              You are almost in. Add a few details first, then your dashboard will be ready.
+              You are almost in. Add a few details first, then your profile will be ready.
             </p>
             <Button asChild variant="hero">
-              <Link to="/profile">Complete profile</Link>
+              <Link to="/profile-setup">Complete profile</Link>
             </Button>
           </CardContent>
         </Card>
@@ -167,11 +167,11 @@ function DashboardPage() {
             cta="Open map"
           />
           <FeatureCard
-            to="/profile"
+            to="/profile-setup"
             icon={<UserRound className="h-5 w-5 text-gold" />}
-            title="Profile"
+            title="Profile details"
             body="Edit your bio, city, and interests."
-            cta="Edit profile"
+            cta="Edit details"
           />
         </section>
 
@@ -302,7 +302,7 @@ function FeatureCard({
   body,
   cta,
 }: {
-  to: "/community-map" | "/profile";
+  to: "/community-map" | "/profile-setup";
   icon: React.ReactNode;
   title: string;
   body: string;
