@@ -58,16 +58,26 @@ export function Header() {
           </Link>
 
           <nav className="hidden md:flex items-center gap-8">
-            {links.map((l) => (
-              <Link
-                key={l.to}
-                to={l.to}
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                activeProps={{ className: "text-foreground" }}
-              >
-                {l.label}
-              </Link>
-            ))}
+            {links.map((l) =>
+              l.hash ? (
+                <a
+                  key={`${l.to}#${l.hash}`}
+                  href={`${l.to}#${l.hash}`}
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  {l.label}
+                </a>
+              ) : (
+                <Link
+                  key={l.to}
+                  to={l.to}
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  activeProps={{ className: "text-foreground" }}
+                >
+                  {l.label}
+                </Link>
+              ),
+            )}
           </nav>
 
           <div className="flex items-center gap-2">
