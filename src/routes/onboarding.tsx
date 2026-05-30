@@ -209,39 +209,36 @@ function OnboardingPage() {
             </div>
           </div>
 
-          {/* Horizontal scrolling carousel of steps */}
-          <div className="overflow-hidden rounded-3xl border border-border/60 bg-card shadow-soft">
-            <div
-              className="flex transition-transform duration-500 ease-out"
-              style={{ transform: `translateX(-${stepIndex * 100}%)` }}
-            >
-              <StepShell>
+          {/* Active step */}
+          <div className="rounded-3xl border border-border/60 bg-card shadow-soft">
+            <StepShell>
+              {currentStep.id === "values" && (
                 <ValuesStep
                   accepted={state.valuesAccepted}
                   onToggle={(v) => setState({ ...state, valuesAccepted: v })}
                 />
-              </StepShell>
-              <StepShell>
+              )}
+              {currentStep.id === "rules" && (
                 <RulesStep
                   opened={state.rulesOpened}
                   accepted={state.rulesAccepted}
                   onOpen={() => setState({ ...state, rulesOpened: true })}
                   onAccept={(v) => setState({ ...state, rulesAccepted: v })}
                 />
-              </StepShell>
-              <StepShell>
+              )}
+              {currentStep.id === "flinta" && (
                 <FlintaStep
                   confirmed={state.flintaConfirmed}
                   onToggle={(v) => setState({ ...state, flintaConfirmed: v })}
                 />
-              </StepShell>
-              <StepShell>
+              )}
+              {currentStep.id === "reflection" && (
                 <ReflectionStep
                   answers={state.answers}
                   onChange={(answers) => setState({ ...state, answers })}
                 />
-              </StepShell>
-            </div>
+              )}
+            </StepShell>
           </div>
 
           {/* Nav */}
