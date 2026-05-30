@@ -15,6 +15,7 @@ import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ProfileSetupRouteImport } from './routes/profile-setup'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as LegalRouteImport } from './routes/legal'
 import { Route as EventsRouteImport } from './routes/events'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RhrnIndexRouteImport } from './routes/rhrn.index'
@@ -62,6 +63,11 @@ const ProfileRoute = ProfileRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LegalRoute = LegalRouteImport.update({
+  id: '/legal',
+  path: '/legal',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EventsRoute = EventsRouteImport.update({
@@ -158,6 +164,7 @@ const DiscoverSafeSpaceIdRoute = DiscoverSafeSpaceIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/events': typeof EventsRouteWithChildren
+  '/legal': typeof LegalRoute
   '/login': typeof LoginRoute
   '/profile': typeof ProfileRoute
   '/profile-setup': typeof ProfileSetupRoute
@@ -183,6 +190,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/legal': typeof LegalRoute
   '/login': typeof LoginRoute
   '/profile': typeof ProfileRoute
   '/profile-setup': typeof ProfileSetupRoute
@@ -210,6 +218,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/events': typeof EventsRouteWithChildren
+  '/legal': typeof LegalRoute
   '/login': typeof LoginRoute
   '/profile': typeof ProfileRoute
   '/profile-setup': typeof ProfileSetupRoute
@@ -238,6 +247,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/events'
+    | '/legal'
     | '/login'
     | '/profile'
     | '/profile-setup'
@@ -263,6 +273,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/legal'
     | '/login'
     | '/profile'
     | '/profile-setup'
@@ -289,6 +300,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/events'
+    | '/legal'
     | '/login'
     | '/profile'
     | '/profile-setup'
@@ -316,6 +328,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   EventsRoute: typeof EventsRouteWithChildren
+  LegalRoute: typeof LegalRoute
   LoginRoute: typeof LoginRoute
   ProfileRoute: typeof ProfileRoute
   ProfileSetupRoute: typeof ProfileSetupRoute
@@ -379,6 +392,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/legal': {
+      id: '/legal'
+      path: '/legal'
+      fullPath: '/legal'
+      preLoaderRoute: typeof LegalRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/events': {
@@ -528,6 +548,7 @@ const EventsRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   EventsRoute: EventsRouteWithChildren,
+  LegalRoute: LegalRoute,
   LoginRoute: LoginRoute,
   ProfileRoute: ProfileRoute,
   ProfileSetupRoute: ProfileSetupRoute,
