@@ -24,6 +24,7 @@ import {
   SESSION_DURATION_MS,
   acceptGuidelines,
   becomeAvailable,
+  ensureSeedChats,
   getEligibility,
   goInvisible,
   isEligible,
@@ -34,6 +35,7 @@ import {
   type IntentionId,
 } from "@/lib/rhrn-mock";
 import { GoInvisibleFab } from "@/components/rhrn/invisible-button";
+
 
 export const Route = createFileRoute("/rhrn/")({
   head: () => ({
@@ -53,10 +55,10 @@ function RhrnIndex() {
   const eligibility = getEligibility(user);
 
   useEffect(() => {
-    if (user === null && typeof window !== "undefined") {
-      // wait one tick; useCurrentUser hydrates after mount
-    }
+    if (user) ensureSeedChats(user.id, user.name);
   }, [user]);
+
+
 
   if (!user) {
     return (
