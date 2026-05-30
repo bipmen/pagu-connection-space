@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
-import { AboutSection } from "@/components/sections/about-section";
+
 import { HeroCarousel } from "@/components/sections/hero-carousel";
 import { TestimonialsSection } from "@/components/sections/testimonials-section";
 import { ContactSection } from "@/components/sections/contact-section";
