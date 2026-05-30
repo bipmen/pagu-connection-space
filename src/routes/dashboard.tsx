@@ -104,6 +104,15 @@ function DashboardPage() {
     .filter((e) => e.date >= new Date().toISOString().slice(0, 10))
     .slice(0, 3);
 
+  const cityEventsCount = user.city
+    ? listEvents().filter(
+        (e) =>
+          e.date >= new Date().toISOString().slice(0, 10) &&
+          e.city.toLowerCase() === user.city!.toLowerCase(),
+      ).length
+    : 0;
+
+
   return (
     <Shell>
       <div className="space-y-8">
