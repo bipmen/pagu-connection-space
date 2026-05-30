@@ -21,7 +21,6 @@ import {
 import { isProfileComplete, useCurrentUser } from "@/lib/session-mock";
 import {
   ensureSeedChats,
-  getEligibility,
   useAvailable,
   useChats,
   useIncomingRequests,
