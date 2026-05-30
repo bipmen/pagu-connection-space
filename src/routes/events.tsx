@@ -1,24 +1,380 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { useMemo, useState } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
-import { EventsSection } from "@/components/sections/events-section";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  CalendarDays,
+  MapPin,
+  Sparkles,
+  Handshake,
+  Star,
+  ArrowRight,
+  Users,
+} from "lucide-react";
+import {
+  LOCAL_EVENT_BADGE_LABEL,
+  getFeaturedLocalEvents,
+  getMoreLocalEvents,
+  getPartnerLocalEvents,
+  getRecentlyPostedLocalEvents,
+  listLocalCities,
+  type LocalEvent,
+  type LocalEventBadge,
+} from "@/lib/local-events-mock";
 
 export const Route = createFileRoute("/events")({
   head: () => ({
     meta: [
-      { title: "Events — Sync Up! by Pagu" },
-      { name: "description", content: "Sync Up! — Pagu's signature event format for meaningful FLINTA* connections in Cologne." },
-      { property: "og:title", content: "Sync Up! Events" },
-      { property: "og:description", content: "Curated speed-friendship & connection rounds for FLINTA* people." },
+      { title: "Local Events — Pagu" },
+      {
+        name: "description",
+        content:
+          "A curated selection of FLINTA*-friendly events in your city, picked by Pagu and our local partners.",
+      },
+      { property: "og:title", content: "Local Events — Pagu" },
+      {
+        property: "og:description",
+        content: "Pagu Picks, partner events, and local highlights.",
+      },
     ],
   }),
-  component: () => (
+  component: LocalEventsPage,
+});
+
+function LocalEventsPage() {
+  const [city, setCity] = useState<string>("all");
+  const cities = useMemo(() => listLocalCities(), []);
+
+  const featured = useMemo(
+    () => filterCity(getFeaturedLocalEvents(), city),
+    [city],
+  );
+  const partners = useMemo(
+    () => filterCity(getPartnerLocalEvents(), city),
+    [city],
+  );
+  const more = useMemo(() => filterCity(getMoreLocalEvents(), city), [city]);
+  const recent = useMemo(
+    () => filterCity(getRecentlyPostedLocalEvents(6), city),
+    [city],
+  );
+
+  return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <main className="flex-1 pt-12">
-        <EventsSection />
+      <main className="flex-1 px-5 lg:px-8 py-10 md:py-14 max-w-6xl mx-auto w-full">
+        {/* Hero */}
+        <div className="mb-10">
+          <p className="text-xs uppercase tracking-[0.25em] text-gold mb-3">
+            Curated by Pagu
+          </p>
+          <h1 className="font-display text-4xl md:text-5xl leading-tight mb-3">
+            Local Events
+          </h1>
+          <p className="text-base text-foreground/80 max-w-2xl">
+            A hand-picked selection of FLINTA*-friendly things to do in your
+            city — Pagu Picks, partner events, and local highlights we love.
+          </p>
+
+          <div className="mt-6 flex flex-col sm:flex-row sm:items-center gap-3">
+            <div className="flex items-center gap-2">
+              <span className="text-xs uppercase tracking-widest text-muted-foreground">
+                City
+              </span>
+              <Select value={city} onValueChange={setCity}>
+                <SelectTrigger className="w-[180px] rounded-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All cities</SelectItem>
+                  {cities.map((c) => (
+                    <SelectItem key={c} value={c}>
+                      {c}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="sm:ml-auto text-xs text-muted-foreground">
+              Looking for member-led events?{" "}
+              <Link
+                to="/community-events"
+                className="text-gold hover:underline font-medium"
+              >
+                Browse Community Events →
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* Featured by Pagu */}
+        <Section
+          eyebrow="Featured by Pagu"
+          icon={<Sparkles className="h-4 w-4" />}
+          title="Pagu Picks this week"
+          subtitle="Events we're hosting or personally vouching for."
+        >
+          {featured.length === 0 ? (
+            <EmptyRow label="No Pagu Picks in this city right now." />
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {featured.map((e) => (
+                <FeaturedCard key={e.id} event={e} />
+              ))}
+            </div>
+          )}
+        </Section>
+
+        {/* Partner events */}
+        <Section
+          eyebrow="Partner events"
+          icon={<Handshake className="h-4 w-4" />}
+          title="From the people we work with"
+          subtitle="Studios, venues, and collectives Pagu trusts."
+        >
+          {partners.length === 0 ? (
+            <EmptyRow label="No partner events in this city right now." />
+          ) : (
+            <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {partners.map((e) => (
+                <li key={e.id}>
+                  <LocalEventCard event={e} />
+                </li>
+              ))}
+            </ul>
+          )}
+        </Section>
+
+        {/* Recently posted */}
+        <Section
+          eyebrow="Just added"
+          icon={<Star className="h-4 w-4" />}
+          title="Recently posted"
+          subtitle="Fresh additions from across the city."
+        >
+          {recent.length === 0 ? (
+            <EmptyRow label="Nothing new in this city — check back soon." />
+          ) : (
+            <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {recent.map((e) => (
+                <li key={e.id}>
+                  <LocalEventCard event={e} compact />
+                </li>
+              ))}
+            </ul>
+          )}
+        </Section>
+
+        {/* More local */}
+        <Section
+          eyebrow="More to explore"
+          icon={<MapPin className="h-4 w-4" />}
+          title="Other local events"
+          subtitle="Independent picks worth your evening."
+        >
+          {more.length === 0 ? (
+            <EmptyRow label="Nothing else in this city for now." />
+          ) : (
+            <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {more.map((e) => (
+                <li key={e.id}>
+                  <LocalEventCard event={e} />
+                </li>
+              ))}
+            </ul>
+          )}
+        </Section>
+
+        {/* Member-led CTA */}
+        <div className="mt-14 rounded-3xl border border-border/60 bg-gradient-purple p-8 md:p-10 shadow-soft text-center">
+          <Users className="h-6 w-6 text-gold mx-auto mb-3" />
+          <h2 className="font-display text-2xl md:text-3xl mb-2">
+            Want to host your own?
+          </h2>
+          <p className="text-sm md:text-base text-primary-foreground/85 max-w-xl mx-auto mb-5">
+            Community Events are created by Pagu members — brunches, walks,
+            workshops, and everything in between.
+          </p>
+          <Button asChild variant="hero" size="lg" className="rounded-full">
+            <Link to="/community-events">
+              Go to Community Events <ArrowRight className="h-4 w-4 ml-1" />
+            </Link>
+          </Button>
+        </div>
       </main>
       <Footer />
     </div>
-  ),
-});
+  );
+}
+
+function filterCity(list: LocalEvent[], city: string) {
+  if (city === "all") return list;
+  return list.filter((e) => e.city === city);
+}
+
+function Section({
+  eyebrow,
+  icon,
+  title,
+  subtitle,
+  children,
+}: {
+  eyebrow: string;
+  icon: React.ReactNode;
+  title: string;
+  subtitle?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="mt-12">
+      <div className="mb-5">
+        <p className="inline-flex items-center gap-1.5 text-xs uppercase tracking-[0.22em] text-gold mb-2">
+          {icon}
+          {eyebrow}
+        </p>
+        <h2 className="font-display text-2xl md:text-3xl leading-tight">
+          {title}
+        </h2>
+        {subtitle ? (
+          <p className="text-sm text-muted-foreground mt-1">{subtitle}</p>
+        ) : null}
+      </div>
+      {children}
+    </section>
+  );
+}
+
+function EmptyRow({ label }: { label: string }) {
+  return (
+    <div className="rounded-2xl border border-dashed border-border/60 p-6 text-sm text-muted-foreground text-center">
+      {label}
+    </div>
+  );
+}
+
+function BadgePill({ kind }: { kind: LocalEventBadge }) {
+  const styles: Record<LocalEventBadge, string> = {
+    "pagu-pick": "bg-gold/15 text-gold border-gold/30",
+    partner: "bg-primary/15 text-foreground border-primary/30",
+    "local-highlight":
+      "bg-accent/30 text-foreground border-border/60",
+  };
+  return (
+    <span
+      className={`inline-flex items-center gap-1 text-[10px] uppercase tracking-widest font-semibold px-2 py-1 rounded-full border ${styles[kind]}`}
+    >
+      {kind === "pagu-pick" ? <Sparkles className="h-3 w-3" /> : null}
+      {LOCAL_EVENT_BADGE_LABEL[kind]}
+    </span>
+  );
+}
+
+function FeaturedCard({ event }: { event: LocalEvent }) {
+  return (
+    <article className="relative overflow-hidden rounded-2xl border border-gold/30 bg-card shadow-soft p-6 flex flex-col justify-between min-h-[260px]">
+      <div className="absolute inset-x-0 top-0 h-1 bg-gradient-gold" />
+      <div>
+        <div className="flex items-center gap-2 mb-3">
+          <BadgePill kind={event.badge} />
+          <Badge variant="secondary" className="rounded-full text-[10px]">
+            {event.category}
+          </Badge>
+        </div>
+        <h3 className="font-display text-2xl leading-snug mb-2">
+          {event.title}
+        </h3>
+        <p className="text-sm text-muted-foreground line-clamp-2 mb-4">
+          {event.description}
+        </p>
+        <div className="text-xs text-muted-foreground space-y-1.5">
+          <p className="inline-flex items-center gap-1.5">
+            <CalendarDays className="h-3.5 w-3.5" />
+            {formatDate(event.date)} · {event.time}
+          </p>
+          <p className="inline-flex items-center gap-1.5">
+            <MapPin className="h-3.5 w-3.5" />
+            {event.venue} · {event.city}
+          </p>
+          <p className="text-muted-foreground/80">By {event.organizer}</p>
+        </div>
+      </div>
+      <div className="mt-5">
+        <Button asChild variant="hero" size="default" className="rounded-full">
+          <a href={event.cta.href}>
+            {event.cta.label} <ArrowRight className="h-4 w-4 ml-1" />
+          </a>
+        </Button>
+      </div>
+    </article>
+  );
+}
+
+function LocalEventCard({
+  event,
+  compact = false,
+}: {
+  event: LocalEvent;
+  compact?: boolean;
+}) {
+  return (
+    <article
+      className={`bg-card border border-border/60 rounded-2xl p-5 shadow-soft hover:border-gold/40 transition-colors h-full flex flex-col ${
+        compact ? "" : ""
+      }`}
+    >
+      <div className="flex items-center gap-2 mb-3">
+        <BadgePill kind={event.badge} />
+        <Badge variant="outline" className="rounded-full text-[10px]">
+          {event.category}
+        </Badge>
+      </div>
+      <h3 className="font-display text-lg leading-snug mb-1.5">
+        {event.title}
+      </h3>
+      {!compact ? (
+        <p className="text-xs text-muted-foreground line-clamp-2 mb-3">
+          {event.description}
+        </p>
+      ) : null}
+      <div className="text-xs text-muted-foreground space-y-1 mb-4">
+        <p className="inline-flex items-center gap-1.5">
+          <CalendarDays className="h-3.5 w-3.5" />
+          {formatDate(event.date)} · {event.time}
+        </p>
+        <p className="inline-flex items-center gap-1.5">
+          <MapPin className="h-3.5 w-3.5" /> {event.venue} · {event.city}
+        </p>
+        <p className="text-muted-foreground/80">By {event.organizer}</p>
+      </div>
+      <div className="mt-auto">
+        <a
+          href={event.cta.href}
+          className="text-sm text-gold font-medium inline-flex items-center gap-1 hover:underline"
+        >
+          {event.cta.label} <ArrowRight className="h-3.5 w-3.5" />
+        </a>
+      </div>
+    </article>
+  );
+}
+
+function formatDate(iso: string) {
+  try {
+    return new Date(iso + "T00:00:00").toLocaleDateString(undefined, {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+    });
+  } catch {
+    return iso;
+  }
+}
