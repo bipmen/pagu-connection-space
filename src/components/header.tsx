@@ -15,17 +15,19 @@ import {
 
 const publicLinks = [
   { to: "/about", label: "About" },
-  { to: "/events", label: "Sync Up!" },
+  { to: "/events", label: "Events" },
   { to: "/contact", label: "Contact" },
 ] as const;
 
 const memberLinks = [
+  { to: "/dashboard", label: "Dashboard" },
   { to: "/discover", label: "Discover" },
+  { to: "/rhrn", label: "Right Here Right Now" },
   { to: "/about", label: "About" },
   { to: "/community-events", label: "Events" },
-  { to: "/rhrn", label: "Right Here Right Now" },
   { to: "/contact", label: "Contact" },
 ] as const;
+
 
 export function Header() {
   const [open, setOpen] = useState(false);
