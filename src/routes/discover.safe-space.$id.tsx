@@ -9,9 +9,12 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { ArrowLeft, Shield, Clock, MapPin, Star, AlertTriangle, Check } from "lucide-react";
+import { ArrowLeft, Shield, Clock, MapPin, Star, AlertTriangle, Check, ShieldCheck } from "lucide-react";
 import { getSafeSpace, listReviewsFor, submitReport, REPORT_REASON_LABEL, type ReportReason, useSafeSpacesStore } from "@/lib/safe-spaces-mock";
+import { CERTIFICATION_STAGES, CERTIFICATION_VALID_MONTHS, REVOCATION_REASONS } from "@/lib/community-map-mock";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
+
 
 export const Route = createFileRoute("/discover/safe-space/$id")({
   loader: ({ params }) => {
@@ -33,7 +36,7 @@ function SafeSpaceProfile() {
       <Header />
       <main className="flex-1 max-w-3xl mx-auto w-full px-4 sm:px-6 py-6 space-y-6">
         <Button asChild variant="ghost" size="sm" className="-ml-3">
-          <Link to="/discover"><ArrowLeft className="h-4 w-4" /> Back to Discover</Link>
+          <Link to="/community-map"><ArrowLeft className="h-4 w-4" /> Back to Community Map</Link>
         </Button>
 
         {/* Header card */}
@@ -58,6 +61,46 @@ function SafeSpaceProfile() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Certification flow */}
+        <Card>
+          <CardContent className="p-6 space-y-4">
+            <div className="flex items-center gap-2">
+              <ShieldCheck className="h-5 w-5 text-gold" />
+              <h2 className="font-display text-xl">Certification</h2>
+            </div>
+            <ol className="grid grid-cols-5 gap-1 sm:gap-2">
+              {CERTIFICATION_STAGES.map((stage, i) => {
+                // Mock: this space is at stage 4 (Certified)
+                const reached = i <= 3;
+                return (
+                  <li key={stage} className="flex flex-col items-center text-center gap-1">
+                    <div
+                      className={cn(
+                        "h-7 w-7 rounded-full flex items-center justify-center text-[11px] font-medium border-2",
+                        reached
+                          ? "bg-gold text-gold-foreground border-gold"
+                          : "bg-background text-muted-foreground border-border",
+                      )}
+                    >
+                      {i + 1}
+                    </div>
+                    <p className={cn("text-[10px] sm:text-xs leading-tight", reached ? "text-foreground" : "text-muted-foreground")}>
+                      {stage}
+                    </p>
+                  </li>
+                );
+              })}
+            </ol>
+            <p className="text-xs text-muted-foreground">
+              Certification valid for <strong className="text-foreground">{CERTIFICATION_VALID_MONTHS} months</strong>. May be revoked due to:
+              {" "}
+              {REVOCATION_REASONS.join(", ").toLowerCase()}.
+            </p>
+          </CardContent>
+        </Card>
+
+
 
         {/* Reviews */}
         <section className="space-y-3">

@@ -50,7 +50,7 @@ function ApplyPage() {
       <Header />
       <main className="flex-1 max-w-2xl mx-auto w-full px-4 sm:px-6 py-6 space-y-6">
         <Button asChild variant="ghost" size="sm" className="-ml-3">
-          <Link to="/discover"><ArrowLeft className="h-4 w-4" /> Back</Link>
+          <Link to="/community-map"><ArrowLeft className="h-4 w-4" /> Back</Link>
         </Button>
 
         {submitted ? (
@@ -65,7 +65,7 @@ function ApplyPage() {
               <p className="text-xs text-muted-foreground">
                 Safe Space certification is renewed every 12 months. Certification may be revoked if community safety standards are violated.
               </p>
-              <Button asChild variant="hero"><Link to="/discover">Back to Discover</Link></Button>
+              <Button asChild variant="hero"><Link to="/community-map">Back to Community Map</Link></Button>
             </CardContent>
           </Card>
         ) : (
