@@ -273,6 +273,74 @@ export function countApprovedAttendees(eventId: string): number {
   ).length;
 }
 
+// ---------- Reports (mock) ----------
+
+export const REPORT_REASONS = [
+  "Safety concern",
+  "Harassment or discrimination",
+  "Misleading information",
+  "Spam or scam",
+  "Event is not FLINTA*-safe",
+  "Other",
+] as const;
+export type ReportReason = (typeof REPORT_REASONS)[number];
+
+export type EventReport = {
+  id: string;
+  eventId: string;
+  userId: string;
+  reason: ReportReason;
+  note?: string;
+  createdAt: number;
+};
+
+const REPORTS_KEY = "pagu.event-reports.v1";
+
+function readReports(): EventReport[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = window.localStorage.getItem(REPORTS_KEY);
+    return raw ? (JSON.parse(raw) as EventReport[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeReports(reports: EventReport[]) {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(REPORTS_KEY, JSON.stringify(reports));
+  } catch {
+    /* ignore */
+  }
+  listeners.forEach((l) => l());
+}
+
+export function hasUserReportedEvent(eventId: string, userId: string): boolean {
+  return readReports().some((r) => r.eventId === eventId && r.userId === userId);
+}
+
+export function reportEvent(input: {
+  eventId: string;
+  userId: string;
+  reason: ReportReason;
+  note?: string;
+}): EventReport {
+  const reports = readReports();
+  const report: EventReport = {
+    id: `rep_${Math.random().toString(36).slice(2, 10)}`,
+    eventId: input.eventId,
+    userId: input.userId,
+    reason: input.reason,
+    note: input.note?.trim() ? input.note.trim() : undefined,
+    createdAt: Date.now(),
+  };
+  reports.push(report);
+  writeReports(reports);
+  return report;
+}
+
+
 export function useEventsStore() {
   const [tick, setTick] = useState(0);
   useEffect(() => {
