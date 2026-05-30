@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
@@ -9,7 +9,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Search, Shield, Calendar, Sparkles, Star, MapPin, Users, Clock, EyeOff } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useCurrentUser } from "@/lib/session-mock";
+import { isProfileComplete, useCurrentUser } from "@/lib/session-mock";
 import { DiscoverMap, type MapMarker } from "@/components/discover/map-mock";
 import { listSafeSpaces, useSafeSpacesStore } from "@/lib/safe-spaces-mock";
 import { DISCOVER_EVENTS, DISCOVER_PEOPLE, spacesById } from "@/lib/discover-mock";
@@ -39,6 +39,12 @@ function DiscoverPage() {
   });
   const [selected, setSelected] = useState<MapMarker | null>(null);
 
+  useEffect(() => {
+    if (user && !isProfileComplete(user)) {
+      navigate({ to: "/profile" });
+    }
+  }, [navigate, user]);
+
   const spaces = listSafeSpaces();
   const matchesQ = (s: string) => !q.trim() || s.toLowerCase().includes(q.trim().toLowerCase());
   const shownSpaces = filters.spaces ? spaces.filter((s) => matchesQ(s.name) || matchesQ(s.category)) : [];
@@ -62,6 +68,24 @@ function DiscoverPage() {
           <p className="mt-3 text-muted-foreground">Log in to see trusted spaces, events and people near you.</p>
           <Button asChild variant="hero" size="lg" className="mt-6">
             <Link to="/login">Log in</Link>
+          </Button>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (!isProfileComplete(user)) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col">
+        <Header />
+        <main className="flex-1 max-w-md mx-auto px-5 py-24 text-center">
+          <h1 className="font-display text-3xl text-foreground">Complete your profile first</h1>
+          <p className="mt-3 text-muted-foreground">
+            This is the next step before you enter Discover and the rest of the member experience.
+          </p>
+          <Button asChild variant="hero" size="lg" className="mt-6">
+            <Link to="/profile">Continue to profile</Link>
           </Button>
         </main>
         <Footer />

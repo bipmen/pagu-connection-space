@@ -108,12 +108,9 @@ function ProfilePage() {
               </div>
               <div className="space-y-3">
                 <Button asChild variant="hero" className="w-full">
-                  <Link to="/rhrn">
-                    Go to Right Here Right Now <ArrowRight className="h-4 w-4" />
+                  <Link to="/dashboard">
+                    Go to dashboard <ArrowRight className="h-4 w-4" />
                   </Link>
-                </Button>
-                <Button asChild variant="outlineGold" className="w-full">
-                  <Link to="/community-events">Browse community events</Link>
                 </Button>
               </div>
             </CardContent>
@@ -148,11 +145,11 @@ function ProfilePage() {
                 <span className="text-sm font-medium">
                   {profileComplete ? (
                     <span className="flex items-center gap-2 text-gold">
-                      <CheckCircle2 className="h-4 w-4" /> Profile ready for RHRN
+                      <CheckCircle2 className="h-4 w-4" /> Profile ready
                     </span>
                   ) : (
                     <span className="flex items-center gap-2">
-                      <Sparkles className="h-4 w-4 text-gold" /> Finish to unlock Right Here Right Now
+                      <Sparkles className="h-4 w-4 text-gold" /> Finish to enter the community
                     </span>
                   )}
                 </span>
@@ -206,7 +203,7 @@ function ProfilePage() {
                   onChange={(e) => setCity(e.target.value)}
                   placeholder="e.g. Cologne, Berlin, Amsterdam"
                 />
-                <p className="text-xs text-muted-foreground">Required for Right Here Right Now.</p>
+                <p className="text-xs text-muted-foreground">Required to complete your profile.</p>
               </div>
 
               <div className="space-y-2">
@@ -221,7 +218,7 @@ function ProfilePage() {
                   rows={4}
                 />
                 <p className="text-xs text-muted-foreground">
-                  {bio.trim().length > 0 ? `${bio.trim().length} characters` : "Required for Right Here Right Now."}
+                  {bio.trim().length > 0 ? `${bio.trim().length} characters` : "Required to complete your profile."}
                 </p>
               </div>
             </CardContent>
@@ -278,7 +275,7 @@ function ProfilePage() {
 
           {saved && !profileComplete && (
             <p className="text-sm text-center text-muted-foreground">
-              Saved. Add your city and bio to unlock Right Here Right Now.
+              Saved. Add your city and bio to continue.
             </p>
           )}
         </div>

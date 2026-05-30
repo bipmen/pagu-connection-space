@@ -17,7 +17,7 @@ import {
   MessageCircle,
   ShieldCheck,
 } from "lucide-react";
-import { useCurrentUser } from "@/lib/session-mock";
+import { isProfileComplete, useCurrentUser } from "@/lib/session-mock";
 import {
   INTENTIONS,
   RADIUS_OPTIONS,
@@ -27,7 +27,6 @@ import {
   ensureSeedChats,
   getEligibility,
   goInvisible,
-  isEligible,
   useAvailable,
   useChats,
   useIncomingRequests,
@@ -58,6 +57,12 @@ function RhrnIndex() {
     if (user) ensureSeedChats(user.id, user.name);
   }, [user]);
 
+  useEffect(() => {
+    if (user && !isProfileComplete(user)) {
+      navigate({ to: "/profile" });
+    }
+  }, [navigate, user]);
+
 
 
   if (!user) {
@@ -72,10 +77,18 @@ function RhrnIndex() {
     );
   }
 
-  if (!isEligible(eligibility)) {
+  if (!isProfileComplete(user)) {
     return (
       <Shell>
-        <EligibilityGate userId={user.id} eligibility={eligibility} />
+        <OnboardingGate />
+      </Shell>
+    );
+  }
+
+  if (!eligibility.guidelinesAccepted) {
+    return (
+      <Shell>
+        <GuidelinesGate userId={user.id} />
       </Shell>
     );
   }
@@ -110,8 +123,26 @@ function EmptyGate({ title, body, cta }: { title: string; body: string; cta: Rea
   );
 }
 
-function EligibilityGate({ userId, eligibility }: { userId: string; eligibility: ReturnType<typeof getEligibility> }) {
-  const [accepted, setAccepted] = useState(eligibility.guidelinesAccepted);
+function OnboardingGate() {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-2xl">Complete your profile to continue</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <p className="text-muted-foreground">
+          You are almost in. Finish your profile first, then you can use Right Here Right Now.
+        </p>
+        <Button asChild variant="hero" size="lg" className="w-full">
+          <Link to="/profile">Continue to profile</Link>
+        </Button>
+      </CardContent>
+    </Card>
+  );
+}
+
+function GuidelinesGate({ userId }: { userId: string }) {
+  const [accepted, setAccepted] = useState(false);
   return (
     <Card>
       <CardHeader>
@@ -123,23 +154,19 @@ function EligibilityGate({ userId, eligibility }: { userId: string; eligibility:
           Consent, respect, and inclusion are expected at all times.
         </p>
         <ul className="space-y-2 text-sm">
-          <Check item="Approved community member" ok={eligibility.approved} />
-          <Check item="Profile completed (bio + city)" ok={eligibility.profileComplete} action={!eligibility.profileComplete && <Link to="/profile" className="text-gold underline">Complete profile</Link>} />
           <Check item="Accepted community guidelines" ok={accepted} />
         </ul>
-        {!eligibility.guidelinesAccepted && (
-          <label className="flex items-start gap-3 rounded-lg border border-border/60 p-3 cursor-pointer">
-            <Checkbox checked={accepted} onCheckedChange={(v) => setAccepted(!!v)} className="mt-0.5" />
-            <span className="text-sm text-muted-foreground">
-              I agree to engage with kindness, respect consent, and treat every FLINTA* member with care.
-            </span>
-          </label>
-        )}
+        <label className="flex items-start gap-3 rounded-lg border border-border/60 p-3 cursor-pointer">
+          <Checkbox checked={accepted} onCheckedChange={(v) => setAccepted(!!v)} className="mt-0.5" />
+          <span className="text-sm text-muted-foreground">
+            I agree to engage with kindness, respect consent, and treat every FLINTA* member with care.
+          </span>
+        </label>
         <Button
           variant="hero"
           size="lg"
           className="w-full"
-          disabled={!eligibility.profileComplete || !accepted}
+          disabled={!accepted}
           onClick={() => {
             if (accepted) acceptGuidelines(userId);
           }}
