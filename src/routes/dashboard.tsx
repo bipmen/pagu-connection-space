@@ -101,7 +101,7 @@ function DashboardPage() {
     );
   }
 
-  const eligibility = getEligibility(user);
+  
   const pendingRequests = requests.filter((r) => r.status === "pending").length;
   const upcomingEvents = listEvents()
     .filter((e) => e.date >= new Date().toISOString().slice(0, 10))
@@ -322,7 +322,7 @@ function FeatureCard({
   body,
   cta,
 }: {
-  to: "/community-map" | "/rhrn" | "/profile";
+  to: "/community-map" | "/profile";
   icon: React.ReactNode;
   title: string;
   body: string;
