@@ -74,11 +74,22 @@ export function formatDistance(m: number) {
 
 // ---------------- Markers ----------------
 
-export type CommunityMarker =
+export type SingleMarker =
   | { id: string; kind: "place"; x: number; y: number; data: SafeSpace }
   | { id: string; kind: "activity"; x: number; y: number; data: DiscoverEvent }
-  | { id: string; kind: "person"; x: number; y: number; data: DiscoverPerson }
-  | { id: string; kind: "cluster"; x: number; y: number; count: number; userIds: string[] };
+  | { id: string; kind: "person"; x: number; y: number; data: DiscoverPerson };
+
+export type ClusterMarker = {
+  id: string;
+  kind: "cluster";
+  itemKind: "place" | "activity" | "person";
+  x: number;
+  y: number;
+  count: number;
+  items: SingleMarker[];
+};
+
+export type CommunityMarker = SingleMarker | ClusterMarker;
 
 export type MarkersInput = {
   filter: CommunityFilter;
@@ -93,33 +104,41 @@ function matches(text: string, q: string) {
   return !q.trim() || text.toLowerCase().includes(q.trim().toLowerCase());
 }
 
-// Simple grid clustering for people when zoomed out
-function clusterPeople(people: DiscoverPerson[], cellSize: number) {
-  const cells = new Map<string, DiscoverPerson[]>();
-  for (const p of people) {
-    const key = `${Math.floor(p.mapX / cellSize)}:${Math.floor(p.mapY / cellSize)}`;
+// Simple grid clustering — works for any single-kind marker set
+function clusterMarkers(
+  items: SingleMarker[],
+  cellSize: number,
+  itemKind: "place" | "activity" | "person",
+): CommunityMarker[] {
+  const cells = new Map<string, SingleMarker[]>();
+  for (const m of items) {
+    const key = `${Math.floor(m.x / cellSize)}:${Math.floor(m.y / cellSize)}`;
     if (!cells.has(key)) cells.set(key, []);
-    cells.get(key)!.push(p);
+    cells.get(key)!.push(m);
   }
   const out: CommunityMarker[] = [];
   for (const group of cells.values()) {
     if (group.length === 1) {
-      const p = group[0];
-      out.push({ id: `person:${p.userId}`, kind: "person", x: p.mapX, y: p.mapY, data: p });
+      out.push(group[0]);
     } else {
-      const avgX = group.reduce((s, p) => s + p.mapX, 0) / group.length;
-      const avgY = group.reduce((s, p) => s + p.mapY, 0) / group.length;
+      const avgX = group.reduce((s, p) => s + p.x, 0) / group.length;
+      const avgY = group.reduce((s, p) => s + p.y, 0) / group.length;
       out.push({
-        id: `cluster:${group.map((g) => g.userId).join(",")}`,
+        id: `cluster:${itemKind}:${group.map((g) => g.id).join(",")}`,
         kind: "cluster",
+        itemKind,
         x: avgX,
         y: avgY,
         count: group.length,
-        userIds: group.map((g) => g.userId),
+        items: group,
       });
     }
   }
   return out;
+}
+
+function cellSizeForZoom(zoom: number) {
+  return zoom >= 1.6 ? 6 : zoom >= 1.2 ? 12 : 18;
 }
 
 export function buildMarkers({ filter, availableNowOnly, city, query, zoom, hidePeople }: MarkersInput): CommunityMarker[] {
@@ -129,24 +148,26 @@ export function buildMarkers({ filter, availableNowOnly, city, query, zoom, hide
   const showActivities = !availableNowOnly && (filter === "community" || filter === "activities");
   const showPeople = !hidePeople && (filter === "community" || filter === "people" || availableNowOnly);
 
+  const cellSize = cellSizeForZoom(zoom);
   const out: CommunityMarker[] = [];
+
   if (showPlaces) {
-    for (const s of SAFE_SPACES) {
-      if (!matches(s.name + " " + s.category, query)) continue;
-      out.push({ id: `place:${s.id}`, kind: "place", x: s.mapX, y: s.mapY, data: s });
-    }
+    const places: SingleMarker[] = SAFE_SPACES
+      .filter((s) => matches(s.name + " " + s.category, query))
+      .map((s) => ({ id: `place:${s.id}`, kind: "place", x: s.mapX, y: s.mapY, data: s }));
+    out.push(...clusterMarkers(places, cellSize, "place"));
   }
   if (showActivities) {
-    for (const e of DISCOVER_EVENTS) {
-      if (!matches(e.title + " " + e.location, query)) continue;
-      out.push({ id: `activity:${e.id}`, kind: "activity", x: e.mapX, y: e.mapY, data: e });
-    }
+    const activities: SingleMarker[] = DISCOVER_EVENTS
+      .filter((e) => matches(e.title + " " + e.location, query))
+      .map((e) => ({ id: `activity:${e.id}`, kind: "activity", x: e.mapX, y: e.mapY, data: e }));
+    out.push(...clusterMarkers(activities, cellSize, "activity"));
   }
   if (showPeople) {
-    const people = DISCOVER_PEOPLE.filter((p) => matches(p.name + " " + p.bio, query));
-    // Cluster when zoomed out; show individuals when zoomed in
-    const cellSize = zoom >= 1.6 ? 6 : zoom >= 1.2 ? 12 : 18;
-    out.push(...clusterPeople(people, cellSize));
+    const people: SingleMarker[] = DISCOVER_PEOPLE
+      .filter((p) => matches(p.name + " " + p.bio, query))
+      .map((p) => ({ id: `person:${p.userId}`, kind: "person", x: p.mapX, y: p.mapY, data: p }));
+    out.push(...clusterMarkers(people, cellSize, "person"));
   }
   return out;
 }
