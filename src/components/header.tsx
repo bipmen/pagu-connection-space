@@ -15,14 +15,14 @@ import {
 
 const publicLinks = [
   { to: "/about", label: "About" },
-  { to: "/events", label: "Sync Up!" },
   { to: "/contact", label: "Contact" },
+  { to: "/", hash: "events", label: "Sync Up!" },
 ] as const;
 
 const memberLinks = [
   { to: "/profile", label: "Profile" },
   { to: "/community-map", label: "Community Map" },
-  { to: "/events", label: "Sync Up!" },
+  { to: "/events", label: "Events" },
   { to: "/about", label: "About" },
 ] as const;
 
