@@ -58,9 +58,9 @@ function CommunityMapPage() {
   const [selected, setSelected] = useState<CommunityMarker | null>(null);
 
   // If user goes invisible while viewing People, snap back to Community
-  if (!isAvailable && filter === "people") {
-    setFilter("community");
-  }
+  useEffect(() => {
+    if (!isAvailable && filter === "people") setFilter("community");
+  }, [isAvailable, filter]);
 
   const summary = summarizeCity(city);
   const markers = useMemo(
