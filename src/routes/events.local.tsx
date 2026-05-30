@@ -392,7 +392,7 @@ function LocalEventCard({
 
 function formatDate(iso: string) {
   try {
-    return new Date(iso + "T00:00:00").toLocaleDateString(undefined, {
+    return new Date(iso + "T00:00:00").toLocaleDateString("en-US", {
       weekday: "short",
       month: "short",
       day: "numeric",
