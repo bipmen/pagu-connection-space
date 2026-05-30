@@ -108,8 +108,8 @@ function ProfilePage() {
               </div>
               <div className="space-y-3">
                 <Button asChild variant="hero" className="w-full">
-                  <Link to="/dashboard">
-                    Go to dashboard <ArrowRight className="h-4 w-4" />
+                  <Link to="/profile">
+                    Go to your profile <ArrowRight className="h-4 w-4" />
                   </Link>
                 </Button>
               </div>
