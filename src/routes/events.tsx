@@ -39,7 +39,7 @@ function EventsLayout() {
         <div className="border-b border-border/60 bg-card/30">
           <div className="max-w-6xl mx-auto w-full px-5 lg:px-8 pt-10 pb-0">
             <p className="text-xs uppercase tracking-[0.25em] text-gold mb-2">
-              Events
+              Sync Up!
             </p>
             <h1 className="font-display text-3xl md:text-4xl leading-tight">
               What's happening

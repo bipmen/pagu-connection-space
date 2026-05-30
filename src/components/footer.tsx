@@ -19,7 +19,7 @@ export function Footer() {
           <h4 className="text-xs uppercase tracking-widest text-muted-foreground mb-4">Explore</h4>
           <ul className="space-y-2 text-sm">
             <li><Link to="/about" className="hover:text-gold transition-colors">About</Link></li>
-            <li><Link to="/events" className="hover:text-gold transition-colors">Events</Link></li>
+            <li><Link to="/events" className="hover:text-gold transition-colors">Sync Up!</Link></li>
             <li><Link to="/contact" className="hover:text-gold transition-colors">Contact</Link></li>
             <li><Link to="/register" className="hover:text-gold transition-colors">Register</Link></li>
           </ul>
@@ -33,7 +33,7 @@ export function Footer() {
             rel="noreferrer"
             className="inline-flex items-center gap-2 text-sm text-foreground hover:text-gold transition-colors"
           >
-            <Instagram className="h-4 w-4" /> @pagu.cologne
+            <Instagram className="h-4 w-4" /> @pagucollective
           </a>
         </div>
       </div>
