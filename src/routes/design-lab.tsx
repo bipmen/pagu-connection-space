@@ -3,8 +3,6 @@ import { useState } from "react";
 import {
   Sparkles,
   Users,
-  MapPin,
-  Calendar,
   Heart,
   Shield,
   Compass,
