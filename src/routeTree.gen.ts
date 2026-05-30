@@ -30,6 +30,7 @@ import { Route as RhrnChatsRouteImport } from './routes/rhrn.chats'
 import { Route as RhrnIdRouteImport } from './routes/rhrn.$id'
 import { Route as EventsLocalRouteImport } from './routes/events.local'
 import { Route as EventsCommunityRouteImport } from './routes/events.community'
+import { Route as EventSlugRouteImport } from './routes/event.$slug'
 import { Route as DiscoverApplyRouteImport } from './routes/discover.apply'
 import { Route as CommunityMapApplyRouteImport } from './routes/community-map.apply'
 import { Route as CommunityEventsNewRouteImport } from './routes/community-events.new'
@@ -142,6 +143,11 @@ const EventsCommunityRoute = EventsCommunityRouteImport.update({
   path: '/community',
   getParentRoute: () => EventsRoute,
 } as any)
+const EventSlugRoute = EventSlugRouteImport.update({
+  id: '/event/$slug',
+  path: '/event/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DiscoverApplyRoute = DiscoverApplyRouteImport.update({
   id: '/discover/apply',
   path: '/discover/apply',
@@ -189,6 +195,7 @@ export interface FileRoutesByFullPath {
   '/community-events/new': typeof CommunityEventsNewRoute
   '/community-map/apply': typeof CommunityMapApplyRoute
   '/discover/apply': typeof DiscoverApplyRoute
+  '/event/$slug': typeof EventSlugRoute
   '/events/community': typeof EventsCommunityRoute
   '/events/local': typeof EventsLocalRoute
   '/rhrn/$id': typeof RhrnIdRoute
@@ -217,6 +224,7 @@ export interface FileRoutesByTo {
   '/community-events/new': typeof CommunityEventsNewRoute
   '/community-map/apply': typeof CommunityMapApplyRoute
   '/discover/apply': typeof DiscoverApplyRoute
+  '/event/$slug': typeof EventSlugRoute
   '/events/community': typeof EventsCommunityRoute
   '/events/local': typeof EventsLocalRoute
   '/rhrn/$id': typeof RhrnIdRoute
@@ -247,6 +255,7 @@ export interface FileRoutesById {
   '/community-events/new': typeof CommunityEventsNewRoute
   '/community-map/apply': typeof CommunityMapApplyRoute
   '/discover/apply': typeof DiscoverApplyRoute
+  '/event/$slug': typeof EventSlugRoute
   '/events/community': typeof EventsCommunityRoute
   '/events/local': typeof EventsLocalRoute
   '/rhrn/$id': typeof RhrnIdRoute
@@ -278,6 +287,7 @@ export interface FileRouteTypes {
     | '/community-events/new'
     | '/community-map/apply'
     | '/discover/apply'
+    | '/event/$slug'
     | '/events/community'
     | '/events/local'
     | '/rhrn/$id'
@@ -306,6 +316,7 @@ export interface FileRouteTypes {
     | '/community-events/new'
     | '/community-map/apply'
     | '/discover/apply'
+    | '/event/$slug'
     | '/events/community'
     | '/events/local'
     | '/rhrn/$id'
@@ -335,6 +346,7 @@ export interface FileRouteTypes {
     | '/community-events/new'
     | '/community-map/apply'
     | '/discover/apply'
+    | '/event/$slug'
     | '/events/community'
     | '/events/local'
     | '/rhrn/$id'
@@ -365,6 +377,7 @@ export interface RootRouteChildren {
   CommunityEventsNewRoute: typeof CommunityEventsNewRoute
   CommunityMapApplyRoute: typeof CommunityMapApplyRoute
   DiscoverApplyRoute: typeof DiscoverApplyRoute
+  EventSlugRoute: typeof EventSlugRoute
   RhrnIdRoute: typeof RhrnIdRoute
   RhrnChatsRoute: typeof RhrnChatsRoute
   RhrnRequestsRoute: typeof RhrnRequestsRoute
@@ -525,6 +538,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EventsCommunityRouteImport
       parentRoute: typeof EventsRoute
     }
+    '/event/$slug': {
+      id: '/event/$slug'
+      path: '/event/$slug'
+      fullPath: '/event/$slug'
+      preLoaderRoute: typeof EventSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/discover/apply': {
       id: '/discover/apply'
       path: '/discover/apply'
@@ -601,6 +621,7 @@ const rootRouteChildren: RootRouteChildren = {
   CommunityEventsNewRoute: CommunityEventsNewRoute,
   CommunityMapApplyRoute: CommunityMapApplyRoute,
   DiscoverApplyRoute: DiscoverApplyRoute,
+  EventSlugRoute: EventSlugRoute,
   RhrnIdRoute: RhrnIdRoute,
   RhrnChatsRoute: RhrnChatsRoute,
   RhrnRequestsRoute: RhrnRequestsRoute,
@@ -614,12 +635,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}

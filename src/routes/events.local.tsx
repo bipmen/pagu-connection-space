@@ -1,14 +1,6 @@
 import { useMemo, useState } from "react";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
 import {
   Select,
   SelectContent,
@@ -23,10 +15,10 @@ import {
   Handshake,
   Star,
   ArrowRight,
-  Users,
 } from "lucide-react";
 import {
   LOCAL_EVENT_BADGE_LABEL,
+  LOCAL_EVENT_CTA_LABEL,
   getFeaturedLocalEvents,
   getMoreLocalEvents,
   getPartnerLocalEvents,
@@ -35,15 +27,8 @@ import {
   type LocalEvent,
   type LocalEventBadge,
 } from "@/lib/local-events-mock";
-import { getDiscoverEvent } from "@/lib/discover-mock";
-import { spacesById } from "@/lib/discover-mock";
-
-type LocalSearch = { event?: string };
 
 export const Route = createFileRoute("/events/local")({
-  validateSearch: (search: Record<string, unknown>): LocalSearch => ({
-    event: typeof search.event === "string" ? search.event : undefined,
-  }),
   head: () => ({
     meta: [
       { title: "Local Events — Pagu" },
@@ -57,16 +42,9 @@ export const Route = createFileRoute("/events/local")({
   component: LocalEventsPage,
 });
 
-
 function LocalEventsPage() {
   const [city, setCity] = useState<string>("all");
   const cities = useMemo(() => listLocalCities(), []);
-  const { event: eventId } = Route.useSearch();
-  const navigate = useNavigate();
-  const detailEvent = eventId ? getDiscoverEvent(eventId) : null;
-  const closeDetail = () =>
-    navigate({ to: "/events/local", search: {}, replace: true });
-
 
   const featured = useMemo(
     () => filterCity(getFeaturedLocalEvents(), city),
@@ -187,59 +165,6 @@ function LocalEventsPage() {
           </ul>
         )}
       </Section>
-
-      <Dialog open={!!detailEvent} onOpenChange={(o) => !o && closeDetail()}>
-        <DialogContent className="max-w-lg">
-          {detailEvent ? (
-            (() => {
-              const venue = detailEvent.safeSpaceId
-                ? spacesById(detailEvent.safeSpaceId)
-                : undefined;
-              return (
-                <>
-                  <DialogHeader>
-                    <div className="flex flex-wrap items-center gap-2 mb-2">
-                      {detailEvent.official ? (
-                        <Badge className="bg-gold text-gold-foreground hover:bg-gold">
-                          ✨ Official Pagu Event
-                        </Badge>
-                      ) : (
-                        <Badge variant="secondary">👥 Community Event</Badge>
-                      )}
-                      <Badge variant="outline" className="rounded-full">
-                        {detailEvent.category}
-                      </Badge>
-                    </div>
-                    <DialogTitle className="font-display text-2xl leading-snug">
-                      {detailEvent.title}
-                    </DialogTitle>
-                    <DialogDescription>
-                      {formatDate(detailEvent.date)} · {detailEvent.time}
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div className="space-y-3 text-sm">
-                    <p className="inline-flex items-center gap-1.5 text-muted-foreground">
-                      <MapPin className="h-3.5 w-3.5" />
-                      {venue
-                        ? `${venue.name} · 🛡️ Hosted at a Pagu Safe Space`
-                        : detailEvent.location}
-                    </p>
-                    <p className="inline-flex items-center gap-1.5 text-muted-foreground">
-                      <Users className="h-3.5 w-3.5" />
-                      {detailEvent.attendees} attending
-                    </p>
-                  </div>
-                  <div className="mt-4 flex justify-end">
-                    <Button variant="hero" onClick={closeDetail}>
-                      Close
-                    </Button>
-                  </div>
-                </>
-              );
-            })()
-          ) : null}
-        </DialogContent>
-      </Dialog>
     </>
   );
 }
@@ -305,43 +230,58 @@ function BadgePill({ kind }: { kind: LocalEventBadge }) {
   );
 }
 
+function CtaButton({ event }: { event: LocalEvent }) {
+  return (
+    <span
+      className="inline-flex items-center justify-center gap-1.5 rounded-full bg-gradient-gold text-gold-foreground text-sm font-semibold px-5 py-2.5 shadow-soft group-hover:brightness-110 group-active:scale-[0.98] transition"
+      aria-hidden="true"
+    >
+      {LOCAL_EVENT_CTA_LABEL[event.ctaType]}
+      <ArrowRight className="h-4 w-4" />
+    </span>
+  );
+}
+
 function FeaturedCard({ event }: { event: LocalEvent }) {
   return (
-    <article className="relative overflow-hidden rounded-2xl border border-gold/30 bg-card shadow-soft p-6 flex flex-col justify-between min-h-[260px]">
-      <div className="absolute inset-x-0 top-0 h-1 bg-gradient-gold" />
-      <div>
-        <div className="flex items-center gap-2 mb-3">
-          <BadgePill kind={event.badge} />
-          <Badge variant="secondary" className="rounded-full text-[10px]">
-            {event.category}
-          </Badge>
-        </div>
-        <h3 className="font-display text-2xl leading-snug mb-2">
-          {event.title}
-        </h3>
-        <p className="text-sm text-muted-foreground line-clamp-2 mb-4">
-          {event.description}
-        </p>
-        <div className="text-xs text-muted-foreground space-y-1.5">
-          <p className="inline-flex items-center gap-1.5">
-            <CalendarDays className="h-3.5 w-3.5" />
-            {formatDate(event.date)} · {event.time}
+    <Link
+      to="/event/$slug"
+      params={{ slug: event.slug }}
+      aria-label={`${event.title} — ${LOCAL_EVENT_CTA_LABEL[event.ctaType]}`}
+      className="group block focus:outline-none focus-visible:ring-2 focus-visible:ring-gold rounded-2xl"
+    >
+      <article className="relative overflow-hidden rounded-2xl border border-gold/30 bg-card shadow-soft p-6 flex flex-col justify-between min-h-[260px] hover:border-gold transition-colors">
+        <div className="absolute inset-x-0 top-0 h-1 bg-gradient-gold" />
+        <div>
+          <div className="flex items-center gap-2 mb-3">
+            <BadgePill kind={event.badge} />
+            <Badge variant="secondary" className="rounded-full text-[10px]">
+              {event.category}
+            </Badge>
+          </div>
+          <h3 className="font-display text-2xl leading-snug mb-2">
+            {event.title}
+          </h3>
+          <p className="text-sm text-muted-foreground line-clamp-2 mb-4">
+            {event.description}
           </p>
-          <p className="inline-flex items-center gap-1.5">
-            <MapPin className="h-3.5 w-3.5" />
-            {event.venue} · {event.city}
-          </p>
-          <p className="text-muted-foreground/80">By {event.organizer}</p>
+          <div className="text-xs text-muted-foreground space-y-1.5">
+            <p className="inline-flex items-center gap-1.5">
+              <CalendarDays className="h-3.5 w-3.5" />
+              {formatDate(event.date)} · {event.time}
+            </p>
+            <p className="inline-flex items-center gap-1.5">
+              <MapPin className="h-3.5 w-3.5" />
+              {event.venue} · {event.city}
+            </p>
+            <p className="text-muted-foreground/80">By {event.organizer}</p>
+          </div>
         </div>
-      </div>
-      <div className="mt-5">
-        <Button asChild variant="hero" size="default" className="rounded-full">
-          <a href={event.cta.href}>
-            {event.cta.label} <ArrowRight className="h-4 w-4 ml-1" />
-          </a>
-        </Button>
-      </div>
-    </article>
+        <div className="mt-5">
+          <CtaButton event={event} />
+        </div>
+      </article>
+    </Link>
   );
 }
 
@@ -353,40 +293,42 @@ function LocalEventCard({
   compact?: boolean;
 }) {
   return (
-    <article className="bg-card border border-border/60 rounded-2xl p-5 shadow-soft hover:border-gold/40 transition-colors h-full flex flex-col">
-      <div className="flex items-center gap-2 mb-3">
-        <BadgePill kind={event.badge} />
-        <Badge variant="outline" className="rounded-full text-[10px]">
-          {event.category}
-        </Badge>
-      </div>
-      <h3 className="font-display text-lg leading-snug mb-1.5">
-        {event.title}
-      </h3>
-      {!compact ? (
-        <p className="text-xs text-muted-foreground line-clamp-2 mb-3">
-          {event.description}
-        </p>
-      ) : null}
-      <div className="text-xs text-muted-foreground space-y-1 mb-4">
-        <p className="inline-flex items-center gap-1.5">
-          <CalendarDays className="h-3.5 w-3.5" />
-          {formatDate(event.date)} · {event.time}
-        </p>
-        <p className="inline-flex items-center gap-1.5">
-          <MapPin className="h-3.5 w-3.5" /> {event.venue} · {event.city}
-        </p>
-        <p className="text-muted-foreground/80">By {event.organizer}</p>
-      </div>
-      <div className="mt-auto">
-        <a
-          href={event.cta.href}
-          className="text-sm text-gold font-medium inline-flex items-center gap-1 hover:underline"
-        >
-          {event.cta.label} <ArrowRight className="h-3.5 w-3.5" />
-        </a>
-      </div>
-    </article>
+    <Link
+      to="/event/$slug"
+      params={{ slug: event.slug }}
+      aria-label={`${event.title} — ${LOCAL_EVENT_CTA_LABEL[event.ctaType]}`}
+      className="group block h-full focus:outline-none focus-visible:ring-2 focus-visible:ring-gold rounded-2xl"
+    >
+      <article className="bg-card border border-border/60 rounded-2xl p-5 shadow-soft group-hover:border-gold/60 group-hover:shadow-lg transition h-full flex flex-col">
+        <div className="flex items-center gap-2 mb-3">
+          <BadgePill kind={event.badge} />
+          <Badge variant="outline" className="rounded-full text-[10px]">
+            {event.category}
+          </Badge>
+        </div>
+        <h3 className="font-display text-lg leading-snug mb-1.5">
+          {event.title}
+        </h3>
+        {!compact ? (
+          <p className="text-xs text-muted-foreground line-clamp-2 mb-3">
+            {event.description}
+          </p>
+        ) : null}
+        <div className="text-xs text-muted-foreground space-y-1 mb-4">
+          <p className="inline-flex items-center gap-1.5">
+            <CalendarDays className="h-3.5 w-3.5" />
+            {formatDate(event.date)} · {event.time}
+          </p>
+          <p className="inline-flex items-center gap-1.5">
+            <MapPin className="h-3.5 w-3.5" /> {event.venue} · {event.city}
+          </p>
+          <p className="text-muted-foreground/80">By {event.organizer}</p>
+        </div>
+        <div className="mt-auto">
+          <CtaButton event={event} />
+        </div>
+      </article>
+    </Link>
   );
 }
 

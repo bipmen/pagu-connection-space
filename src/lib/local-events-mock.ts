@@ -9,8 +9,16 @@ export const LOCAL_EVENT_BADGE_LABEL: Record<LocalEventBadge, string> = {
   "local-highlight": "Local Highlight",
 };
 
+export type LocalEventCtaType = "tickets" | "spot";
+
+export const LOCAL_EVENT_CTA_LABEL: Record<LocalEventCtaType, string> = {
+  tickets: "Get Tickets",
+  spot: "Book a Spot",
+};
+
 export type LocalEvent = {
   id: string;
+  slug: string;
   title: string;
   description: string;
   category: string;
@@ -20,7 +28,10 @@ export type LocalEvent = {
   venue: string;
   organizer: string;
   badge: LocalEventBadge;
-  cta: { label: string; href: string };
+  ctaType: LocalEventCtaType;
+  attendees: number;
+  eventType: string;
+  hostedAtSafeSpace?: boolean;
   featured?: boolean;
   postedDaysAgo?: number;
 };
@@ -31,8 +42,12 @@ function daysFromNow(n: number) {
   return d.toISOString().slice(0, 10);
 }
 
-export const LOCAL_EVENTS: LocalEvent[] = [
-  // Featured by Pagu
+type SeedEvent = Omit<LocalEvent, "slug" | "ctaType"> & {
+  slug?: string;
+  ctaType?: LocalEventCtaType;
+};
+
+const RAW_EVENTS: SeedEvent[] = [
   {
     id: "le_pagu_syncup_oct",
     title: "Sync Up! Cologne — Autumn Edition",
@@ -45,12 +60,15 @@ export const LOCAL_EVENTS: LocalEvent[] = [
     venue: "Bumann & SOHN, Mülheim",
     organizer: "Pagu Collective",
     badge: "pagu-pick",
-    cta: { label: "Reserve your spot", href: "/events#sync-up" },
+    attendees: 32,
+    eventType: "In-person · FLINTA* only",
+    hostedAtSafeSpace: true,
     featured: true,
     postedDaysAgo: 2,
   },
   {
     id: "le_pagu_brunch_circle",
+    slug: "community-brunch",
     title: "Pagu Brunch Circle",
     description:
       "A slow Sunday brunch hosted by Pagu — small table, warm conversation, new faces.",
@@ -61,12 +79,12 @@ export const LOCAL_EVENTS: LocalEvent[] = [
     venue: "Café Ludwig, Ehrenstraße",
     organizer: "Pagu Collective",
     badge: "pagu-pick",
-    cta: { label: "Join the circle", href: "/events#brunch" },
+    attendees: 14,
+    eventType: "In-person · Members & friends",
+    hostedAtSafeSpace: true,
     featured: true,
     postedDaysAgo: 4,
   },
-
-  // Partner events
   {
     id: "le_partner_queerfilm",
     title: "Queer Short Film Night",
@@ -79,7 +97,8 @@ export const LOCAL_EVENTS: LocalEvent[] = [
     venue: "Filmhaus Köln",
     organizer: "Filmhaus Köln × Pagu",
     badge: "partner",
-    cta: { label: "Get tickets", href: "#" },
+    attendees: 86,
+    eventType: "In-person · Open to all FLINTA* & allies",
     postedDaysAgo: 6,
   },
   {
@@ -94,11 +113,14 @@ export const LOCAL_EVENTS: LocalEvent[] = [
     venue: "Studio Atem, Südstadt",
     organizer: "Studio Atem",
     badge: "partner",
-    cta: { label: "Book a spot", href: "#" },
+    attendees: 12,
+    eventType: "In-person · FLINTA* only",
+    hostedAtSafeSpace: true,
     postedDaysAgo: 1,
   },
   {
     id: "le_partner_zine",
+    slug: "queer-book-club",
     title: "Zine-Making Workshop",
     description:
       "Cut, paste, photocopy. A hands-on workshop with a Berlin-based zine collective Pagu loves.",
@@ -109,11 +131,10 @@ export const LOCAL_EVENTS: LocalEvent[] = [
     venue: "Spore Initiative, Neukölln",
     organizer: "Spore × Pagu",
     badge: "partner",
-    cta: { label: "Sign up", href: "#" },
+    attendees: 18,
+    eventType: "In-person · Workshop",
     postedDaysAgo: 8,
   },
-
-  // More local highlights
   {
     id: "le_local_market",
     title: "Belgisches Viertel Night Market",
@@ -126,11 +147,13 @@ export const LOCAL_EVENTS: LocalEvent[] = [
     venue: "Brüsseler Platz",
     organizer: "Veedel Kollektiv",
     badge: "local-highlight",
-    cta: { label: "More info", href: "#" },
+    attendees: 220,
+    eventType: "Outdoors · Open to all",
     postedDaysAgo: 0,
   },
   {
     id: "le_local_poetry",
+    slug: "museum-meetup",
     title: "Open Mic: Poetry & Spoken Word",
     description:
       "A warm, inclusive open mic — bring a poem, a story, or just your ears.",
@@ -141,7 +164,8 @@ export const LOCAL_EVENTS: LocalEvent[] = [
     venue: "Acephale, Ehrenfeld",
     organizer: "Stadt der Worte e.V.",
     badge: "local-highlight",
-    cta: { label: "More info", href: "#" },
+    attendees: 45,
+    eventType: "In-person · Open mic",
     postedDaysAgo: 3,
   },
   {
@@ -156,7 +180,8 @@ export const LOCAL_EVENTS: LocalEvent[] = [
     venue: "Rheinpark entrance",
     organizer: "Rhein Slow Runners",
     badge: "local-highlight",
-    cta: { label: "More info", href: "#" },
+    attendees: 28,
+    eventType: "Outdoors · Beginner friendly",
     postedDaysAgo: 5,
   },
   {
@@ -171,10 +196,36 @@ export const LOCAL_EVENTS: LocalEvent[] = [
     venue: "Tonzeit Studio, Neukölln",
     organizer: "Tonzeit",
     badge: "local-highlight",
-    cta: { label: "More info", href: "#" },
+    attendees: 9,
+    eventType: "In-person · Drop-in workshop",
     postedDaysAgo: 10,
   },
 ];
+
+function slugify(input: string): string {
+  return input
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 60);
+}
+
+// Deterministic, randomized-looking CTA distribution across events.
+// Alternates "tickets" / "spot" based on a stable hash of the id so the
+// mix is consistent across renders without being predictable per section.
+function pickCta(id: string): LocalEventCtaType {
+  let h = 0;
+  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0;
+  return h % 2 === 0 ? "tickets" : "spot";
+}
+
+export const LOCAL_EVENTS: LocalEvent[] = RAW_EVENTS.map((e) => ({
+  ...e,
+  slug: e.slug ?? slugify(e.title),
+  ctaType: e.ctaType ?? pickCta(e.id),
+}));
 
 export function getFeaturedLocalEvents() {
   return LOCAL_EVENTS.filter((e) => e.badge === "pagu-pick");
@@ -193,4 +244,8 @@ export function getRecentlyPostedLocalEvents(limit = 4) {
 
 export function listLocalCities(): string[] {
   return Array.from(new Set(LOCAL_EVENTS.map((e) => e.city))).sort();
+}
+
+export function getLocalEventBySlug(slug: string): LocalEvent | undefined {
+  return LOCAL_EVENTS.find((e) => e.slug === slug);
 }
