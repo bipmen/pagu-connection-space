@@ -122,12 +122,12 @@ function clusterPeople(people: DiscoverPerson[], cellSize: number) {
   return out;
 }
 
-export function buildMarkers({ filter, availableNowOnly, city, query, zoom }: MarkersInput): CommunityMarker[] {
+export function buildMarkers({ filter, availableNowOnly, city, query, zoom, hidePeople }: MarkersInput): CommunityMarker[] {
   if (!cityMatch(city, "Cologne")) return [];
 
   const showPlaces = !availableNowOnly && (filter === "community" || filter === "places");
   const showActivities = !availableNowOnly && (filter === "community" || filter === "activities");
-  const showPeople = filter === "community" || filter === "people" || availableNowOnly;
+  const showPeople = !hidePeople && (filter === "community" || filter === "people" || availableNowOnly);
 
   const out: CommunityMarker[] = [];
   if (showPlaces) {
