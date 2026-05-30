@@ -84,11 +84,15 @@ function EventsDashboard() {
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1 px-5 lg:px-8 py-10 max-w-6xl mx-auto w-full">
-        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-4">
           <div>
-            <h1 className="font-display text-3xl md:text-4xl">Events</h1>
-            <p className="text-sm text-muted-foreground mt-1">
-              Find meaningful in-person experiences in your community.
+            <p className="text-xs uppercase tracking-[0.25em] text-gold mb-2">
+              Member-led
+            </p>
+            <h1 className="font-display text-3xl md:text-4xl">Community Events</h1>
+            <p className="text-sm text-muted-foreground mt-1 max-w-xl">
+              Brunches, walks, workshops and more — created by Pagu members for the community.
+              Join via RSVP, request, or invite.
             </p>
           </div>
           <Button
@@ -100,6 +104,14 @@ function EventsDashboard() {
             <Plus className="h-4 w-4 mr-2" /> Create event
           </Button>
         </div>
+
+        <div className="text-xs text-muted-foreground mb-6">
+          Looking for curated picks and partner events?{" "}
+          <Link to="/events" className="text-gold hover:underline font-medium">
+            Browse Local Events →
+          </Link>
+        </div>
+
 
         {/* Filters */}
         <div className="bg-card border border-border/60 rounded-2xl p-4 shadow-soft mb-6 space-y-3">
