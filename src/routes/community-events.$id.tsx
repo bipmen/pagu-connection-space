@@ -66,7 +66,7 @@ function EventDetail() {
         <div className="max-w-md mx-auto text-center">
           <h1 className="font-display text-2xl mb-2">Event not found</h1>
           <Button asChild variant="hero">
-            <Link to="/community-events">Back to events</Link>
+            <Link to="/events/community">Back to events</Link>
           </Button>
         </div>
       </Shell>
@@ -81,7 +81,7 @@ function EventDetail() {
   return (
     <Shell>
       <button
-        onClick={() => navigate({ to: "/community-events" })}
+        onClick={() => navigate({ to: "/events/community" })}
         className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-6"
       >
         <ArrowLeft className="h-4 w-4" /> All events
