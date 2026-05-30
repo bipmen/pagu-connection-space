@@ -42,7 +42,7 @@ export function HeroCarousel() {
 
       <div className="relative mx-auto max-w-6xl px-5 lg:px-8 pt-10 pb-10 md:pt-14 md:pb-14">
         {/* Stable-height slide stage. Slides are absolutely stacked and crossfade. */}
-        <div className="relative min-h-[360px] md:min-h-[420px]">
+        <div className="relative min-h-[520px] md:min-h-[460px]">
           {SLIDES.map((Slide, i) => (
             <div
               key={i}
