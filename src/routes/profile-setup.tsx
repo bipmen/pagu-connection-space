@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
@@ -6,10 +6,34 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useCurrentUser, updateCurrentUser } from "@/lib/session-mock";
 import { getEligibility, isEligible } from "@/lib/rhrn-mock";
-import { Sparkles, CheckCircle2, ArrowRight, User, MapPin, PenLine, Heart } from "lucide-react";
+import {
+  Sparkles,
+  CheckCircle2,
+  ArrowRight,
+  User,
+  MapPin,
+  PenLine,
+  Heart,
+  Cake,
+  Users,
+  Compass,
+} from "lucide-react";
 
 const INTEREST_OPTIONS = [
   "Coffee",
@@ -28,11 +52,56 @@ const INTEREST_OPTIONS = [
   "Film",
 ] as const;
 
+const GENDER_OPTIONS = [
+  "Woman",
+  "Non-binary",
+  "Trans woman",
+  "Trans man",
+  "Agender",
+  "Genderqueer",
+  "Prefer to self-describe",
+  "Prefer not to say",
+] as const;
+
+const ORIENTATION_OPTIONS = [
+  "Lesbian",
+  "Bisexual",
+  "Pansexual",
+  "Queer",
+  "Asexual",
+  "Questioning",
+  "Prefer to self-describe",
+  "Prefer not to say",
+] as const;
+
+const LOOKING_FOR_OPTIONS = [
+  "Open to everyone in the community",
+  "Women",
+  "Non-binary people",
+  "Trans people",
+  "Queer people",
+  "People with shared interests",
+  "Prefer to decide later",
+] as const;
+
+const EXPERIENCE_OPTIONS = [
+  "Romantic dates",
+  "Friendships",
+  "Networking",
+  "Community events",
+  "Creative collaborations",
+  "Open to everything",
+  "Still figuring it out",
+] as const;
+
 export const Route = createFileRoute("/profile-setup")({
   head: () => ({
     meta: [
       { title: "Complete Your Profile — Pagu" },
-      { name: "description", content: "Set up your Pagu profile to unlock community features." },
+      {
+        name: "description",
+        content: "Set up your Pagu profile to unlock community features.",
+      },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -44,19 +113,43 @@ function ProfilePage() {
   const navigate = useNavigate();
   const [saved, setSaved] = useState(false);
 
-  const [name, setName] = useState(user?.name ?? "");
-  const [city, setCity] = useState(user?.city ?? "");
-  const [bio, setBio] = useState(user?.bio ?? "");
-  const [interests, setInterests] = useState<Set<string>>(new Set(user?.interests ?? []));
+  const [name, setName] = useState("");
+  const [city, setCity] = useState("");
+  const [bio, setBio] = useState("");
+  const [interests, setInterests] = useState<Set<string>>(new Set());
+  const [birthday, setBirthday] = useState("");
+  const [gender, setGender] = useState<string>("");
+  const [orientation, setOrientation] = useState<string>("");
+  const [lookingFor, setLookingFor] = useState<Set<string>>(new Set());
+  const [experience, setExperience] = useState<Set<string>>(new Set());
+  const [hydrated, setHydrated] = useState(false);
 
-  const toggleInterest = useCallback((interest: string) => {
-    setInterests((prev) => {
-      const next = new Set(prev);
-      if (next.has(interest)) next.delete(interest);
-      else next.add(interest);
-      return next;
-    });
-  }, []);
+  // Hydrate from session once the user loads (useCurrentUser starts null on SSR).
+  useEffect(() => {
+    if (!user || hydrated) return;
+    setName(user.name ?? "");
+    setCity(user.city ?? "");
+    setBio(user.bio ?? "");
+    setInterests(new Set(user.interests ?? []));
+    setBirthday(user.birthday ?? "");
+    setGender(user.gender ?? "");
+    setOrientation(user.orientation ?? "");
+    setLookingFor(new Set(user.lookingFor ?? []));
+    setExperience(new Set(user.experience ?? []));
+    setHydrated(true);
+  }, [user, hydrated]);
+
+  const toggle = (set: Set<string>, value: string, setter: (s: Set<string>) => void) => {
+    const next = new Set(set);
+    if (next.has(value)) next.delete(value);
+    else next.add(value);
+    setter(next);
+  };
+
+  const toggleInterest = useCallback(
+    (v: string) => toggle(interests, v, setInterests),
+    [interests],
+  );
 
   const profileComplete = !!(bio.trim().length > 0 && city.trim().length > 0);
 
@@ -67,6 +160,11 @@ function ProfilePage() {
       city: city.trim(),
       bio: bio.trim(),
       interests: Array.from(interests),
+      birthday: birthday || undefined,
+      gender: gender || undefined,
+      orientation: orientation || undefined,
+      lookingFor: Array.from(lookingFor),
+      experience: Array.from(experience),
     });
     setSaved(true);
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -80,7 +178,9 @@ function ProfilePage() {
           <Card className="max-w-md w-full text-center">
             <CardContent className="p-8 space-y-4">
               <h1 className="text-2xl font-semibold">Sign in first</h1>
-              <p className="text-muted-foreground">You need to be logged in to complete your profile.</p>
+              <p className="text-muted-foreground">
+                You need to be logged in to complete your profile.
+              </p>
               <Button asChild variant="hero">
                 <Link to="/login">Sign in</Link>
               </Button>
@@ -104,15 +204,15 @@ function ProfilePage() {
               </div>
               <div className="space-y-2">
                 <h1 className="text-2xl font-display font-medium">Profile complete</h1>
-                <p className="text-muted-foreground">You are all set to connect with the Pagu community.</p>
+                <p className="text-muted-foreground">
+                  You are all set to connect with the Pagu community.
+                </p>
               </div>
-              <div className="space-y-3">
-                <Button asChild variant="hero" className="w-full">
-                  <Link to="/profile">
-                    Go to your profile <ArrowRight className="h-4 w-4" />
-                  </Link>
-                </Button>
-              </div>
+              <Button asChild variant="hero" className="w-full">
+                <Link to="/profile">
+                  Go to your profile <ArrowRight className="h-4 w-4" />
+                </Link>
+              </Button>
             </CardContent>
           </Card>
         </main>
@@ -138,7 +238,7 @@ function ProfilePage() {
             </p>
           </div>
 
-          {/* Progress / Status */}
+          {/* Progress */}
           <Card className={profileComplete ? "border-gold/40" : ""}>
             <CardContent className="p-5 space-y-3">
               <div className="flex items-center justify-between">
@@ -154,13 +254,22 @@ function ProfilePage() {
                   )}
                 </span>
                 <span className="text-xs text-muted-foreground">
-                  {profileComplete ? "2/2" : `${(bio.trim() ? 1 : 0) + (city.trim() ? 1 : 0)}/2`} required
+                  {profileComplete
+                    ? "2/2"
+                    : `${(bio.trim() ? 1 : 0) + (city.trim() ? 1 : 0)}/2`}{" "}
+                  required
                 </span>
               </div>
               <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">
                 <div
                   className="h-full rounded-full bg-gold transition-all duration-500"
-                  style={{ width: profileComplete ? "100%" : city.trim() && bio.trim() ? "100%" : city.trim() || bio.trim() ? "50%" : "0%" }}
+                  style={{
+                    width: profileComplete
+                      ? "100%"
+                      : city.trim() || bio.trim()
+                        ? "50%"
+                        : "0%",
+                  }}
                 />
               </div>
               <div className="flex gap-3 text-xs text-muted-foreground">
@@ -174,7 +283,7 @@ function ProfilePage() {
             </CardContent>
           </Card>
 
-          {/* Form */}
+          {/* About you */}
           <Card>
             <CardHeader>
               <CardTitle className="text-xl flex items-center gap-2">
@@ -195,7 +304,8 @@ function ProfilePage() {
 
               <div className="space-y-2">
                 <Label htmlFor="city" className="flex items-center gap-1">
-                  <MapPin className="h-3.5 w-3.5" /> City <span className="text-gold">*</span>
+                  <MapPin className="h-3.5 w-3.5" /> City{" "}
+                  <span className="text-gold">*</span>
                 </Label>
                 <Input
                   id="city"
@@ -203,12 +313,12 @@ function ProfilePage() {
                   onChange={(e) => setCity(e.target.value)}
                   placeholder="e.g. Cologne, Berlin, Amsterdam"
                 />
-                <p className="text-xs text-muted-foreground">Required to complete your profile.</p>
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="bio" className="flex items-center gap-1">
-                  <PenLine className="h-3.5 w-3.5" /> Bio <span className="text-gold">*</span>
+                  <PenLine className="h-3.5 w-3.5" /> Bio{" "}
+                  <span className="text-gold">*</span>
                 </Label>
                 <Textarea
                   id="bio"
@@ -218,18 +328,121 @@ function ProfilePage() {
                   rows={4}
                 />
                 <p className="text-xs text-muted-foreground">
-                  {bio.trim().length > 0 ? `${bio.trim().length} characters` : "Required to complete your profile."}
+                  {bio.trim().length > 0
+                    ? `${bio.trim().length} characters`
+                    : "Required to complete your profile."}
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="birthday" className="flex items-center gap-1">
+                  <Cake className="h-3.5 w-3.5" /> Birthday
+                </Label>
+                <Input
+                  id="birthday"
+                  type="date"
+                  value={birthday}
+                  onChange={(e) => setBirthday(e.target.value)}
+                  max={new Date().toISOString().slice(0, 10)}
+                />
+                <p className="text-xs text-muted-foreground">
+                  Only used to celebrate you — never shown publicly.
                 </p>
               </div>
             </CardContent>
           </Card>
 
+          {/* Identity */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-xl flex items-center gap-2">
+                <Sparkles className="h-5 w-5 text-gold" /> Identity
+              </CardTitle>
+              <CardDescription>
+                Share what feels right. Every field is optional.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-5">
+              <div className="space-y-2">
+                <Label>Gender</Label>
+                <Select value={gender} onValueChange={setGender}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Choose what fits" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {GENDER_OPTIONS.map((g) => (
+                      <SelectItem key={g} value={g}>
+                        {g}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Sexual orientation</Label>
+                <Select value={orientation} onValueChange={setOrientation}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Choose what fits" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {ORIENTATION_OPTIONS.map((o) => (
+                      <SelectItem key={o} value={o}>
+                        {o}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Connections */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-xl flex items-center gap-2">
+                <Users className="h-5 w-5 text-gold" /> Who would you like to meet?
+              </CardTitle>
+              <CardDescription>
+                You can keep this open or tell us what kinds of connections feel
+                most relevant right now.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ChipGroup
+                options={LOOKING_FOR_OPTIONS}
+                selected={lookingFor}
+                onToggle={(v) => toggle(lookingFor, v, setLookingFor)}
+              />
+            </CardContent>
+          </Card>
+
+          {/* Experience */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-xl flex items-center gap-2">
+                <Compass className="h-5 w-5 text-gold" /> What are you hoping to find here?
+              </CardTitle>
+              <CardDescription>Pick anything that resonates.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ChipGroup
+                options={EXPERIENCE_OPTIONS}
+                selected={experience}
+                onToggle={(v) => toggle(experience, v, setExperience)}
+              />
+            </CardContent>
+          </Card>
+
+          {/* Interests */}
           <Card>
             <CardHeader>
               <CardTitle className="text-xl flex items-center gap-2">
                 <Heart className="h-5 w-5 text-gold" /> Interests
               </CardTitle>
-              <CardDescription>Pick what you are into. This helps others find common ground.</CardDescription>
+              <CardDescription>
+                Pick what you are into. This helps others find common ground.
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="flex flex-wrap gap-2">
@@ -281,6 +494,39 @@ function ProfilePage() {
         </div>
       </main>
       <Footer />
+    </div>
+  );
+}
+
+function ChipGroup({
+  options,
+  selected,
+  onToggle,
+}: {
+  options: readonly string[];
+  selected: Set<string>;
+  onToggle: (v: string) => void;
+}) {
+  return (
+    <div className="flex flex-wrap gap-2">
+      {options.map((opt) => {
+        const active = selected.has(opt);
+        return (
+          <button
+            key={opt}
+            type="button"
+            onClick={() => onToggle(opt)}
+            className={`rounded-full border px-3 py-1.5 text-sm transition-colors ${
+              active
+                ? "border-gold bg-gold/10 text-foreground"
+                : "border-border/60 text-muted-foreground hover:bg-accent"
+            }`}
+          >
+            {active && <span className="mr-1">✓</span>}
+            {opt}
+          </button>
+        );
+      })}
     </div>
   );
 }
