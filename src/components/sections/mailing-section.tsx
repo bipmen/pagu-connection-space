@@ -33,9 +33,9 @@ export function MailingSection() {
             </form>
           )}
           <a
-            href="https://instagram.com"
+            href="https://www.instagram.com/pagucollective/"
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
             className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-gold mt-6 transition-colors"
           >
             <Instagram className="h-4 w-4" /> Follow us on Instagram
