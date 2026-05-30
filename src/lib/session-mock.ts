@@ -82,8 +82,10 @@ export function updateCurrentUser(patch: Partial<SessionUser>) {
 }
 
 export function useCurrentUser(): SessionUser | null {
-  const [user, setUser] = useState<SessionUser | null>(() => readStorage());
+  // Always start null to match SSR; hydrate from storage after mount.
+  const [user, setUser] = useState<SessionUser | null>(null);
   useEffect(() => {
+    setUser(readStorage());
     const l = () => setUser(readStorage());
     listeners.add(l);
     const onStorage = (e: StorageEvent) => {
