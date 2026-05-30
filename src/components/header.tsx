@@ -70,7 +70,7 @@ export function Header() {
               ) : (
                 <Link
                   key={l.to}
-                  to={l.to}
+                  to={l.to as never}
                   className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                   activeProps={{ className: "text-foreground" }}
                 >
@@ -151,7 +151,7 @@ export function Header() {
                 ) : (
                   <Link
                     key={l.to}
-                    to={l.to}
+                    to={l.to as never}
                     onClick={() => setOpen(false)}
                     className="px-3 py-3 rounded-lg text-foreground hover:bg-accent text-base"
                   >
