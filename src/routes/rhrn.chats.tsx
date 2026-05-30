@@ -3,9 +3,9 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowLeft, MessageCircle, Inbox } from "lucide-react";
+import { ArrowLeft, MessageCircle, Inbox, Clock } from "lucide-react";
 import { useCurrentUser } from "@/lib/session-mock";
-import { respondToRequest, useChats, useIncomingRequests } from "@/lib/rhrn-mock";
+import { respondToRequest, useChats, useIncomingRequests, useOutgoingRequests } from "@/lib/rhrn-mock";
 
 export const Route = createFileRoute("/rhrn/chats")({
   head: () => ({ meta: [{ title: "Conversations — Pagu" }, { name: "robots", content: "noindex" }] }),
@@ -17,7 +17,10 @@ function ChatsList() {
   const navigate = useNavigate();
   const chats = useChats(user?.id);
   const requests = useIncomingRequests(user?.id);
+  const outgoing = useOutgoingRequests(user?.id);
   const pending = requests.filter((r) => r.status === "pending");
+  const sent = outgoing.filter((r) => r.status === "pending");
+
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
