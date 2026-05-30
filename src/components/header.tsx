@@ -20,6 +20,7 @@ const publicLinks = [
 ] as const;
 
 const memberLinks = [
+  { to: "/discover", label: "Discover" },
   { to: "/about", label: "About" },
   { to: "/community-events", label: "Events" },
   { to: "/rhrn", label: "Right Here Right Now" },

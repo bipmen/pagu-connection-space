@@ -19,13 +19,16 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RhrnIndexRouteImport } from './routes/rhrn.index'
+import { Route as DiscoverIndexRouteImport } from './routes/discover.index'
 import { Route as CommunityEventsIndexRouteImport } from './routes/community-events.index'
 import { Route as RhrnRequestsRouteImport } from './routes/rhrn.requests'
 import { Route as RhrnChatsRouteImport } from './routes/rhrn.chats'
 import { Route as RhrnIdRouteImport } from './routes/rhrn.$id'
+import { Route as DiscoverApplyRouteImport } from './routes/discover.apply'
 import { Route as CommunityEventsNewRouteImport } from './routes/community-events.new'
 import { Route as CommunityEventsIdRouteImport } from './routes/community-events.$id'
 import { Route as RhrnChatIdRouteImport } from './routes/rhrn.chat.$id'
+import { Route as DiscoverSafeSpaceIdRouteImport } from './routes/discover.safe-space.$id'
 
 const SupportThankYouRoute = SupportThankYouRouteImport.update({
   id: '/support-thank-you',
@@ -77,6 +80,11 @@ const RhrnIndexRoute = RhrnIndexRouteImport.update({
   path: '/rhrn/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DiscoverIndexRoute = DiscoverIndexRouteImport.update({
+  id: '/discover/',
+  path: '/discover/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CommunityEventsIndexRoute = CommunityEventsIndexRouteImport.update({
   id: '/community-events/',
   path: '/community-events/',
@@ -97,6 +105,11 @@ const RhrnIdRoute = RhrnIdRouteImport.update({
   path: '/rhrn/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DiscoverApplyRoute = DiscoverApplyRouteImport.update({
+  id: '/discover/apply',
+  path: '/discover/apply',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CommunityEventsNewRoute = CommunityEventsNewRouteImport.update({
   id: '/community-events/new',
   path: '/community-events/new',
@@ -112,6 +125,11 @@ const RhrnChatIdRoute = RhrnChatIdRouteImport.update({
   path: '/rhrn/chat/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DiscoverSafeSpaceIdRoute = DiscoverSafeSpaceIdRouteImport.update({
+  id: '/discover/safe-space/$id',
+  path: '/discover/safe-space/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -125,11 +143,14 @@ export interface FileRoutesByFullPath {
   '/support-thank-you': typeof SupportThankYouRoute
   '/community-events/$id': typeof CommunityEventsIdRoute
   '/community-events/new': typeof CommunityEventsNewRoute
+  '/discover/apply': typeof DiscoverApplyRoute
   '/rhrn/$id': typeof RhrnIdRoute
   '/rhrn/chats': typeof RhrnChatsRoute
   '/rhrn/requests': typeof RhrnRequestsRoute
   '/community-events/': typeof CommunityEventsIndexRoute
+  '/discover/': typeof DiscoverIndexRoute
   '/rhrn/': typeof RhrnIndexRoute
+  '/discover/safe-space/$id': typeof DiscoverSafeSpaceIdRoute
   '/rhrn/chat/$id': typeof RhrnChatIdRoute
 }
 export interface FileRoutesByTo {
@@ -144,11 +165,14 @@ export interface FileRoutesByTo {
   '/support-thank-you': typeof SupportThankYouRoute
   '/community-events/$id': typeof CommunityEventsIdRoute
   '/community-events/new': typeof CommunityEventsNewRoute
+  '/discover/apply': typeof DiscoverApplyRoute
   '/rhrn/$id': typeof RhrnIdRoute
   '/rhrn/chats': typeof RhrnChatsRoute
   '/rhrn/requests': typeof RhrnRequestsRoute
   '/community-events': typeof CommunityEventsIndexRoute
+  '/discover': typeof DiscoverIndexRoute
   '/rhrn': typeof RhrnIndexRoute
+  '/discover/safe-space/$id': typeof DiscoverSafeSpaceIdRoute
   '/rhrn/chat/$id': typeof RhrnChatIdRoute
 }
 export interface FileRoutesById {
@@ -164,11 +188,14 @@ export interface FileRoutesById {
   '/support-thank-you': typeof SupportThankYouRoute
   '/community-events/$id': typeof CommunityEventsIdRoute
   '/community-events/new': typeof CommunityEventsNewRoute
+  '/discover/apply': typeof DiscoverApplyRoute
   '/rhrn/$id': typeof RhrnIdRoute
   '/rhrn/chats': typeof RhrnChatsRoute
   '/rhrn/requests': typeof RhrnRequestsRoute
   '/community-events/': typeof CommunityEventsIndexRoute
+  '/discover/': typeof DiscoverIndexRoute
   '/rhrn/': typeof RhrnIndexRoute
+  '/discover/safe-space/$id': typeof DiscoverSafeSpaceIdRoute
   '/rhrn/chat/$id': typeof RhrnChatIdRoute
 }
 export interface FileRouteTypes {
@@ -185,11 +212,14 @@ export interface FileRouteTypes {
     | '/support-thank-you'
     | '/community-events/$id'
     | '/community-events/new'
+    | '/discover/apply'
     | '/rhrn/$id'
     | '/rhrn/chats'
     | '/rhrn/requests'
     | '/community-events/'
+    | '/discover/'
     | '/rhrn/'
+    | '/discover/safe-space/$id'
     | '/rhrn/chat/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -204,11 +234,14 @@ export interface FileRouteTypes {
     | '/support-thank-you'
     | '/community-events/$id'
     | '/community-events/new'
+    | '/discover/apply'
     | '/rhrn/$id'
     | '/rhrn/chats'
     | '/rhrn/requests'
     | '/community-events'
+    | '/discover'
     | '/rhrn'
+    | '/discover/safe-space/$id'
     | '/rhrn/chat/$id'
   id:
     | '__root__'
@@ -223,11 +256,14 @@ export interface FileRouteTypes {
     | '/support-thank-you'
     | '/community-events/$id'
     | '/community-events/new'
+    | '/discover/apply'
     | '/rhrn/$id'
     | '/rhrn/chats'
     | '/rhrn/requests'
     | '/community-events/'
+    | '/discover/'
     | '/rhrn/'
+    | '/discover/safe-space/$id'
     | '/rhrn/chat/$id'
   fileRoutesById: FileRoutesById
 }
@@ -243,11 +279,14 @@ export interface RootRouteChildren {
   SupportThankYouRoute: typeof SupportThankYouRoute
   CommunityEventsIdRoute: typeof CommunityEventsIdRoute
   CommunityEventsNewRoute: typeof CommunityEventsNewRoute
+  DiscoverApplyRoute: typeof DiscoverApplyRoute
   RhrnIdRoute: typeof RhrnIdRoute
   RhrnChatsRoute: typeof RhrnChatsRoute
   RhrnRequestsRoute: typeof RhrnRequestsRoute
   CommunityEventsIndexRoute: typeof CommunityEventsIndexRoute
+  DiscoverIndexRoute: typeof DiscoverIndexRoute
   RhrnIndexRoute: typeof RhrnIndexRoute
+  DiscoverSafeSpaceIdRoute: typeof DiscoverSafeSpaceIdRoute
   RhrnChatIdRoute: typeof RhrnChatIdRoute
 }
 
@@ -323,6 +362,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RhrnIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/discover/': {
+      id: '/discover/'
+      path: '/discover'
+      fullPath: '/discover/'
+      preLoaderRoute: typeof DiscoverIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/community-events/': {
       id: '/community-events/'
       path: '/community-events'
@@ -351,6 +397,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RhrnIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/discover/apply': {
+      id: '/discover/apply'
+      path: '/discover/apply'
+      fullPath: '/discover/apply'
+      preLoaderRoute: typeof DiscoverApplyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/community-events/new': {
       id: '/community-events/new'
       path: '/community-events/new'
@@ -372,6 +425,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RhrnChatIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/discover/safe-space/$id': {
+      id: '/discover/safe-space/$id'
+      path: '/discover/safe-space/$id'
+      fullPath: '/discover/safe-space/$id'
+      preLoaderRoute: typeof DiscoverSafeSpaceIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -387,22 +447,16 @@ const rootRouteChildren: RootRouteChildren = {
   SupportThankYouRoute: SupportThankYouRoute,
   CommunityEventsIdRoute: CommunityEventsIdRoute,
   CommunityEventsNewRoute: CommunityEventsNewRoute,
+  DiscoverApplyRoute: DiscoverApplyRoute,
   RhrnIdRoute: RhrnIdRoute,
   RhrnChatsRoute: RhrnChatsRoute,
   RhrnRequestsRoute: RhrnRequestsRoute,
   CommunityEventsIndexRoute: CommunityEventsIndexRoute,
+  DiscoverIndexRoute: DiscoverIndexRoute,
   RhrnIndexRoute: RhrnIndexRoute,
+  DiscoverSafeSpaceIdRoute: DiscoverSafeSpaceIdRoute,
   RhrnChatIdRoute: RhrnChatIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}
