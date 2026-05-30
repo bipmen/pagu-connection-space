@@ -18,9 +18,14 @@ import { Route as EventsRouteImport } from './routes/events'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as RhrnIndexRouteImport } from './routes/rhrn.index'
 import { Route as CommunityEventsIndexRouteImport } from './routes/community-events.index'
+import { Route as RhrnRequestsRouteImport } from './routes/rhrn.requests'
+import { Route as RhrnChatsRouteImport } from './routes/rhrn.chats'
+import { Route as RhrnIdRouteImport } from './routes/rhrn.$id'
 import { Route as CommunityEventsNewRouteImport } from './routes/community-events.new'
 import { Route as CommunityEventsIdRouteImport } from './routes/community-events.$id'
+import { Route as RhrnChatIdRouteImport } from './routes/rhrn.chat.$id'
 
 const SupportThankYouRoute = SupportThankYouRouteImport.update({
   id: '/support-thank-you',
@@ -67,9 +72,29 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RhrnIndexRoute = RhrnIndexRouteImport.update({
+  id: '/rhrn/',
+  path: '/rhrn/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CommunityEventsIndexRoute = CommunityEventsIndexRouteImport.update({
   id: '/community-events/',
   path: '/community-events/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RhrnRequestsRoute = RhrnRequestsRouteImport.update({
+  id: '/rhrn/requests',
+  path: '/rhrn/requests',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RhrnChatsRoute = RhrnChatsRouteImport.update({
+  id: '/rhrn/chats',
+  path: '/rhrn/chats',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RhrnIdRoute = RhrnIdRouteImport.update({
+  id: '/rhrn/$id',
+  path: '/rhrn/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CommunityEventsNewRoute = CommunityEventsNewRouteImport.update({
@@ -80,6 +105,11 @@ const CommunityEventsNewRoute = CommunityEventsNewRouteImport.update({
 const CommunityEventsIdRoute = CommunityEventsIdRouteImport.update({
   id: '/community-events/$id',
   path: '/community-events/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RhrnChatIdRoute = RhrnChatIdRouteImport.update({
+  id: '/rhrn/chat/$id',
+  path: '/rhrn/chat/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -95,7 +125,12 @@ export interface FileRoutesByFullPath {
   '/support-thank-you': typeof SupportThankYouRoute
   '/community-events/$id': typeof CommunityEventsIdRoute
   '/community-events/new': typeof CommunityEventsNewRoute
+  '/rhrn/$id': typeof RhrnIdRoute
+  '/rhrn/chats': typeof RhrnChatsRoute
+  '/rhrn/requests': typeof RhrnRequestsRoute
   '/community-events/': typeof CommunityEventsIndexRoute
+  '/rhrn/': typeof RhrnIndexRoute
+  '/rhrn/chat/$id': typeof RhrnChatIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -109,7 +144,12 @@ export interface FileRoutesByTo {
   '/support-thank-you': typeof SupportThankYouRoute
   '/community-events/$id': typeof CommunityEventsIdRoute
   '/community-events/new': typeof CommunityEventsNewRoute
+  '/rhrn/$id': typeof RhrnIdRoute
+  '/rhrn/chats': typeof RhrnChatsRoute
+  '/rhrn/requests': typeof RhrnRequestsRoute
   '/community-events': typeof CommunityEventsIndexRoute
+  '/rhrn': typeof RhrnIndexRoute
+  '/rhrn/chat/$id': typeof RhrnChatIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -124,7 +164,12 @@ export interface FileRoutesById {
   '/support-thank-you': typeof SupportThankYouRoute
   '/community-events/$id': typeof CommunityEventsIdRoute
   '/community-events/new': typeof CommunityEventsNewRoute
+  '/rhrn/$id': typeof RhrnIdRoute
+  '/rhrn/chats': typeof RhrnChatsRoute
+  '/rhrn/requests': typeof RhrnRequestsRoute
   '/community-events/': typeof CommunityEventsIndexRoute
+  '/rhrn/': typeof RhrnIndexRoute
+  '/rhrn/chat/$id': typeof RhrnChatIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -140,7 +185,12 @@ export interface FileRouteTypes {
     | '/support-thank-you'
     | '/community-events/$id'
     | '/community-events/new'
+    | '/rhrn/$id'
+    | '/rhrn/chats'
+    | '/rhrn/requests'
     | '/community-events/'
+    | '/rhrn/'
+    | '/rhrn/chat/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -154,7 +204,12 @@ export interface FileRouteTypes {
     | '/support-thank-you'
     | '/community-events/$id'
     | '/community-events/new'
+    | '/rhrn/$id'
+    | '/rhrn/chats'
+    | '/rhrn/requests'
     | '/community-events'
+    | '/rhrn'
+    | '/rhrn/chat/$id'
   id:
     | '__root__'
     | '/'
@@ -168,7 +223,12 @@ export interface FileRouteTypes {
     | '/support-thank-you'
     | '/community-events/$id'
     | '/community-events/new'
+    | '/rhrn/$id'
+    | '/rhrn/chats'
+    | '/rhrn/requests'
     | '/community-events/'
+    | '/rhrn/'
+    | '/rhrn/chat/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -183,7 +243,12 @@ export interface RootRouteChildren {
   SupportThankYouRoute: typeof SupportThankYouRoute
   CommunityEventsIdRoute: typeof CommunityEventsIdRoute
   CommunityEventsNewRoute: typeof CommunityEventsNewRoute
+  RhrnIdRoute: typeof RhrnIdRoute
+  RhrnChatsRoute: typeof RhrnChatsRoute
+  RhrnRequestsRoute: typeof RhrnRequestsRoute
   CommunityEventsIndexRoute: typeof CommunityEventsIndexRoute
+  RhrnIndexRoute: typeof RhrnIndexRoute
+  RhrnChatIdRoute: typeof RhrnChatIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -251,11 +316,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/rhrn/': {
+      id: '/rhrn/'
+      path: '/rhrn'
+      fullPath: '/rhrn/'
+      preLoaderRoute: typeof RhrnIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/community-events/': {
       id: '/community-events/'
       path: '/community-events'
       fullPath: '/community-events/'
       preLoaderRoute: typeof CommunityEventsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rhrn/requests': {
+      id: '/rhrn/requests'
+      path: '/rhrn/requests'
+      fullPath: '/rhrn/requests'
+      preLoaderRoute: typeof RhrnRequestsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rhrn/chats': {
+      id: '/rhrn/chats'
+      path: '/rhrn/chats'
+      fullPath: '/rhrn/chats'
+      preLoaderRoute: typeof RhrnChatsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rhrn/$id': {
+      id: '/rhrn/$id'
+      path: '/rhrn/$id'
+      fullPath: '/rhrn/$id'
+      preLoaderRoute: typeof RhrnIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/community-events/new': {
@@ -270,6 +363,13 @@ declare module '@tanstack/react-router' {
       path: '/community-events/$id'
       fullPath: '/community-events/$id'
       preLoaderRoute: typeof CommunityEventsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rhrn/chat/$id': {
+      id: '/rhrn/chat/$id'
+      path: '/rhrn/chat/$id'
+      fullPath: '/rhrn/chat/$id'
+      preLoaderRoute: typeof RhrnChatIdRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -287,7 +387,12 @@ const rootRouteChildren: RootRouteChildren = {
   SupportThankYouRoute: SupportThankYouRoute,
   CommunityEventsIdRoute: CommunityEventsIdRoute,
   CommunityEventsNewRoute: CommunityEventsNewRoute,
+  RhrnIdRoute: RhrnIdRoute,
+  RhrnChatsRoute: RhrnChatsRoute,
+  RhrnRequestsRoute: RhrnRequestsRoute,
   CommunityEventsIndexRoute: CommunityEventsIndexRoute,
+  RhrnIndexRoute: RhrnIndexRoute,
+  RhrnChatIdRoute: RhrnChatIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
