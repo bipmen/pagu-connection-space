@@ -448,6 +448,13 @@ export function useIncomingRequests(userId: string | undefined) {
   return listIncomingRequests(userId);
 }
 
+export function useOutgoingRequests(userId: string | undefined) {
+  useStoreSync();
+  if (!userId) return [];
+  return listOutgoingRequests(userId);
+}
+
+
 export function useChats(userId: string | undefined) {
   useStoreSync();
   if (!userId) return [];
