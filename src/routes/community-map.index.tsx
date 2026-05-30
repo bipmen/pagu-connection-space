@@ -71,7 +71,7 @@ function CommunityMapPage() {
 
   useEffect(() => {
     if (user && !isProfileComplete(user)) {
-      navigate({ to: "/profile" });
+      navigate({ to: "/profile-setup" });
     }
   }, [navigate, user]);
 
@@ -101,7 +101,7 @@ function CommunityMapPage() {
             This is the next step before you enter the main member experience.
           </p>
           <Button asChild variant="hero" size="lg" className="mt-6">
-            <Link to="/profile">Continue to profile</Link>
+            <Link to="/profile-setup">Continue to profile</Link>
           </Button>
         </main>
         <Footer />

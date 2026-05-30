@@ -127,7 +127,7 @@ function RegisterPage() {
     const result = verifyCode(code);
     if (result === "ok") {
       const user = signIn({ name, method: activeMethod, identifier: activeIdentifier });
-      navigate({ to: isProfileComplete(user) ? "/dashboard" : "/profile" });
+      navigate({ to: isProfileComplete(user) ? "/profile" : "/profile-setup" });
       return;
     }
     setVerifyError(

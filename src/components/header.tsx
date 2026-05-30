@@ -20,7 +20,7 @@ const publicLinks = [
 ] as const;
 
 const memberLinks = [
-  { to: "/dashboard", label: "Dashboard" },
+  { to: "/profile", label: "Profile" },
   { to: "/community-map", label: "Community Map" },
   { to: "/about", label: "About" },
   { to: "/community-events", label: "Events" },
@@ -91,9 +91,6 @@ export function Header() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
                   <DropdownMenuItem asChild>
-                    <Link to="/dashboard">Dashboard</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
                     <Link to="/profile">Profile</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
@@ -142,13 +139,6 @@ export function Header() {
               ))}
               {user ? (
                 <>
-                  <Link
-                    to="/profile"
-                    onClick={() => setOpen(false)}
-                    className="px-3 py-3 rounded-lg text-foreground hover:bg-accent text-base"
-                  >
-                    Profile
-                  </Link>
                   <button
                     onClick={handleLogout}
                     className="px-3 py-3 rounded-lg text-foreground hover:bg-accent text-base text-left inline-flex items-center gap-2"

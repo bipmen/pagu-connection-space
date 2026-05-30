@@ -1,286 +1,341 @@
-import { useState, useCallback } from "react";
+import { useEffect } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { useCurrentUser, updateCurrentUser } from "@/lib/session-mock";
-import { getEligibility, isEligible } from "@/lib/rhrn-mock";
-import { Sparkles, CheckCircle2, ArrowRight, User, MapPin, PenLine, Heart } from "lucide-react";
-
-const INTEREST_OPTIONS = [
-  "Coffee",
-  "Art & Culture",
-  "Music",
-  "Nature & Walks",
-  "Food & Cooking",
-  "Books",
-  "Yoga & Wellness",
-  "Dancing",
-  "Languages",
-  "Travel",
-  "Crafts",
-  "Gaming",
-  "Volunteering",
-  "Film",
-] as const;
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Compass,
+  Sparkles,
+  Calendar,
+  MessageCircle,
+  
+  UserRound,
+  MapPin,
+  ArrowRight,
+  Eye,
+  EyeOff,
+  ShieldCheck,
+} from "lucide-react";
+import { isProfileComplete, useCurrentUser } from "@/lib/session-mock";
+import {
+  ensureSeedChats,
+  useAvailable,
+  useChats,
+  
+  useMySession,
+} from "@/lib/rhrn-mock";
+import { listEvents } from "@/lib/events-mock";
 
 export const Route = createFileRoute("/profile")({
   head: () => ({
     meta: [
-      { title: "Complete Your Profile — Pagu" },
-      { name: "description", content: "Set up your Pagu profile to unlock community features." },
+      { title: "Profile — Pagu" },
+      { name: "description", content: "Your Pagu hub: profile, discovery, and community activity in one place." },
       { name: "robots", content: "noindex" },
     ],
   }),
-  component: ProfilePage,
+  component: DashboardPage,
 });
 
-function ProfilePage() {
+function DashboardPage() {
   const user = useCurrentUser();
   const navigate = useNavigate();
-  const [saved, setSaved] = useState(false);
+  const mySession = useMySession(user?.id);
+  const nearby = useAvailable(user?.id);
+  const chats = useChats(user?.id);
 
-  const [name, setName] = useState(user?.name ?? "");
-  const [city, setCity] = useState(user?.city ?? "");
-  const [bio, setBio] = useState(user?.bio ?? "");
-  const [interests, setInterests] = useState<Set<string>>(new Set(user?.interests ?? []));
+  useEffect(() => {
+    if (user) ensureSeedChats(user.id, user.name);
+  }, [user]);
 
-  const toggleInterest = useCallback((interest: string) => {
-    setInterests((prev) => {
-      const next = new Set(prev);
-      if (next.has(interest)) next.delete(interest);
-      else next.add(interest);
-      return next;
-    });
-  }, []);
+  useEffect(() => {
+    if (user && !isProfileComplete(user)) {
+      navigate({ to: "/profile-setup" });
+    }
+  }, [navigate, user]);
 
-  const profileComplete = !!(bio.trim().length > 0 && city.trim().length > 0);
-
-  function handleSave() {
-    if (!user) return;
-    updateCurrentUser({
-      name: name.trim() || user.name,
-      city: city.trim(),
-      bio: bio.trim(),
-      interests: Array.from(interests),
-    });
-    setSaved(true);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
+  // Soft gate: bounce to login if no user (after hydration tick).
+  useEffect(() => {
+    const t = setTimeout(() => {
+      if (typeof window !== "undefined" && !window.localStorage.getItem("pagu.session.v1")) {
+        navigate({ to: "/login" });
+      }
+    }, 50);
+    return () => clearTimeout(t);
+  }, [navigate]);
 
   if (!user) {
     return (
-      <div className="min-h-screen flex flex-col">
-        <Header />
-        <main className="flex-1 flex items-center justify-center px-5 py-20">
-          <Card className="max-w-md w-full text-center">
-            <CardContent className="p-8 space-y-4">
-              <h1 className="text-2xl font-semibold">Sign in first</h1>
-              <p className="text-muted-foreground">You need to be logged in to complete your profile.</p>
-              <Button asChild variant="hero">
-                <Link to="/login">Sign in</Link>
-              </Button>
-            </CardContent>
-          </Card>
-        </main>
-        <Footer />
-      </div>
+      <Shell>
+        <Card>
+          <CardContent className="p-8 text-center space-y-4">
+            <h1 className="text-2xl font-semibold">Sign in to view your profile</h1>
+            <Button asChild variant="hero">
+              <Link to="/login">Sign in</Link>
+            </Button>
+          </CardContent>
+        </Card>
+      </Shell>
     );
   }
 
-  if (saved && profileComplete) {
+  if (!isProfileComplete(user)) {
     return (
-      <div className="min-h-screen flex flex-col">
-        <Header />
-        <main className="flex-1 flex items-center justify-center px-5 py-20">
-          <Card className="max-w-md w-full text-center">
-            <CardContent className="p-8 space-y-6">
-              <div className="mx-auto w-14 h-14 rounded-full bg-gold/15 flex items-center justify-center">
-                <CheckCircle2 className="h-7 w-7 text-gold" />
-              </div>
-              <div className="space-y-2">
-                <h1 className="text-2xl font-display font-medium">Profile complete</h1>
-                <p className="text-muted-foreground">You are all set to connect with the Pagu community.</p>
-              </div>
-              <div className="space-y-3">
-                <Button asChild variant="hero" className="w-full">
-                  <Link to="/dashboard">
-                    Go to dashboard <ArrowRight className="h-4 w-4" />
-                  </Link>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </main>
-        <Footer />
-      </div>
+      <Shell>
+        <Card>
+          <CardContent className="p-8 text-center space-y-4">
+            <h1 className="text-2xl font-semibold">Complete your profile to continue</h1>
+            <p className="text-muted-foreground">
+              You are almost in. Add a few details first, then your profile will be ready.
+            </p>
+            <Button asChild variant="hero">
+              <Link to="/profile-setup">Complete profile</Link>
+            </Button>
+          </CardContent>
+        </Card>
+      </Shell>
     );
   }
 
-  const eligibility = getEligibility(user);
-  const rhrnUnlocked = isEligible(eligibility);
+  
+  const upcomingEvents = listEvents()
+    .filter((e) => e.date >= new Date().toISOString().slice(0, 10))
+    .slice(0, 3);
+
+  const cityEventsCount = user.city
+    ? listEvents().filter(
+        (e) =>
+          e.date >= new Date().toISOString().slice(0, 10) &&
+          e.city.toLowerCase() === user.city!.toLowerCase(),
+      ).length
+    : 0;
+
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1 mx-auto w-full max-w-2xl px-5 py-8 lg:py-12">
-        <div className="space-y-6">
-          {/* Header */}
-          <div className="text-center space-y-2">
-            <div className="mx-auto h-px w-16 bg-gold/60 mb-6" />
-            <h1 className="font-display text-3xl md:text-4xl">Complete your profile</h1>
-            <p className="text-muted-foreground max-w-md mx-auto">
-              A few details help the community know who you are and what you are into.
-            </p>
-          </div>
-
-          {/* Progress / Status */}
-          <Card className={profileComplete ? "border-gold/40" : ""}>
-            <CardContent className="p-5 space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium">
-                  {profileComplete ? (
-                    <span className="flex items-center gap-2 text-gold">
-                      <CheckCircle2 className="h-4 w-4" /> Profile ready
-                    </span>
-                  ) : (
-                    <span className="flex items-center gap-2">
-                      <Sparkles className="h-4 w-4 text-gold" /> Finish to enter the community
-                    </span>
-                  )}
-                </span>
-                <span className="text-xs text-muted-foreground">
-                  {profileComplete ? "2/2" : `${(bio.trim() ? 1 : 0) + (city.trim() ? 1 : 0)}/2`} required
-                </span>
-              </div>
-              <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">
-                <div
-                  className="h-full rounded-full bg-gold transition-all duration-500"
-                  style={{ width: profileComplete ? "100%" : city.trim() && bio.trim() ? "100%" : city.trim() || bio.trim() ? "50%" : "0%" }}
-                />
-              </div>
-              <div className="flex gap-3 text-xs text-muted-foreground">
-                <span className={`flex items-center gap-1 ${city.trim() ? "text-gold" : ""}`}>
-                  <CheckCircle2 className="h-3 w-3" /> City
-                </span>
-                <span className={`flex items-center gap-1 ${bio.trim() ? "text-gold" : ""}`}>
-                  <CheckCircle2 className="h-3 w-3" /> Bio
-                </span>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Form */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-xl flex items-center gap-2">
-                <User className="h-5 w-5 text-gold" /> About you
-              </CardTitle>
-              <CardDescription>This is what other members will see.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-5">
-              <div className="space-y-2">
-                <Label htmlFor="name">Name</Label>
-                <Input
-                  id="name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="How should we call you?"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="city" className="flex items-center gap-1">
-                  <MapPin className="h-3.5 w-3.5" /> City <span className="text-gold">*</span>
-                </Label>
-                <Input
-                  id="city"
-                  value={city}
-                  onChange={(e) => setCity(e.target.value)}
-                  placeholder="e.g. Cologne, Berlin, Amsterdam"
-                />
-                <p className="text-xs text-muted-foreground">Required to complete your profile.</p>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="bio" className="flex items-center gap-1">
-                  <PenLine className="h-3.5 w-3.5" /> Bio <span className="text-gold">*</span>
-                </Label>
-                <Textarea
-                  id="bio"
-                  value={bio}
-                  onChange={(e) => setBio(e.target.value)}
-                  placeholder="A short sentence about you — hobbies, vibe, what brings you to Pagu..."
-                  rows={4}
-                />
-                <p className="text-xs text-muted-foreground">
-                  {bio.trim().length > 0 ? `${bio.trim().length} characters` : "Required to complete your profile."}
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-xl flex items-center gap-2">
-                <Heart className="h-5 w-5 text-gold" /> Interests
-              </CardTitle>
-              <CardDescription>Pick what you are into. This helps others find common ground.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-wrap gap-2">
-                {INTEREST_OPTIONS.map((interest) => {
-                  const active = interests.has(interest);
-                  return (
-                    <button
-                      key={interest}
-                      type="button"
-                      onClick={() => toggleInterest(interest)}
-                      className={`rounded-full border px-3 py-1.5 text-sm transition-colors ${
-                        active
-                          ? "border-gold bg-gold/10 text-foreground"
-                          : "border-border/60 text-muted-foreground hover:bg-accent"
-                      }`}
-                    >
-                      {active && <span className="mr-1">✓</span>}
-                      {interest}
-                    </button>
-                  );
-                })}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Actions */}
-          <div className="flex flex-col sm:flex-row gap-3 pt-2">
-            <Button
-              variant="hero"
-              size="lg"
-              className="flex-1"
-              disabled={!profileComplete}
-              onClick={handleSave}
-            >
-              Save profile
-            </Button>
-            {rhrnUnlocked && (
-              <Button asChild variant="outlineGold" size="lg" className="flex-1">
-                <Link to="/rhrn">Back to RHRN</Link>
-              </Button>
+    <Shell>
+      <div className="space-y-8">
+        {/* Welcome */}
+        <section className="space-y-2">
+          <p className="text-sm text-muted-foreground">Welcome back</p>
+          <h1 className="font-display text-3xl md:text-4xl">Hi, {user.name}</h1>
+          <p className="text-muted-foreground flex items-center gap-2 text-sm">
+            <MapPin className="h-3.5 w-3.5" /> {user.city || "City not set"}
+            {user.organizer_unlocked && (
+              <Badge variant="secondary" className="ml-2 font-normal">✨ Organizer</Badge>
             )}
-          </div>
+          </p>
+        </section>
 
-          {saved && !profileComplete && (
-            <p className="text-sm text-center text-muted-foreground">
-              Saved. Add your city and bio to continue.
-            </p>
-          )}
-        </div>
-      </main>
+        {/* Status grid */}
+        <section className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <StatusTile
+            icon={mySession ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+            label="RHRN"
+            value={mySession ? "Available" : "Invisible"}
+            tone={mySession ? "live" : "muted"}
+          />
+          <StatusTile
+            icon={<MessageCircle className="h-4 w-4" />}
+            label="Chats"
+            value={`${chats.length} active`}
+            tone={chats.length > 0 ? "accent" : "muted"}
+          />
+          <StatusTile
+            icon={<Sparkles className="h-4 w-4" />}
+            label="Nearby now"
+            value={`${nearby.length} members`}
+            tone="muted"
+          />
+          <StatusTile
+            icon={<Calendar className="h-4 w-4" />}
+            label="Events"
+            value={`${cityEventsCount} in ${user.city || "your city"}`}
+            tone={cityEventsCount > 0 ? "accent" : "muted"}
+          />
+        </section>
+
+
+        {/* Quick access to logged-in features */}
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <FeatureCard
+            to="/community-map"
+            icon={<Compass className="h-5 w-5 text-gold" />}
+            title="Community Map"
+            body="Activities, Safe Spaces and people open to connect — all in one map."
+            cta="Open map"
+          />
+          <FeatureCard
+            to="/profile-setup"
+            icon={<UserRound className="h-5 w-5 text-gold" />}
+            title="Profile details"
+            body="Edit your bio, city, and interests."
+            cta="Edit details"
+          />
+        </section>
+
+        {/* Activity */}
+        <section>
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base flex items-center gap-2">
+                <MessageCircle className="h-4 w-4 text-gold" /> Your conversations
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              {chats.length === 0 ? (
+                <p className="text-sm text-muted-foreground">No conversations yet. Send an icebreaker from the Community Map.</p>
+              ) : (
+                <>
+                  {chats.slice(0, 3).map((c) => {
+                    const otherId = c.participantIds.find((x) => x !== user.id)!;
+                    const otherName = c.participantNames[otherId] || "Member";
+                    return (
+                      <Link
+                        key={c.id}
+                        to="/rhrn/chat/$id"
+                        params={{ id: c.id }}
+                        className="flex items-center justify-between text-sm border-b border-border/40 last:border-0 pb-2 last:pb-0 hover:text-foreground"
+                      >
+                        <span className="font-medium">{otherName}</span>
+                        <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" />
+                      </Link>
+                    );
+                  })}
+                  <Link to="/rhrn/chats" className="text-xs text-gold inline-flex items-center gap-1 pt-1">
+                    Open inbox <ArrowRight className="h-3 w-3" />
+                  </Link>
+                </>
+              )}
+            </CardContent>
+          </Card>
+        </section>
+
+
+        {/* Upcoming events */}
+        <section>
+          <Card>
+            <CardHeader className="pb-3 flex flex-row items-center justify-between">
+              <CardTitle className="text-base flex items-center gap-2">
+                <Calendar className="h-4 w-4 text-gold" /> Upcoming community events
+              </CardTitle>
+              <Link to="/community-events" className="text-xs text-gold inline-flex items-center gap-1">
+                Browse all <ArrowRight className="h-3 w-3" />
+              </Link>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              {upcomingEvents.length === 0 ? (
+                <p className="text-sm text-muted-foreground">No upcoming events scheduled.</p>
+              ) : (
+                upcomingEvents.map((e) => (
+                  <Link
+                    key={e.id}
+                    to="/community-events/$id"
+                    params={{ id: e.id }}
+                    className="flex items-center justify-between text-sm border-b border-border/40 last:border-0 pb-2 last:pb-0"
+                  >
+                    <div className="min-w-0">
+                      <p className="font-medium truncate">{e.title}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {new Date(e.date).toLocaleDateString(undefined, { month: "short", day: "numeric" })} · {e.time} · {e.city}
+                      </p>
+                    </div>
+                    <Badge variant="secondary" className="font-normal">{e.category}</Badge>
+                  </Link>
+                ))
+              )}
+            </CardContent>
+          </Card>
+        </section>
+
+        <p className="text-xs text-center text-muted-foreground flex items-center justify-center gap-1.5">
+          <ShieldCheck className="h-3.5 w-3.5" /> Consent, respect, and inclusion are expected at all times.
+        </p>
+      </div>
+    </Shell>
+  );
+}
+
+function Shell({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="min-h-screen flex flex-col bg-background">
+      <Header />
+      <main className="flex-1 mx-auto w-full max-w-5xl px-5 py-8 lg:py-12">{children}</main>
       <Footer />
     </div>
+  );
+}
+
+function StatusTile({
+  icon,
+  label,
+  value,
+  tone,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  tone: "live" | "accent" | "muted";
+}) {
+  const toneClass =
+    tone === "live"
+      ? "border-green-500/40 bg-green-500/5"
+      : tone === "accent"
+      ? "border-gold/40 bg-gold/5"
+      : "border-border/60 bg-card";
+  return (
+    <div className={`rounded-xl border p-3 ${toneClass}`}>
+      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+        {icon}
+        {label}
+      </div>
+      <p className="text-base font-medium mt-1">{value}</p>
+    </div>
+  );
+}
+
+function FeatureCard({
+  to,
+  icon,
+  title,
+  body,
+  cta,
+}: {
+  to: "/community-map" | "/profile-setup";
+  icon: React.ReactNode;
+  title: string;
+  body: string;
+  cta: string;
+}) {
+  return (
+    <Card className="hover:border-gold/40 transition-colors">
+      <CardContent className="p-5 space-y-3">
+        <div className="flex items-center gap-2">
+          {icon}
+          <h3 className="font-medium">{title}</h3>
+        </div>
+        <p className="text-sm text-muted-foreground min-h-[3rem]">{body}</p>
+        <Button asChild variant="outlineGold" size="sm" className="w-full">
+          <Link to={to}>
+            {cta} <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+        </Button>
+      </CardContent>
+    </Card>
+  );
+}
+
+function StatusPill({ status }: { status: "pending" | "accepted" | "declined" }) {
+  const styles =
+    status === "pending"
+      ? "bg-gold/10 text-gold border-gold/30"
+      : status === "accepted"
+      ? "bg-green-500/10 text-green-600 border-green-500/30"
+      : "bg-muted text-muted-foreground border-border";
+  return (
+    <span className={`text-[10px] uppercase tracking-wide rounded-full border px-2 py-0.5 ${styles}`}>
+      {status}
+    </span>
   );
 }
