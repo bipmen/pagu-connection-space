@@ -155,7 +155,21 @@ function ProfilePage() {
     [interests],
   );
 
-  const profileComplete = !!(bio.trim().length > 0 && city.trim().length > 0);
+  const fieldChecks = [
+    { key: "Name", done: name.trim().length > 0 },
+    { key: "City", done: city.trim().length > 0 },
+    { key: "Bio", done: bio.trim().length > 0 },
+    { key: "Birthday", done: birthday.trim().length > 0 },
+    { key: "Gender", done: gender.trim().length > 0 },
+    { key: "Sexual orientation", done: orientation.trim().length > 0 },
+    { key: "Who to meet", done: lookingFor.size > 0 },
+    { key: "Hoping to find", done: experience.size > 0 },
+    { key: "Interests", done: interests.size > 0 },
+  ];
+  const completedCount = fieldChecks.filter((f) => f.done).length;
+  const totalFields = fieldChecks.length;
+  const profileComplete = completedCount === totalFields;
+  const progressPct = Math.round((completedCount / totalFields) * 100);
 
   function handleSave() {
     if (!user) return;
