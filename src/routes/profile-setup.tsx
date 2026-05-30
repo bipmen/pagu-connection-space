@@ -272,31 +272,24 @@ function ProfilePage() {
                   )}
                 </span>
                 <span className="text-xs text-muted-foreground">
-                  {profileComplete
-                    ? "2/2"
-                    : `${(bio.trim() ? 1 : 0) + (city.trim() ? 1 : 0)}/2`}{" "}
-                  required
+                  {completedCount} of {totalFields} complete
                 </span>
               </div>
               <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">
                 <div
                   className="h-full rounded-full bg-gold transition-all duration-500"
-                  style={{
-                    width: profileComplete
-                      ? "100%"
-                      : city.trim() || bio.trim()
-                        ? "50%"
-                        : "0%",
-                  }}
+                  style={{ width: `${progressPct}%` }}
                 />
               </div>
-              <div className="flex gap-3 text-xs text-muted-foreground">
-                <span className={`flex items-center gap-1 ${city.trim() ? "text-gold" : ""}`}>
-                  <CheckCircle2 className="h-3 w-3" /> City
-                </span>
-                <span className={`flex items-center gap-1 ${bio.trim() ? "text-gold" : ""}`}>
-                  <CheckCircle2 className="h-3 w-3" /> Bio
-                </span>
+              <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted-foreground">
+                {fieldChecks.map((f) => (
+                  <span
+                    key={f.key}
+                    className={`flex items-center gap-1 ${f.done ? "text-gold" : ""}`}
+                  >
+                    <CheckCircle2 className="h-3 w-3" /> {f.key}
+                  </span>
+                ))}
               </div>
             </CardContent>
           </Card>
