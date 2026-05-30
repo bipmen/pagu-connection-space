@@ -38,9 +38,9 @@ export function Footer() {
         <div>
           <h4 className="text-xs uppercase tracking-widest text-muted-foreground mb-4">Follow</h4>
           <a
-            href="https://instagram.com"
+            href="https://www.instagram.com/pagucollective/"
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
             className="inline-flex items-center gap-2 text-sm text-foreground hover:text-gold transition-colors"
           >
             <Instagram className="h-4 w-4" /> @pagucollective
