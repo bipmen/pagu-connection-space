@@ -278,6 +278,32 @@ export function getSessionByUserId(userId: string): AvailabilitySession | null {
 // looks like. Idempotent — only seeds once per current user.
 export function ensureSeedChats(currentUserId: string, currentUserName: string) {
   if (typeof window === "undefined") return;
+
+  // --- Seed a pending outgoing request (independent flag so existing users get it too). ---
+  const outFlagKey = `pagu.rhrn.seeded.outgoing.${currentUserId}`;
+  if (!window.localStorage.getItem(outFlagKey)) {
+    const s0 = read();
+    const alreadyHasOutgoing = s0.requests.some(
+      (r) => r.fromUserId === currentUserId && r.status === "pending",
+    );
+    if (!alreadyHasOutgoing) {
+      const outgoingPartner = DISCOVER_PEOPLE.find((p) => p.userId === "p3");
+      if (outgoingPartner) {
+        const outgoingReq: ConnectionRequest = {
+          id: `req_seed_out_${Math.random().toString(36).slice(2, 8)}`,
+          fromUserId: currentUserId,
+          fromName: currentUserName,
+          toUserId: outgoingPartner.userId,
+          icebreaker: "Hi! Would love to chat about local art spots ✨",
+          status: "pending",
+          createdAt: Date.now() - 1000 * 60 * 12,
+        };
+        write({ ...s0, requests: [...s0.requests, outgoingReq] });
+      }
+    }
+    window.localStorage.setItem(outFlagKey, "1");
+  }
+
   const flagKey = `pagu.rhrn.seeded.${currentUserId}`;
   if (window.localStorage.getItem(flagKey)) return;
 
@@ -310,7 +336,6 @@ export function ensureSeedChats(currentUserId: string, currentUserName: string) 
     mkMsg(currentUserId, "Love that spot. See you there 🌸", 33),
     mkMsg(partner.userId, "Looking forward to it!", 30),
   ];
-  // Also create an accepted incoming request so the Requests inbox has context.
   const req: ConnectionRequest = {
     id: `req_seed_${Math.random().toString(36).slice(2, 8)}`,
     fromUserId: partner.userId,
@@ -320,27 +345,15 @@ export function ensureSeedChats(currentUserId: string, currentUserName: string) 
     status: "accepted",
     createdAt: now - 1000 * 60 * 50,
   };
-  // Seed a pending outgoing request (icebreaker sent, awaiting approval).
-  const outgoingPartner = DISCOVER_PEOPLE.find((p) => p.userId === "p3") || DISCOVER_PEOPLE.find((p) => p.userId !== partner.userId);
-  const outgoingReq: ConnectionRequest | null = outgoingPartner
-    ? {
-        id: `req_seed_out_${Math.random().toString(36).slice(2, 8)}`,
-        fromUserId: currentUserId,
-        fromName: currentUserName,
-        toUserId: outgoingPartner.userId,
-        icebreaker: "Hi! Would love to chat about local art spots ✨",
-        status: "pending",
-        createdAt: now - 1000 * 60 * 12,
-      }
-    : null;
   write({
     ...s,
     chats: [...s.chats, chat],
     messages: [...s.messages, ...messages],
-    requests: [...s.requests, req, ...(outgoingReq ? [outgoingReq] : [])],
+    requests: [...s.requests, req],
   });
   window.localStorage.setItem(flagKey, "1");
 }
+
 
 
 
