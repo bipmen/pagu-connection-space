@@ -17,6 +17,7 @@ import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LegalRouteImport } from './routes/legal'
+import { Route as FuturePlaygroundRouteImport } from './routes/future-playground'
 import { Route as EventsRouteImport } from './routes/events'
 import { Route as DesignLabRouteImport } from './routes/design-lab'
 import { Route as ChoosePlanRouteImport } from './routes/choose-plan'
@@ -77,6 +78,11 @@ const LoginRoute = LoginRouteImport.update({
 const LegalRoute = LegalRouteImport.update({
   id: '/legal',
   path: '/legal',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FuturePlaygroundRoute = FuturePlaygroundRouteImport.update({
+  id: '/future-playground',
+  path: '/future-playground',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EventsRoute = EventsRouteImport.update({
@@ -190,6 +196,7 @@ export interface FileRoutesByFullPath {
   '/choose-plan': typeof ChoosePlanRoute
   '/design-lab': typeof DesignLabRoute
   '/events': typeof EventsRouteWithChildren
+  '/future-playground': typeof FuturePlaygroundRoute
   '/legal': typeof LegalRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
@@ -220,6 +227,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/choose-plan': typeof ChoosePlanRoute
   '/design-lab': typeof DesignLabRoute
+  '/future-playground': typeof FuturePlaygroundRoute
   '/legal': typeof LegalRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
@@ -252,6 +260,7 @@ export interface FileRoutesById {
   '/choose-plan': typeof ChoosePlanRoute
   '/design-lab': typeof DesignLabRoute
   '/events': typeof EventsRouteWithChildren
+  '/future-playground': typeof FuturePlaygroundRoute
   '/legal': typeof LegalRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
@@ -285,6 +294,7 @@ export interface FileRouteTypes {
     | '/choose-plan'
     | '/design-lab'
     | '/events'
+    | '/future-playground'
     | '/legal'
     | '/login'
     | '/onboarding'
@@ -315,6 +325,7 @@ export interface FileRouteTypes {
     | '/'
     | '/choose-plan'
     | '/design-lab'
+    | '/future-playground'
     | '/legal'
     | '/login'
     | '/onboarding'
@@ -346,6 +357,7 @@ export interface FileRouteTypes {
     | '/choose-plan'
     | '/design-lab'
     | '/events'
+    | '/future-playground'
     | '/legal'
     | '/login'
     | '/onboarding'
@@ -378,6 +390,7 @@ export interface RootRouteChildren {
   ChoosePlanRoute: typeof ChoosePlanRoute
   DesignLabRoute: typeof DesignLabRoute
   EventsRoute: typeof EventsRouteWithChildren
+  FuturePlaygroundRoute: typeof FuturePlaygroundRoute
   LegalRoute: typeof LegalRoute
   LoginRoute: typeof LoginRoute
   OnboardingRoute: typeof OnboardingRoute
@@ -458,6 +471,13 @@ declare module '@tanstack/react-router' {
       path: '/legal'
       fullPath: '/legal'
       preLoaderRoute: typeof LegalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/future-playground': {
+      id: '/future-playground'
+      path: '/future-playground'
+      fullPath: '/future-playground'
+      preLoaderRoute: typeof FuturePlaygroundRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/events': {
@@ -630,6 +650,7 @@ const rootRouteChildren: RootRouteChildren = {
   ChoosePlanRoute: ChoosePlanRoute,
   DesignLabRoute: DesignLabRoute,
   EventsRoute: EventsRouteWithChildren,
+  FuturePlaygroundRoute: FuturePlaygroundRoute,
   LegalRoute: LegalRoute,
   LoginRoute: LoginRoute,
   OnboardingRoute: OnboardingRoute,
@@ -656,12 +677,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}
