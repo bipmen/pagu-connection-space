@@ -20,12 +20,15 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RhrnIndexRouteImport } from './routes/rhrn.index'
+import { Route as EventsIndexRouteImport } from './routes/events.index'
 import { Route as DiscoverIndexRouteImport } from './routes/discover.index'
 import { Route as CommunityMapIndexRouteImport } from './routes/community-map.index'
 import { Route as CommunityEventsIndexRouteImport } from './routes/community-events.index'
 import { Route as RhrnRequestsRouteImport } from './routes/rhrn.requests'
 import { Route as RhrnChatsRouteImport } from './routes/rhrn.chats'
 import { Route as RhrnIdRouteImport } from './routes/rhrn.$id'
+import { Route as EventsLocalRouteImport } from './routes/events.local'
+import { Route as EventsCommunityRouteImport } from './routes/events.community'
 import { Route as DiscoverApplyRouteImport } from './routes/discover.apply'
 import { Route as CommunityMapApplyRouteImport } from './routes/community-map.apply'
 import { Route as CommunityEventsNewRouteImport } from './routes/community-events.new'
@@ -88,6 +91,11 @@ const RhrnIndexRoute = RhrnIndexRouteImport.update({
   path: '/rhrn/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EventsIndexRoute = EventsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => EventsRoute,
+} as any)
 const DiscoverIndexRoute = DiscoverIndexRouteImport.update({
   id: '/discover/',
   path: '/discover/',
@@ -117,6 +125,16 @@ const RhrnIdRoute = RhrnIdRouteImport.update({
   id: '/rhrn/$id',
   path: '/rhrn/$id',
   getParentRoute: () => rootRouteImport,
+} as any)
+const EventsLocalRoute = EventsLocalRouteImport.update({
+  id: '/local',
+  path: '/local',
+  getParentRoute: () => EventsRoute,
+} as any)
+const EventsCommunityRoute = EventsCommunityRouteImport.update({
+  id: '/community',
+  path: '/community',
+  getParentRoute: () => EventsRoute,
 } as any)
 const DiscoverApplyRoute = DiscoverApplyRouteImport.update({
   id: '/discover/apply',
@@ -153,7 +171,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
-  '/events': typeof EventsRoute
+  '/events': typeof EventsRouteWithChildren
   '/login': typeof LoginRoute
   '/profile': typeof ProfileRoute
   '/profile-setup': typeof ProfileSetupRoute
@@ -164,12 +182,15 @@ export interface FileRoutesByFullPath {
   '/community-events/new': typeof CommunityEventsNewRoute
   '/community-map/apply': typeof CommunityMapApplyRoute
   '/discover/apply': typeof DiscoverApplyRoute
+  '/events/community': typeof EventsCommunityRoute
+  '/events/local': typeof EventsLocalRoute
   '/rhrn/$id': typeof RhrnIdRoute
   '/rhrn/chats': typeof RhrnChatsRoute
   '/rhrn/requests': typeof RhrnRequestsRoute
   '/community-events/': typeof CommunityEventsIndexRoute
   '/community-map/': typeof CommunityMapIndexRoute
   '/discover/': typeof DiscoverIndexRoute
+  '/events/': typeof EventsIndexRoute
   '/rhrn/': typeof RhrnIndexRoute
   '/discover/safe-space/$id': typeof DiscoverSafeSpaceIdRoute
   '/rhrn/chat/$id': typeof RhrnChatIdRoute
@@ -178,7 +199,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
-  '/events': typeof EventsRoute
   '/login': typeof LoginRoute
   '/profile': typeof ProfileRoute
   '/profile-setup': typeof ProfileSetupRoute
@@ -189,12 +209,15 @@ export interface FileRoutesByTo {
   '/community-events/new': typeof CommunityEventsNewRoute
   '/community-map/apply': typeof CommunityMapApplyRoute
   '/discover/apply': typeof DiscoverApplyRoute
+  '/events/community': typeof EventsCommunityRoute
+  '/events/local': typeof EventsLocalRoute
   '/rhrn/$id': typeof RhrnIdRoute
   '/rhrn/chats': typeof RhrnChatsRoute
   '/rhrn/requests': typeof RhrnRequestsRoute
   '/community-events': typeof CommunityEventsIndexRoute
   '/community-map': typeof CommunityMapIndexRoute
   '/discover': typeof DiscoverIndexRoute
+  '/events': typeof EventsIndexRoute
   '/rhrn': typeof RhrnIndexRoute
   '/discover/safe-space/$id': typeof DiscoverSafeSpaceIdRoute
   '/rhrn/chat/$id': typeof RhrnChatIdRoute
@@ -204,7 +227,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
-  '/events': typeof EventsRoute
+  '/events': typeof EventsRouteWithChildren
   '/login': typeof LoginRoute
   '/profile': typeof ProfileRoute
   '/profile-setup': typeof ProfileSetupRoute
@@ -215,12 +238,15 @@ export interface FileRoutesById {
   '/community-events/new': typeof CommunityEventsNewRoute
   '/community-map/apply': typeof CommunityMapApplyRoute
   '/discover/apply': typeof DiscoverApplyRoute
+  '/events/community': typeof EventsCommunityRoute
+  '/events/local': typeof EventsLocalRoute
   '/rhrn/$id': typeof RhrnIdRoute
   '/rhrn/chats': typeof RhrnChatsRoute
   '/rhrn/requests': typeof RhrnRequestsRoute
   '/community-events/': typeof CommunityEventsIndexRoute
   '/community-map/': typeof CommunityMapIndexRoute
   '/discover/': typeof DiscoverIndexRoute
+  '/events/': typeof EventsIndexRoute
   '/rhrn/': typeof RhrnIndexRoute
   '/discover/safe-space/$id': typeof DiscoverSafeSpaceIdRoute
   '/rhrn/chat/$id': typeof RhrnChatIdRoute
@@ -242,12 +268,15 @@ export interface FileRouteTypes {
     | '/community-events/new'
     | '/community-map/apply'
     | '/discover/apply'
+    | '/events/community'
+    | '/events/local'
     | '/rhrn/$id'
     | '/rhrn/chats'
     | '/rhrn/requests'
     | '/community-events/'
     | '/community-map/'
     | '/discover/'
+    | '/events/'
     | '/rhrn/'
     | '/discover/safe-space/$id'
     | '/rhrn/chat/$id'
@@ -256,7 +285,6 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/contact'
-    | '/events'
     | '/login'
     | '/profile'
     | '/profile-setup'
@@ -267,12 +295,15 @@ export interface FileRouteTypes {
     | '/community-events/new'
     | '/community-map/apply'
     | '/discover/apply'
+    | '/events/community'
+    | '/events/local'
     | '/rhrn/$id'
     | '/rhrn/chats'
     | '/rhrn/requests'
     | '/community-events'
     | '/community-map'
     | '/discover'
+    | '/events'
     | '/rhrn'
     | '/discover/safe-space/$id'
     | '/rhrn/chat/$id'
@@ -292,12 +323,15 @@ export interface FileRouteTypes {
     | '/community-events/new'
     | '/community-map/apply'
     | '/discover/apply'
+    | '/events/community'
+    | '/events/local'
     | '/rhrn/$id'
     | '/rhrn/chats'
     | '/rhrn/requests'
     | '/community-events/'
     | '/community-map/'
     | '/discover/'
+    | '/events/'
     | '/rhrn/'
     | '/discover/safe-space/$id'
     | '/rhrn/chat/$id'
@@ -307,7 +341,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   ContactRoute: typeof ContactRoute
-  EventsRoute: typeof EventsRoute
+  EventsRoute: typeof EventsRouteWithChildren
   LoginRoute: typeof LoginRoute
   ProfileRoute: typeof ProfileRoute
   ProfileSetupRoute: typeof ProfileSetupRoute
@@ -408,6 +442,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RhrnIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/events/': {
+      id: '/events/'
+      path: '/'
+      fullPath: '/events/'
+      preLoaderRoute: typeof EventsIndexRouteImport
+      parentRoute: typeof EventsRoute
+    }
     '/discover/': {
       id: '/discover/'
       path: '/discover'
@@ -449,6 +490,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/rhrn/$id'
       preLoaderRoute: typeof RhrnIdRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/events/local': {
+      id: '/events/local'
+      path: '/local'
+      fullPath: '/events/local'
+      preLoaderRoute: typeof EventsLocalRouteImport
+      parentRoute: typeof EventsRoute
+    }
+    '/events/community': {
+      id: '/events/community'
+      path: '/community'
+      fullPath: '/events/community'
+      preLoaderRoute: typeof EventsCommunityRouteImport
+      parentRoute: typeof EventsRoute
     }
     '/discover/apply': {
       id: '/discover/apply'
@@ -495,11 +550,26 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface EventsRouteChildren {
+  EventsCommunityRoute: typeof EventsCommunityRoute
+  EventsLocalRoute: typeof EventsLocalRoute
+  EventsIndexRoute: typeof EventsIndexRoute
+}
+
+const EventsRouteChildren: EventsRouteChildren = {
+  EventsCommunityRoute: EventsCommunityRoute,
+  EventsLocalRoute: EventsLocalRoute,
+  EventsIndexRoute: EventsIndexRoute,
+}
+
+const EventsRouteWithChildren =
+  EventsRoute._addFileChildren(EventsRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   ContactRoute: ContactRoute,
-  EventsRoute: EventsRoute,
+  EventsRoute: EventsRouteWithChildren,
   LoginRoute: LoginRoute,
   ProfileRoute: ProfileRoute,
   ProfileSetupRoute: ProfileSetupRoute,
