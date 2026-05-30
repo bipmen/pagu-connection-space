@@ -13,18 +13,20 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-const publicLinks = [
+type NavLink = { to: string; label: string; hash?: string };
+
+const publicLinks: NavLink[] = [
   { to: "/about", label: "About" },
   { to: "/contact", label: "Contact" },
   { to: "/", hash: "events", label: "Sync Up!" },
-] as const;
+];
 
-const memberLinks = [
+const memberLinks: NavLink[] = [
   { to: "/profile", label: "Profile" },
   { to: "/community-map", label: "Community Map" },
   { to: "/events", label: "Events" },
   { to: "/about", label: "About" },
-] as const;
+];
 
 
 
