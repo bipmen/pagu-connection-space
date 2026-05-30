@@ -15,6 +15,8 @@ import {
   LOCAL_EVENT_BADGE_LABEL,
   LOCAL_EVENT_CTA_LABEL,
   getLocalEventBySlug,
+  getLocalEventBySlug,
+  type LocalEvent,
 } from "@/lib/local-events-mock";
 
 export const Route = createFileRoute("/event/$slug")({
