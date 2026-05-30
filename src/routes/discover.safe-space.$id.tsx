@@ -36,7 +36,7 @@ function SafeSpaceProfile() {
       <Header />
       <main className="flex-1 max-w-3xl mx-auto w-full px-4 sm:px-6 py-6 space-y-6">
         <Button asChild variant="ghost" size="sm" className="-ml-3">
-          <Link to="/community-map"><ArrowLeft className="h-4 w-4" /> Back to Community Map</Link>
+          <Link to="/community-map"><ArrowLeft className="h-4 w-4" /> Back to Discovery</Link>
         </Button>
 
         {/* Header card */}

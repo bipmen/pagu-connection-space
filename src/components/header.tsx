@@ -23,7 +23,7 @@ const publicLinks: NavLink[] = [
 
 const memberLinks: NavLink[] = [
   { to: "/profile", label: "Profile" },
-  { to: "/community-map", label: "Community Map" },
+  { to: "/community-map", label: "Discovery" },
   { to: "/events", label: "Events" },
   { to: "/", hash: "about", label: "About" },
 ];
@@ -105,7 +105,7 @@ export function Header() {
                     <Link to="/profile">Profile</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link to="/community-map">Community Map</Link>
+                    <Link to="/community-map">Discovery</Link>
                   </DropdownMenuItem>
 
                   <DropdownMenuSeparator />

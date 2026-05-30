@@ -37,7 +37,7 @@ import { GoInvisibleFab } from "@/components/rhrn/invisible-button";
 export const Route = createFileRoute("/community-map/")({
   head: () => ({
     meta: [
-      { title: "Community Map — Pagu" },
+      { title: "Discovery — Pagu" },
       { name: "description", content: "Discover events, Safe Spaces and FLINTA community members near you." },
       { name: "robots", content: "noindex" },
     ],
@@ -80,7 +80,7 @@ function CommunityMapPage() {
       <div className="min-h-screen bg-background flex flex-col">
         <Header />
         <main className="flex-1 max-w-md mx-auto px-5 py-24 text-center">
-          <h1 className="font-display text-3xl text-foreground">The Community Map is for members</h1>
+          <h1 className="font-display text-3xl text-foreground">Discovery is for members</h1>
           <p className="mt-3 text-muted-foreground">Log in to discover events, Safe Spaces and people open to connect.</p>
           <Button asChild variant="hero" size="lg" className="mt-6">
             <Link to="/login">Log in</Link>
@@ -114,7 +114,7 @@ function CommunityMapPage() {
       <Header />
       <main className="flex-1 max-w-5xl mx-auto w-full px-4 sm:px-6 py-6 space-y-5">
         <div>
-          <h1 className="font-display text-3xl sm:text-4xl text-foreground">Community Map</h1>
+          <h1 className="font-display text-3xl sm:text-4xl text-foreground">Discovery</h1>
           <p className="text-sm text-muted-foreground mt-1">
             Where the community gathers — activities, places and people, all in one map.
           </p>
