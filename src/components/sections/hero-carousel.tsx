@@ -42,7 +42,7 @@ export function HeroCarousel() {
 
       <div className="relative mx-auto max-w-6xl px-5 lg:px-8 pt-10 pb-10 md:pt-14 md:pb-14">
         {/* Stable-height slide stage. Slides are absolutely stacked and crossfade. */}
-        <div className="relative min-h-[360px] md:min-h-[420px]">
+        <div className="relative min-h-[520px] md:min-h-[460px]">
           {SLIDES.map((Slide, i) => (
             <div
               key={i}
@@ -102,12 +102,18 @@ export function HeroCarousel() {
 function SlideOne() {
   return (
     <div className="max-w-3xl">
-      <p className="text-xs uppercase tracking-[0.25em] text-gold mb-4">About Pagu</p>
-      <h1 className="font-display text-4xl md:text-6xl leading-[1.05] text-balance mb-5">
-        FLINTA* community <em className="text-gold not-italic">beyond algorithms.</em>
+      <p className="text-xs uppercase tracking-[0.25em] text-gold mb-5">About Pagu</p>
+      <h1 className="font-display text-4xl md:text-6xl lg:text-7xl leading-[1.05] text-balance mb-6">
+        Building FLINTA* community <em className="text-gold not-italic">beyond algorithms.</em>
       </h1>
-      <p className="text-base md:text-lg text-foreground/85 leading-relaxed max-w-xl">
-        A Cologne-based collective creating intentional spaces for real connection — curated events, honest conversations, lasting community.
+      <p className="text-base md:text-lg text-foreground/85 text-balance leading-relaxed mb-5 max-w-2xl">
+        Pagu is a FLINTA*-led collective in Cologne creating intentional spaces for connection
+        through curated events, meaningful conversations, and community experiences.
+      </p>
+      <p className="text-sm md:text-base text-muted-foreground leading-relaxed max-w-2xl">
+        In a world dominated by swipes and algorithms, meeting people can feel transactional and exhausting.
+        Pagu exists to bring connection back into the real world — whether for friendship, creative collaboration,
+        queer community, or romance.
       </p>
     </div>
   );
@@ -115,19 +121,24 @@ function SlideOne() {
 
 function SlideTwo() {
   return (
-    <div className="grid md:grid-cols-[1fr_220px] gap-8 items-center">
+    <div className="grid md:grid-cols-[1fr_240px] gap-8 md:gap-10 items-center">
       <div>
-        <p className="text-xs uppercase tracking-[0.25em] text-gold mb-4">The name</p>
-        <h1 className="font-display text-4xl md:text-5xl leading-[1.05] text-balance mb-5">
-          Why <em className="text-gold not-italic">Pagu?</em>
+        <p className="text-xs uppercase tracking-[0.25em] text-gold mb-5">The story behind the brand</p>
+        <h1 className="font-display text-4xl md:text-5xl lg:text-6xl leading-[1.05] text-balance mb-6">
+          Why the name <em className="text-gold not-italic">Pagu?</em>
         </h1>
-        <p className="text-base md:text-lg text-foreground/85 leading-relaxed max-w-xl">
-          Named after Patrícia Galvão — Brazilian writer, activist, rebel. A spirit of curiosity and quiet defiance lives at the heart of this collective.
+        <p className="text-base md:text-lg text-foreground/85 leading-relaxed mb-4 text-balance max-w-2xl">
+          A rebellious, cultural and political movement. The first woman to be arrested for political reasons in Brazil.
+        </p>
+        <p className="text-sm md:text-base text-muted-foreground leading-relaxed max-w-2xl">
+          The name is inspired by Patrícia Galvão (nicknamed Pagu), a Brazilian modernist writer and activist who challenged
+          social norms and championed cultural freedom. Her spirit of curiosity and rebellion reflects the values behind this
+          collective: spaces where people can meet openly, question expectations, and imagine new forms of connection.
         </p>
       </div>
       <div className="relative mx-auto md:mx-0">
         <div className="absolute -inset-3 bg-gradient-gold rounded-2xl blur-2xl opacity-30" />
-        <img src={portrait} alt="Patrícia Galvão (Pagu)" className="relative rounded-2xl w-[200px] h-auto shadow-soft" loading="lazy" width={520} height={693} />
+        <img src={portrait} alt="Patrícia Galvão (Pagu)" className="relative rounded-2xl w-[200px] md:w-[220px] h-auto shadow-soft" loading="lazy" width={520} height={693} />
       </div>
     </div>
   );
@@ -136,14 +147,19 @@ function SlideTwo() {
 function SlideThree() {
   return (
     <div className="max-w-3xl">
-      <p className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.25em] text-gold mb-4">
-        <ShieldCheck className="h-3.5 w-3.5" /> Safety & care
+      <p className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.25em] text-gold mb-5">
+        <ShieldCheck className="h-3.5 w-3.5" /> Safety & community care
       </p>
-      <h1 className="font-display text-4xl md:text-6xl leading-[1.05] text-balance mb-5">
+      <h1 className="font-display text-4xl md:text-6xl lg:text-7xl leading-[1.05] text-balance mb-6">
         Safer connection starts with <em className="text-gold not-italic">shared care.</em>
       </h1>
-      <p className="text-base md:text-lg text-foreground/85 leading-relaxed max-w-xl">
-        Pagu is built around consent, respect, and community guidelines that help FLINTA* people connect with more trust.
+      <p className="text-base md:text-lg text-foreground/85 leading-relaxed mb-5 text-balance max-w-2xl">
+        Pagu is built around consent, respect, and clear community guidelines — so FLINTA* people can show up,
+        be themselves, and connect with more trust.
+      </p>
+      <p className="text-sm md:text-base text-muted-foreground leading-relaxed max-w-2xl">
+        From how we host events to how members treat each other, every part of Pagu is designed around safety,
+        accountability, and mutual care. Because real community only grows where people feel genuinely safe.
       </p>
     </div>
   );
