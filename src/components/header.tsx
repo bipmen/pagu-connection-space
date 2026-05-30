@@ -109,6 +109,9 @@ export function Header() {
                   <DropdownMenuItem asChild>
                     <Link to="/community-map">Discovery</Link>
                   </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/legal">Legal & Trust</Link>
+                  </DropdownMenuItem>
 
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout}>
