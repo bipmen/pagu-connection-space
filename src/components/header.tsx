@@ -15,17 +15,19 @@ import {
 
 const publicLinks = [
   { to: "/about", label: "About" },
-  { to: "/events", label: "Sync Up!" },
+  { to: "/events", label: "Events" },
   { to: "/contact", label: "Contact" },
 ] as const;
 
 const memberLinks = [
+  { to: "/dashboard", label: "Dashboard" },
   { to: "/discover", label: "Discover" },
+  { to: "/rhrn", label: "Right Here Right Now" },
   { to: "/about", label: "About" },
   { to: "/community-events", label: "Events" },
-  { to: "/rhrn", label: "Right Here Right Now" },
   { to: "/contact", label: "Contact" },
 ] as const;
+
 
 export function Header() {
   const [open, setOpen] = useState(false);
@@ -89,16 +91,20 @@ export function Header() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
                   <DropdownMenuItem asChild>
+                    <Link to="/dashboard">Dashboard</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
                     <Link to="/profile">Profile</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link to="/community-events">Events</Link>
+                    <Link to="/rhrn">Right Here Right Now</Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout}>
                     <LogOut className="h-4 w-4 mr-2" /> Log out
                   </DropdownMenuItem>
                 </DropdownMenuContent>
+
               </DropdownMenu>
             ) : (
               <>

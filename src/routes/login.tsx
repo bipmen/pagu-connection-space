@@ -95,7 +95,7 @@ function LoginPage() {
     const result = verifyCode(code);
     if (result === "ok") {
       signIn({ method: activeMethod, identifier: activeIdentifier });
-      navigate({ to: "/community-events" });
+      navigate({ to: "/dashboard" });
       return;
     }
     setVerifyError(
