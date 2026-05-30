@@ -95,7 +95,7 @@ function LoginPage() {
     const result = verifyCode(code);
     if (result === "ok") {
       const user = signIn({ method: activeMethod, identifier: activeIdentifier });
-      navigate({ to: isProfileComplete(user) ? "/dashboard" : "/profile" });
+      navigate({ to: isProfileComplete(user) ? "/profile" : "/profile-setup" });
       return;
     }
     setVerifyError(

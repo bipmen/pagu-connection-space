@@ -139,13 +139,6 @@ export function Header() {
               ))}
               {user ? (
                 <>
-                  <Link
-                    to="/profile"
-                    onClick={() => setOpen(false)}
-                    className="px-3 py-3 rounded-lg text-foreground hover:bg-accent text-base"
-                  >
-                    Profile
-                  </Link>
                   <button
                     onClick={handleLogout}
                     className="px-3 py-3 rounded-lg text-foreground hover:bg-accent text-base text-left inline-flex items-center gap-2"
