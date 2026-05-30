@@ -61,6 +61,12 @@ export const Route = createFileRoute("/events/local")({
 function LocalEventsPage() {
   const [city, setCity] = useState<string>("all");
   const cities = useMemo(() => listLocalCities(), []);
+  const { event: eventId } = Route.useSearch();
+  const navigate = useNavigate();
+  const detailEvent = eventId ? getDiscoverEvent(eventId) : null;
+  const closeDetail = () =>
+    navigate({ to: "/events/local", search: {}, replace: true });
+
 
   const featured = useMemo(
     () => filterCity(getFeaturedLocalEvents(), city),
