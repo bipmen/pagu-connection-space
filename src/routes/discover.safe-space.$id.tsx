@@ -9,9 +9,12 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { ArrowLeft, Shield, Clock, MapPin, Star, AlertTriangle, Check } from "lucide-react";
+import { ArrowLeft, Shield, Clock, MapPin, Star, AlertTriangle, Check, ShieldCheck } from "lucide-react";
 import { getSafeSpace, listReviewsFor, submitReport, REPORT_REASON_LABEL, type ReportReason, useSafeSpacesStore } from "@/lib/safe-spaces-mock";
+import { CERTIFICATION_STAGES, CERTIFICATION_VALID_MONTHS, REVOCATION_REASONS } from "@/lib/community-map-mock";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
+
 
 export const Route = createFileRoute("/discover/safe-space/$id")({
   loader: ({ params }) => {

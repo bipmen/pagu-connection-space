@@ -202,7 +202,7 @@ function DashboardPage() {
             </CardHeader>
             <CardContent className="space-y-2">
               {chats.length === 0 ? (
-                <p className="text-sm text-muted-foreground">No conversations yet. Send an icebreaker on Discover or RHRN.</p>
+                <p className="text-sm text-muted-foreground">No conversations yet. Send an icebreaker from the Community Map.</p>
               ) : (
                 <>
                   {chats.slice(0, 3).map((c) => {
