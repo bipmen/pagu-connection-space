@@ -26,6 +26,7 @@ function Index() {
       <Header />
       <main className="flex-1">
         <HeroCarousel />
+        <AboutSection />
         <TestimonialsSection />
         <ContactSection />
         <EventsSection />
