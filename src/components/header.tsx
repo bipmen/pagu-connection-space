@@ -16,7 +16,7 @@ import {
 type NavLink = { to: string; label: string; hash?: string };
 
 const publicLinks: NavLink[] = [
-  { to: "/", hash: "about", label: "About" },
+  { to: "/", hash: "hero", label: "About" },
   { to: "/", hash: "contact", label: "Contact" },
   { to: "/", hash: "events", label: "Sync Up!" },
   { to: "/legal", label: "Legal & Trust" },
@@ -26,7 +26,7 @@ const memberLinks: NavLink[] = [
   { to: "/profile", label: "Profile" },
   { to: "/community-map", label: "Discovery" },
   { to: "/events", label: "Events" },
-  { to: "/", hash: "about", label: "About" },
+  { to: "/", hash: "hero", label: "About" },
   { to: "/legal", label: "Legal & Trust" },
 ];
 

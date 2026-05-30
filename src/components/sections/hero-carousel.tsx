@@ -35,7 +35,7 @@ export function HeroCarousel() {
   };
 
   return (
-    <section className="relative overflow-hidden bg-gradient-hero">
+    <section id="hero" className="relative overflow-hidden bg-gradient-hero">
       {/* floating orbs */}
       <div className="pointer-events-none absolute -top-40 -left-40 h-[500px] w-[500px] rounded-full bg-primary/30 blur-3xl animate-float-slow" />
       <div className="pointer-events-none absolute -bottom-40 -right-20 h-[400px] w-[400px] rounded-full bg-gold/20 blur-3xl animate-float-slow" />
