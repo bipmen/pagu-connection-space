@@ -370,7 +370,8 @@ function ProfilePage() {
                 <Sparkles className="h-5 w-5 text-gold" /> Identity
               </CardTitle>
               <CardDescription>
-                Share what feels right. Every field is optional.
+                Share what feels right. Each field has a "Prefer not to say"
+                option if you would rather keep it private.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-5">
