@@ -157,7 +157,7 @@ function ProfilePage() {
                   )}
                 </span>
                 <span className="text-xs text-muted-foreground">
-                  {profileComplete ? "2/2" : `${bio.trim() ? 1 : 0 + city.trim() ? 1 : 0}/2`} required
+                  {profileComplete ? "2/2" : `${(bio.trim() ? 1 : 0) + (city.trim() ? 1 : 0)}/2`} required
                 </span>
               </div>
               <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">
