@@ -1,34 +1,24 @@
-import { createFileRoute } from "@tanstack/react-router";
+import type { Metadata } from "next";
 import portrait from "@/assets/pagu-portrait.jpg";
-import { Footer } from "@/components/footer";
-import { Header } from "@/components/header";
-import { getAssetSrc } from "@/lib/asset-src";
+import { SiteFooter } from "@/components/site-footer";
+import { SiteHeader } from "@/components/site-header";
 
-export const Route = createFileRoute("/about")({
-  head: () => ({
-    meta: [
-      { title: "About - Pagu" },
-      {
-        name: "description",
-        content:
-          "Pagu is a FLINTA*-led collective in Cologne creating intentional spaces for connection.",
-      },
-      { property: "og:title", content: "About Pagu" },
-      {
-        property: "og:description",
-        content: "Building FLINTA* community beyond algorithms.",
-      },
-    ],
-  }),
-  component: AboutPage,
-});
+export const metadata: Metadata = {
+  title: "About - Pagu",
+  description:
+    "Pagu is a FLINTA*-led collective in Cologne creating intentional spaces for connection.",
+  openGraph: {
+    title: "About Pagu",
+    description: "Building FLINTA* community beyond algorithms.",
+  },
+};
 
-function AboutPage() {
-  const portraitSrc = getAssetSrc(portrait);
+export default function AboutPage() {
+  const portraitSrc = typeof portrait === "string" ? portrait : portrait.src;
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
+      <SiteHeader />
       <main className="flex-1">
         <section className="mx-auto max-w-4xl px-5 pb-24 pt-16 lg:px-8">
           <p className="mb-4 text-xs uppercase tracking-[0.2em] text-gold">About</p>
@@ -73,7 +63,7 @@ function AboutPage() {
           </div>
         </section>
       </main>
-      <Footer />
+      <SiteFooter />
     </div>
   );
 }

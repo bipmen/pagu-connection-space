@@ -51,7 +51,7 @@ export function issueCode(method: AuthMethod, identifier: string): IssueResult {
   };
 
   // Mock delivery — in production, send via email/SMS provider here.
-  if (import.meta.env.DEV) {
+  if (process.env.NODE_ENV !== "production") {
     // eslint-disable-next-line no-console
     console.info(`[pagu mock] verification code for ${identifier}: ${code}`);
   }

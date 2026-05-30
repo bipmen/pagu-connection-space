@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useRef, useState } from "react";
 import { MessageCircle, Globe, Heart, Music } from "lucide-react";
 

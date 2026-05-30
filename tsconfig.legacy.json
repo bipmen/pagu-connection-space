@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.json",
+  "include": [
+    "src/routes/**/*.ts",
+    "src/routes/**/*.tsx",
+    "src/router.tsx",
+    "src/routeTree.gen.ts",
+    "vite.config.ts",
+    "wrangler.jsonc"
+  ],
+  "compilerOptions": {
+    "types": ["vite/client"]
+  },
+  "exclude": ["node_modules"]
+}
