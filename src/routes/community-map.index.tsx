@@ -13,7 +13,7 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { Search, Shield, Calendar, Sparkles, MapPin, Clock, Users, ChevronDown, ArrowRight } from "lucide-react";
-import { useCurrentUser } from "@/lib/session-mock";
+import { isProfileComplete, useCurrentUser } from "@/lib/session-mock";
 import { useMySession } from "@/lib/rhrn-mock";
 import { useSafeSpacesStore, listSafeSpaces } from "@/lib/safe-spaces-mock";
 import { DISCOVER_EVENTS, DISCOVER_PEOPLE, spacesById } from "@/lib/discover-mock";
@@ -50,6 +50,7 @@ function CommunityMapPage() {
   const user = useCurrentUser();
   const mySession = useMySession(user?.id);
   const isAvailable = !!mySession && mySession.expiresAt > Date.now();
+  const navigate = useNavigate();
 
   const [city, setCity] = useState(DEFAULT_CITY.name);
   const [query, setQuery] = useState("");
@@ -68,6 +69,12 @@ function CommunityMapPage() {
     [filter, city, query, zoom, isAvailable],
   );
 
+  useEffect(() => {
+    if (user && !isProfileComplete(user)) {
+      navigate({ to: "/profile" });
+    }
+  }, [navigate, user]);
+
   if (!user) {
     return (
       <div className="min-h-screen bg-background flex flex-col">
@@ -77,6 +84,24 @@ function CommunityMapPage() {
           <p className="mt-3 text-muted-foreground">Log in to discover events, Safe Spaces and people open to connect.</p>
           <Button asChild variant="hero" size="lg" className="mt-6">
             <Link to="/login">Log in</Link>
+          </Button>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (!isProfileComplete(user)) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col">
+        <Header />
+        <main className="flex-1 max-w-md mx-auto px-5 py-24 text-center">
+          <h1 className="font-display text-3xl text-foreground">Complete your profile first</h1>
+          <p className="mt-3 text-muted-foreground">
+            This is the next step before you enter the main member experience.
+          </p>
+          <Button asChild variant="hero" size="lg" className="mt-6">
+            <Link to="/profile">Continue to profile</Link>
           </Button>
         </main>
         <Footer />

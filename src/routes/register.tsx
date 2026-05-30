@@ -20,7 +20,7 @@ import {
   RESEND_COOLDOWN_MS,
   type AuthMethod,
 } from "@/lib/auth-mock";
-import { signIn } from "@/lib/session-mock";
+import { isProfileComplete, signIn } from "@/lib/session-mock";
 import { VerifyStep } from "@/components/auth/verify-step";
 
 export const Route = createFileRoute("/register")({
@@ -126,8 +126,8 @@ function RegisterPage() {
     if (code.length !== 5) return;
     const result = verifyCode(code);
     if (result === "ok") {
-      signIn({ name, method: activeMethod, identifier: activeIdentifier });
-      navigate({ to: "/dashboard" });
+      const user = signIn({ name, method: activeMethod, identifier: activeIdentifier });
+      navigate({ to: isProfileComplete(user) ? "/dashboard" : "/profile" });
       return;
     }
     setVerifyError(
