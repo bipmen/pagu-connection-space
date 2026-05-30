@@ -104,6 +104,15 @@ function DashboardPage() {
     .filter((e) => e.date >= new Date().toISOString().slice(0, 10))
     .slice(0, 3);
 
+  const cityEventsCount = user.city
+    ? listEvents().filter(
+        (e) =>
+          e.date >= new Date().toISOString().slice(0, 10) &&
+          e.city.toLowerCase() === user.city!.toLowerCase(),
+      ).length
+    : 0;
+
+
   return (
     <Shell>
       <div className="space-y-8">
@@ -120,7 +129,7 @@ function DashboardPage() {
         </section>
 
         {/* Status grid */}
-        <section className="grid grid-cols-2 md:grid-cols-3 gap-3">
+        <section className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <StatusTile
             icon={mySession ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
             label="RHRN"
@@ -139,7 +148,14 @@ function DashboardPage() {
             value={`${nearby.length} members`}
             tone="muted"
           />
+          <StatusTile
+            icon={<Calendar className="h-4 w-4" />}
+            label="Events"
+            value={`${cityEventsCount} in ${user.city || "your city"}`}
+            tone={cityEventsCount > 0 ? "accent" : "muted"}
+          />
         </section>
+
 
         {/* Quick access to logged-in features */}
         <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
