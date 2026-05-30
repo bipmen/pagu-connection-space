@@ -4,6 +4,9 @@
 // blocks, reports).
 
 import { useEffect, useState } from "react";
+import { DISCOVER_PEOPLE, type DiscoverPerson } from "@/lib/discover-mock";
+
+
 
 export const INTENTIONS = [
   { id: "coffee", emoji: "☕", label: "Coffee" },
