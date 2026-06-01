@@ -23,6 +23,7 @@ import {
 import { isProfileComplete, signIn } from "@/lib/session-mock";
 import { isOnboardingComplete } from "@/lib/onboarding-mock";
 import { VerifyStep } from "@/components/auth/verify-step";
+import { trackToSheet } from "@/lib/sheets";
 
 export const Route = createFileRoute("/register")({
   head: () => ({
