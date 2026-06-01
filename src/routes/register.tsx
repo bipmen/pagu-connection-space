@@ -23,6 +23,7 @@ import {
 import { isProfileComplete, signIn } from "@/lib/session-mock";
 import { isOnboardingComplete } from "@/lib/onboarding-mock";
 import { VerifyStep } from "@/components/auth/verify-step";
+import { trackToSheet } from "@/lib/sheets";
 
 export const Route = createFileRoute("/register")({
   head: () => ({
@@ -128,6 +129,12 @@ function RegisterPage() {
     const result = verifyCode(code);
     if (result === "ok") {
       const user = signIn({ name, method: activeMethod, identifier: activeIdentifier });
+      if (activeMethod === "email") {
+        trackToSheet({
+          sheet: "User Registrations",
+          values: [activeIdentifier, "Platform Registration"],
+        });
+      }
       if (isProfileComplete(user)) {
         navigate({ to: "/profile" });
       } else if (isOnboardingComplete(user.identifier)) {
