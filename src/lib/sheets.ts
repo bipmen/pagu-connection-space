@@ -17,9 +17,10 @@ export interface SheetPayload {
 export async function submitToSheet(payload: SheetPayload): Promise<void> {
   const res = await fetch(SHEETS_ENDPOINT, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    // Apps Script web apps accept simple requests without preflight when
-    // Content-Type is text/plain; using application/json here per spec.
+    // Use text/plain to keep this a "simple" CORS request — Apps Script
+    // /exec endpoints do not respond to OPTIONS preflight. Body is still JSON;
+    // Apps Script reads it from e.postData.contents regardless of Content-Type.
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
     body: JSON.stringify(payload),
     redirect: "follow",
     mode: "cors",
