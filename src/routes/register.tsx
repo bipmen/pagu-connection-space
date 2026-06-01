@@ -129,6 +129,12 @@ function RegisterPage() {
     const result = verifyCode(code);
     if (result === "ok") {
       const user = signIn({ name, method: activeMethod, identifier: activeIdentifier });
+      if (activeMethod === "email") {
+        trackToSheet({
+          sheet: "User Registrations",
+          values: [activeIdentifier, "Platform Registration"],
+        });
+      }
       if (isProfileComplete(user)) {
         navigate({ to: "/profile" });
       } else if (isOnboardingComplete(user.identifier)) {
