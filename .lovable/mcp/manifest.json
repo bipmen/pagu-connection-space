@@ -29,9 +29,9 @@
         "outputSchema": null
       },
       {
-        "name": "get_events",
-        "title": "Get Pagu events",
-        "description": "List Pagu's upcoming and past community events (title, date, location, description).",
+        "name": "echo",
+        "title": "Echo",
+        "description": "Echo the input text back to the caller. Useful for verifying connectivity.",
         "annotations": {
           "readOnlyHint": true,
           "idempotentHint": true,
@@ -41,29 +41,15 @@
           "$schema": "http://json-schema.org/draft-07/schema#",
           "type": "object",
           "properties": {
-            "limit": {
-              "description": "Maximum number of events to return. Defaults to all.",
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 50
+            "text": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Text to echo back."
             }
-          }
-        },
-        "outputSchema": null
-      },
-      {
-        "name": "get_community_map",
-        "title": "Get community map entries",
-        "description": "Return Pagu's community map: FLINTA*-friendly spaces, categories, and city summaries.",
-        "annotations": {
-          "readOnlyHint": true,
-          "idempotentHint": true,
-          "openWorldHint": false
-        },
-        "inputSchema": {
-          "$schema": "http://json-schema.org/draft-07/schema#",
-          "type": "object",
-          "properties": {}
+          },
+          "required": [
+            "text"
+          ]
         },
         "outputSchema": null
       }
