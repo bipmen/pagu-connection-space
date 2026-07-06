@@ -15,6 +15,7 @@ import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ProfileSetupRouteImport } from './routes/profile-setup'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as McpRouteImport } from './routes/mcp'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LegalRouteImport } from './routes/legal'
 import { Route as FuturePlaygroundRouteImport } from './routes/future-playground'
@@ -37,8 +38,11 @@ import { Route as DiscoverApplyRouteImport } from './routes/discover.apply'
 import { Route as CommunityMapApplyRouteImport } from './routes/community-map.apply'
 import { Route as CommunityEventsNewRouteImport } from './routes/community-events.new'
 import { Route as CommunityEventsIdRouteImport } from './routes/community-events.$id'
+import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
+import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as RhrnChatIdRouteImport } from './routes/rhrn.chat.$id'
 import { Route as DiscoverSafeSpaceIdRouteImport } from './routes/discover.safe-space.$id'
+import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 
 const SupportThankYouRoute = SupportThankYouRouteImport.update({
   id: '/support-thank-you',
@@ -68,6 +72,11 @@ const ProfileRoute = ProfileRouteImport.update({
 const OnboardingRoute = OnboardingRouteImport.update({
   id: '/onboarding',
   path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const McpRoute = McpRouteImport.update({
+  id: '/mcp',
+  path: '/mcp',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -180,6 +189,18 @@ const CommunityEventsIdRoute = CommunityEventsIdRouteImport.update({
   path: '/community-events/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Char91DotwellKnownChar93OauthProtectedResourceRoute =
+  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
+    id: '/.well-known/oauth-protected-resource',
+    path: '/.well-known/oauth-protected-resource',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const Char91DotmcpChar93ListToolsRoute =
+  Char91DotmcpChar93ListToolsRouteImport.update({
+    id: '/.mcp/list-tools',
+    path: '/.mcp/list-tools',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const RhrnChatIdRoute = RhrnChatIdRouteImport.update({
   id: '/rhrn/chat/$id',
   path: '/rhrn/chat/$id',
@@ -190,6 +211,12 @@ const DiscoverSafeSpaceIdRoute = DiscoverSafeSpaceIdRouteImport.update({
   path: '/discover/safe-space/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Char91DotmcpChar93InvokeToolToolRoute =
+  Char91DotmcpChar93InvokeToolToolRouteImport.update({
+    id: '/.mcp/invoke-tool/$tool',
+    path: '/.mcp/invoke-tool/$tool',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -199,12 +226,15 @@ export interface FileRoutesByFullPath {
   '/future-playground': typeof FuturePlaygroundRoute
   '/legal': typeof LegalRoute
   '/login': typeof LoginRoute
+  '/mcp': typeof McpRoute
   '/onboarding': typeof OnboardingRoute
   '/profile': typeof ProfileRoute
   '/profile-setup': typeof ProfileSetupRoute
   '/register': typeof RegisterRoute
   '/support-login': typeof SupportLoginRoute
   '/support-thank-you': typeof SupportThankYouRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/community-events/$id': typeof CommunityEventsIdRoute
   '/community-events/new': typeof CommunityEventsNewRoute
   '/community-map/apply': typeof CommunityMapApplyRoute
@@ -220,6 +250,7 @@ export interface FileRoutesByFullPath {
   '/discover/': typeof DiscoverIndexRoute
   '/events/': typeof EventsIndexRoute
   '/rhrn/': typeof RhrnIndexRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/discover/safe-space/$id': typeof DiscoverSafeSpaceIdRoute
   '/rhrn/chat/$id': typeof RhrnChatIdRoute
 }
@@ -230,12 +261,15 @@ export interface FileRoutesByTo {
   '/future-playground': typeof FuturePlaygroundRoute
   '/legal': typeof LegalRoute
   '/login': typeof LoginRoute
+  '/mcp': typeof McpRoute
   '/onboarding': typeof OnboardingRoute
   '/profile': typeof ProfileRoute
   '/profile-setup': typeof ProfileSetupRoute
   '/register': typeof RegisterRoute
   '/support-login': typeof SupportLoginRoute
   '/support-thank-you': typeof SupportThankYouRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/community-events/$id': typeof CommunityEventsIdRoute
   '/community-events/new': typeof CommunityEventsNewRoute
   '/community-map/apply': typeof CommunityMapApplyRoute
@@ -251,6 +285,7 @@ export interface FileRoutesByTo {
   '/discover': typeof DiscoverIndexRoute
   '/events': typeof EventsIndexRoute
   '/rhrn': typeof RhrnIndexRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/discover/safe-space/$id': typeof DiscoverSafeSpaceIdRoute
   '/rhrn/chat/$id': typeof RhrnChatIdRoute
 }
@@ -263,12 +298,15 @@ export interface FileRoutesById {
   '/future-playground': typeof FuturePlaygroundRoute
   '/legal': typeof LegalRoute
   '/login': typeof LoginRoute
+  '/mcp': typeof McpRoute
   '/onboarding': typeof OnboardingRoute
   '/profile': typeof ProfileRoute
   '/profile-setup': typeof ProfileSetupRoute
   '/register': typeof RegisterRoute
   '/support-login': typeof SupportLoginRoute
   '/support-thank-you': typeof SupportThankYouRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/community-events/$id': typeof CommunityEventsIdRoute
   '/community-events/new': typeof CommunityEventsNewRoute
   '/community-map/apply': typeof CommunityMapApplyRoute
@@ -284,6 +322,7 @@ export interface FileRoutesById {
   '/discover/': typeof DiscoverIndexRoute
   '/events/': typeof EventsIndexRoute
   '/rhrn/': typeof RhrnIndexRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/discover/safe-space/$id': typeof DiscoverSafeSpaceIdRoute
   '/rhrn/chat/$id': typeof RhrnChatIdRoute
 }
@@ -297,12 +336,15 @@ export interface FileRouteTypes {
     | '/future-playground'
     | '/legal'
     | '/login'
+    | '/mcp'
     | '/onboarding'
     | '/profile'
     | '/profile-setup'
     | '/register'
     | '/support-login'
     | '/support-thank-you'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/community-events/$id'
     | '/community-events/new'
     | '/community-map/apply'
@@ -318,6 +360,7 @@ export interface FileRouteTypes {
     | '/discover/'
     | '/events/'
     | '/rhrn/'
+    | '/.mcp/invoke-tool/$tool'
     | '/discover/safe-space/$id'
     | '/rhrn/chat/$id'
   fileRoutesByTo: FileRoutesByTo
@@ -328,12 +371,15 @@ export interface FileRouteTypes {
     | '/future-playground'
     | '/legal'
     | '/login'
+    | '/mcp'
     | '/onboarding'
     | '/profile'
     | '/profile-setup'
     | '/register'
     | '/support-login'
     | '/support-thank-you'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/community-events/$id'
     | '/community-events/new'
     | '/community-map/apply'
@@ -349,6 +395,7 @@ export interface FileRouteTypes {
     | '/discover'
     | '/events'
     | '/rhrn'
+    | '/.mcp/invoke-tool/$tool'
     | '/discover/safe-space/$id'
     | '/rhrn/chat/$id'
   id:
@@ -360,12 +407,15 @@ export interface FileRouteTypes {
     | '/future-playground'
     | '/legal'
     | '/login'
+    | '/mcp'
     | '/onboarding'
     | '/profile'
     | '/profile-setup'
     | '/register'
     | '/support-login'
     | '/support-thank-you'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/community-events/$id'
     | '/community-events/new'
     | '/community-map/apply'
@@ -381,6 +431,7 @@ export interface FileRouteTypes {
     | '/discover/'
     | '/events/'
     | '/rhrn/'
+    | '/.mcp/invoke-tool/$tool'
     | '/discover/safe-space/$id'
     | '/rhrn/chat/$id'
   fileRoutesById: FileRoutesById
@@ -393,12 +444,15 @@ export interface RootRouteChildren {
   FuturePlaygroundRoute: typeof FuturePlaygroundRoute
   LegalRoute: typeof LegalRoute
   LoginRoute: typeof LoginRoute
+  McpRoute: typeof McpRoute
   OnboardingRoute: typeof OnboardingRoute
   ProfileRoute: typeof ProfileRoute
   ProfileSetupRoute: typeof ProfileSetupRoute
   RegisterRoute: typeof RegisterRoute
   SupportLoginRoute: typeof SupportLoginRoute
   SupportThankYouRoute: typeof SupportThankYouRoute
+  Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
+  Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   CommunityEventsIdRoute: typeof CommunityEventsIdRoute
   CommunityEventsNewRoute: typeof CommunityEventsNewRoute
   CommunityMapApplyRoute: typeof CommunityMapApplyRoute
@@ -411,6 +465,7 @@ export interface RootRouteChildren {
   CommunityMapIndexRoute: typeof CommunityMapIndexRoute
   DiscoverIndexRoute: typeof DiscoverIndexRoute
   RhrnIndexRoute: typeof RhrnIndexRoute
+  Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
   DiscoverSafeSpaceIdRoute: typeof DiscoverSafeSpaceIdRoute
   RhrnChatIdRoute: typeof RhrnChatIdRoute
 }
@@ -457,6 +512,13 @@ declare module '@tanstack/react-router' {
       path: '/onboarding'
       fullPath: '/onboarding'
       preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mcp': {
+      id: '/mcp'
+      path: '/mcp'
+      fullPath: '/mcp'
+      preLoaderRoute: typeof McpRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -613,6 +675,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CommunityEventsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/.well-known/oauth-protected-resource': {
+      id: '/.well-known/oauth-protected-resource'
+      path: '/.well-known/oauth-protected-resource'
+      fullPath: '/.well-known/oauth-protected-resource'
+      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.mcp/list-tools': {
+      id: '/.mcp/list-tools'
+      path: '/.mcp/list-tools'
+      fullPath: '/.mcp/list-tools'
+      preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/rhrn/chat/$id': {
       id: '/rhrn/chat/$id'
       path: '/rhrn/chat/$id'
@@ -625,6 +701,13 @@ declare module '@tanstack/react-router' {
       path: '/discover/safe-space/$id'
       fullPath: '/discover/safe-space/$id'
       preLoaderRoute: typeof DiscoverSafeSpaceIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.mcp/invoke-tool/$tool': {
+      id: '/.mcp/invoke-tool/$tool'
+      path: '/.mcp/invoke-tool/$tool'
+      fullPath: '/.mcp/invoke-tool/$tool'
+      preLoaderRoute: typeof Char91DotmcpChar93InvokeToolToolRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -653,12 +736,16 @@ const rootRouteChildren: RootRouteChildren = {
   FuturePlaygroundRoute: FuturePlaygroundRoute,
   LegalRoute: LegalRoute,
   LoginRoute: LoginRoute,
+  McpRoute: McpRoute,
   OnboardingRoute: OnboardingRoute,
   ProfileRoute: ProfileRoute,
   ProfileSetupRoute: ProfileSetupRoute,
   RegisterRoute: RegisterRoute,
   SupportLoginRoute: SupportLoginRoute,
   SupportThankYouRoute: SupportThankYouRoute,
+  Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
+  Char91DotwellKnownChar93OauthProtectedResourceRoute:
+    Char91DotwellKnownChar93OauthProtectedResourceRoute,
   CommunityEventsIdRoute: CommunityEventsIdRoute,
   CommunityEventsNewRoute: CommunityEventsNewRoute,
   CommunityMapApplyRoute: CommunityMapApplyRoute,
@@ -671,9 +758,19 @@ const rootRouteChildren: RootRouteChildren = {
   CommunityMapIndexRoute: CommunityMapIndexRoute,
   DiscoverIndexRoute: DiscoverIndexRoute,
   RhrnIndexRoute: RhrnIndexRoute,
+  Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
   DiscoverSafeSpaceIdRoute: DiscoverSafeSpaceIdRoute,
   RhrnChatIdRoute: RhrnChatIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
